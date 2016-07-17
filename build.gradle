@@ -1,0 +1,5 @@
+apply plugin: 'java'
+
+task server
+task atmClient
+task tellerClient
