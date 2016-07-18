@@ -1,4 +1,5 @@
-package com.innotec.bat.atm.model;
+package com.innotec.bats.client.atm.model;
+
 import java.util.*;
 
 /**
@@ -19,11 +20,23 @@ public class Dispenser {
     /**
      * Contains pointers to the notes.
      */
-    private Object[] slots = new Object[COUNT_SLOT];
+    private ArrayList<ArrayList<ZAR_Note>> slots;
     public Dispenser() {
         reset();
     }
     private void reset() {
-        slots = new
+        slots = new ArrayList<>(COUNT_SLOT);
+        for (int i = 0; i < COUNT_SLOT; ++i) {
+            slots.add(new ArrayList<ZAR_Note>(COUNT_NOTES_DEF));
+        }
     }
+    public boolean dispense(double amount) {
+        if (amount == (int) amount)
+            return dispense((int) amount);
+        else throw new IllegalArgumentException("Invalid dispense amount");
+    }
+    public boolean dispense(int amount) {
+        return false;
+    }
+    public double getBalance() {return 0.0;}
 }
