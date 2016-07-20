@@ -1,6 +1,9 @@
 package com.innotec.bats.server.control;
 
-import com.innotec.bats.*;
+import com.innotec.bats.general.*;
+import com.innotec.bats.general.Action;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -58,7 +61,7 @@ public class Server {
             }
 
         }
-        void processAction(AbstractAction action) {
+        void processAction(Action action) {
             if (action instanceof ATMAction) {
                 processAtmAction((ATMAction) action);
             } else if (action instanceof TellerAction) {
@@ -82,9 +85,9 @@ public class Server {
         }
         void processTellerAction(TellerAction action) {
             if (action instanceof AccountManagement) {
-                if (action instanceof AccountAddition) {
+                if (action instanceof AccountCreation) {
 
-                } else if (action instanceof AccountUnblock) {
+                } else if (action instanceof CardReactivation) {
 
                 } else if (action instanceof AccountHolderCreation) {
 

@@ -1,6 +1,6 @@
-package com.innotec.bats.server.control;
+package com.innotec.bats.general;
 
-import com.innotec.bats.TellerAction;
+import com.innotec.bats.general.TellerAction;
 
 /**
  * Created by phoenix on 7/20/16.

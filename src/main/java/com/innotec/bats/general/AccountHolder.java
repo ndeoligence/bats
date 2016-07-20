@@ -1,4 +1,4 @@
-package com.innotec.bats;
+package com.innotec.bats.general;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public class AccountHolder extends Person implements CardUser {
     private String address;
     private String contactNo;
-    List<BankAccount> accounts;
+    List<Account> accounts;
     public AccountHolder(String name, String surname, String idNo, Gender gender, String address, String contactNo) {
         super(name,surname,idNo,gender);
         if (address==null || contactNo==null)

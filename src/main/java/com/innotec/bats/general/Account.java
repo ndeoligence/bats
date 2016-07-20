@@ -1,18 +1,18 @@
-package com.innotec.bats;
+package com.innotec.bats.general;
 import java.io.Serializable;
 
 /**
  * Created by phoenix on 7/18/16.
  */
-public class BankAccount implements Serializable {
+public class Account implements Serializable {
     private double minBalance;
     private AccountHolder accountHolder;
     private String accountNo;
     private double balance;
     private boolean active;
-    public BankAccount(AccountHolder accountHolder, String accountNo, double balance, double minBalance, boolean active) {
+    public Account(AccountHolder accountHolder, String accountNo, double balance, double minBalance, boolean active) {
         if (accountHolder==null || accountNo==null)
-            throw new IllegalArgumentException("null BankAccount argument");
+            throw new IllegalArgumentException("null Account argument");
         this.accountHolder = accountHolder;
         this.accountNo = new String(accountNo);
         this.balance = balance;
