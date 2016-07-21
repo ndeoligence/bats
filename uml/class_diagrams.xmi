@@ -50,7 +50,7 @@
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="JjjfTJMT8TWm" type="B1wN0VVfyMGn" name="name"/>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="q9vI5luFNdRZ" type="B1wN0VVfyMGn" name="surname"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="sTr5Q0ZjhGOB" type="B1wN0VVfyMGn" name="idNumber"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="sTr5Q0ZjhGOB" type="B1wN0VVfyMGn" name="idNo"/>
         <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="akegB8SzHMHN" name="toString">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="mHeB8ZlfUvv9" type="B1wN0VVfyMGn"/>
@@ -101,7 +101,7 @@
           <UML:Parameter kind="return" xmi.id="IgLuKY6yMUFy" type="B1wN0VVfyMGn"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="dincENfAwXVl" name="isActive">
+        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="dincENfAwXVl" name="active">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="LYFlYPtTutYk" type="EZUAvixgY0l7"/>
          </UML:BehavioralFeature.parameter>
@@ -194,7 +194,7 @@
           <UML:Parameter visibility="private" isSpecification="false" xmi.id="LBnLQv80yBKm" type="0Cti5qd7iZ2m" value="" name="newBalance"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="GciaDjLI7Fim" name="isActive">
+        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="GciaDjLI7Fim" name="active">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="j2ZoHGbRBzZZ" type="EZUAvixgY0l7"/>
          </UML:BehavioralFeature.parameter>

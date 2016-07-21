@@ -1,23 +1,22 @@
-package innotec.bats.general_code;
+package com.innotec.bats.general;
 
 public class Account 
 {
 	private String accNo;
 	private double balance;
-	private boolean isActive;
+	private boolean active;
 	private double maxWithdrawalPerDay;
-	private double minWithdrawalPerDay;
+	private double maxTransferPerDay;
 	private int startDate;
 	
-	public Account(String accNo, double balance,boolean isActive, double maxWithdrawalPerDay,double minWithdrawalPerDay)
+	public Account(String accNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay)
 	{
 		this.accNo = accNo;
 		this.balance = balance;
-		this.isActive = isActive;
+		this.active = active;
 		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
-		this.minWithdrawalPerDay = minWithdrawalPerDay;
+		this.maxTransferPerDay = maxTransferPerDay;
 	}
-
 	public String getAccNo() {
 		return accNo;
 	}
@@ -34,12 +33,12 @@ public class Account
 		this.balance = balance;
 	}
 
-	public boolean getisActive() {
-		return isActive;
+	public boolean isActive() {
+		return active;
 	}
 
 	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+		this.active = isActive;
 	}
 
 	public double getMaxWithdrawalPerDay() {
@@ -50,13 +49,11 @@ public class Account
 		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
 	}
 
-	public double getMinWithdrawalPerDay() {
-		return minWithdrawalPerDay;
+	public double getMaxTransferPerDay() {
+		return maxTransferPerDay;
 	}
 
-	public void setMinWithdrawalPerDay(double minWithdrawalPerDay) {
-		this.minWithdrawalPerDay = minWithdrawalPerDay;
+	public void setMaxTransferPerDay(double maxTransferPerDay) {
+		this.maxTransferPerDay = maxTransferPerDay;
 	}
-	
-	
 }

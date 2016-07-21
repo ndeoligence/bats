@@ -2,7 +2,7 @@ package innotec.bats.general_code;
 
 public class Withdrawal 
 {
-	private final static double MIN_BALANCE = 10.00;
+	public static final double MIN_BALANCE = 10.00; // Why should this be here?
 	private int waitingPeriod;
 	
 	public Withdrawal(int waitingPeriod)

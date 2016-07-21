@@ -1,56 +1,30 @@
 package com.innotec.bats.general;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Card
-{
-	private String cardNo, pinNo;
+/**
+ * Created by phoenix on 7/18/16.
+ */
+public class Card implements Serializable {
+	private String cardNo;
+	private String pin;
 	private boolean active;
-	private ArrayList<String> accountNos;
-	
-	public Card(String cardNo, String pinNo, boolean active, ArrayList<String> accountNos)
-	{
-		this.cardNo = cardNo;
-		this.pinNo = pinNo;
-		this.accountNos = accountNos;
-		this.active = active;
+	public Card(String cardNo, String pin, boolean active) {
+		this.cardNo=cardNo;
+		this.pin=pin;
+		this.active=active;
 	}
-
-	public String getCardNo()
-	{
-		return cardNo;
-	}
-
-	public void setCardNo(String cardNo)
-	{
+	public String getCardNo() {return cardNo;}
+	public String getPin() {return pin;}
+	public boolean isActive() {return active;}
+	public void setCardNo(String cardNo) {
 		this.cardNo = cardNo;
 	}
-
-	public String getPinNo()
-	{
-		return pinNo;
+	public void setPin(String pin) {
+		this.pin = pin;
 	}
-
-	public void setPinNo(String pinNo)
-	{
-		this.pinNo = pinNo;
-	}
-
-	public boolean isActive()
-	{
-		return active;
-	}
-
-	public void setActive(boolean active)
-	{
+	public void setActive(boolean active) {
 		this.active = active;
 	}
-
-	public String toString()
-	{
-		return "Card [cardNo=" + cardNo + ", pinNo=" + pinNo + ", active="
-				+ active + "]";
-	}
-	
-	
+    public String toString() {return "Card; No.: " + cardNo;}
 }
