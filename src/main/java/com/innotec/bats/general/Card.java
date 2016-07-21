@@ -1,4 +1,4 @@
-package com.innotec.bats;
+package com.innotec.bats.general;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public class Card implements Serializable {
     private String cardNo;
     private String pin;
-    private List<BankAccount> accounts;
+    private List<Account> accounts;
     public Card() {
 
     }
