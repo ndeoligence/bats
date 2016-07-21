@@ -1,34 +1,51 @@
 package com.innotec.bats.general;
-import java.io.Serializable;
 
-/**
- * Created by phoenix on 7/18/16.
- */
-public class Person implements Serializable {
-    private String name;
-    private String surname;
-    private String idNo;
-    public Person(String name, String surname, String idNo) {
-        if (name==null || surname==null || idNo==null)
-            throw new IllegalArgumentException("null Person field(s)");
-        this.name = new String(name);
-        this.surname = new String(surname);
-        this.idNo = new String(idNo);
-    }
-    public String toString() {return name + " " + surname;}
-    public String getName() {
-        return name;
-    }
-    public String getSurname() {
-        return surname;
-    }
-    public String getIdNo() {
-        return idNo;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+public class Person
+{
+	private String name, surname, idNumber;
+
+	public Person(String name, String surname, String idNumber)
+	{
+		this.name = name;
+		this.surname = surname;
+		this.idNumber = idNumber;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getSurname()
+	{
+		return surname;
+	}
+
+	public void setSurname(String surname)
+	{
+		this.surname = surname;
+	}
+
+	public String getIdNumber()
+	{
+		return idNumber;
+	}
+
+	public void setIdNumber(String idNumber)
+	{
+		this.idNumber = idNumber;
+	}
+
+	public String toString()
+	{
+		return "Person [name=" + name + ", surname=" + surname + ", idNumber="
+				+ idNumber + "]";
+	}
+	
+	
 }

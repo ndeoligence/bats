@@ -1,13 +1,18 @@
-package com.innotec.bats.general;
+package innotec.bats.general_code;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class Employee extends Person {
-    private String employeeNo;
-    public Employee(String name, String surname, String idNo, String employeeNo) {
-        super(name, surname, idNo);
-        this.employeeNo = employeeNo;
-    }
-    public String getEmployeeNo() {return employeeNo;}
+public class Employee extends Person
+{
+	private Person employee;
+	private int employeeNo;
+	
+	public Employee(String name, String surname,String idNumber, int employeeNo)
+	{
+		super(name,surname,idNumber);
+		this.employeeNo = employeeNo;
+	}
+	
+	public int getEmployeeNo()
+	{
+		return this.employeeNo;
+	}
 }

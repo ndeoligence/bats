@@ -1,7 +1,24 @@
 package com.innotec.bats.general;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class AccountCreation extends AccountManagement {
+public class AccountCreation extends TellerAction
+{
+	private Account newAccount;
+	
+	public AccountCreation (String tellerID, Account newAccount)
+	{
+		super (tellerID);
+		this.newAccount = newAccount;	
+	}
+
+	public Account getNewAccount ()
+	{
+		return newAccount;
+	}
+
+	public void setNewAccount (Account newAccount)
+	{
+		this.newAccount = newAccount;
+	}
+	
+	
 }

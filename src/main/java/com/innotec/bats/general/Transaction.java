@@ -1,15 +1,35 @@
 package com.innotec.bats.general;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class Transaction extends ATMAction {
-    String accountNo;
-    double amount;
-    public Transaction(String accountNo, double amount) {
-        this.accountNo = new String(accountNo);
-        this.amount = amount;
-    }
-    public String getAccountNo() {return accountNo;}
-    public double getAmount() {return amount;}
+public class Transaction extends Action
+{
+		private String primAccountNo;
+		private double amount;
+		
+		public Transaction (String primAccountNo, double amount)
+		{
+			this.primAccountNo = primAccountNo;
+			this.amount = amount;
+		}
+
+		public String getPrimAccountNo ()
+		{
+			return primAccountNo;
+		}
+
+		public void setPrimAccountNo (String primAccountNo)
+		{
+			this.primAccountNo = primAccountNo;
+		}
+
+		public double getAmount ()
+		{
+			return amount;
+		}
+
+		public void setAmount (double amount)
+		{
+			this.amount = amount;
+		}
+		
+		
 }

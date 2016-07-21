@@ -1,7 +1,16 @@
-package com.innotec.bats.general;
+package innotec.bats.general_code;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class Withdrawal extends Transaction {
+public class Withdrawal 
+{
+	private final static double MIN_BALANCE = 10.00;
+	private int waitingPeriod;
+	
+	public Withdrawal(int waitingPeriod)
+	{
+		this.waitingPeriod = waitingPeriod;
+	}
+
+	public int getWaitingPeriod() {
+		return waitingPeriod;
+	}
 }
