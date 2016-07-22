@@ -21,6 +21,6 @@ public class AccountAction extends Action
 	
 	public String toString ()
 	{
-		return "AccountAction [accountNo = " + accountNo + "]";
+		return "AccountAction [accountNo= " + super.toString() + accountNo + "]";
 	}
 }

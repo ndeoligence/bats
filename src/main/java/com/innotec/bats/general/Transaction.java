@@ -31,5 +31,9 @@ public class Transaction extends Action
 			this.amount = amount;
 		}
 		
+		public String toString ()
+		{
+			return "Transaction Details= \t" + super.toString() +  primAccountNo + "\t" + amount;
+		}
 		
 }

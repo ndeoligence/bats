@@ -24,4 +24,6 @@ public class CardRetrieval extends Action
 	{
 		return "CardRetrieval [cardNo=" + cardNo + "]";
 	}
+	
+	
 }

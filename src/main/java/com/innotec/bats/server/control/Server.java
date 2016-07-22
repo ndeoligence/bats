@@ -74,7 +74,7 @@ public class Server {
                 } else {
                     System.out.println("Failed.");
                 }
-                throw new SessionTerminationException();
+                throw new SessionTerminationException("");
             }
             /*Then check for other actions*/
             // Action: Card Retrieve

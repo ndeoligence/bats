@@ -1,6 +1,6 @@
-package innotec.bats.general_code;
+package com.innotec.bats.general;
 
-public class PINChange 
+public class PINChange extends Action
 {
 	private String oldPIN;
 	private String newPIN1;
@@ -24,7 +24,7 @@ public class PINChange
 	
 	public boolean validateOldPIN()
 	{
-		if(oldPIN.equals(Card.getPIN()))
+		if(oldPIN.equals(Card.getPin()))
 		{
 			return true;
 		}
@@ -35,6 +35,6 @@ public class PINChange
 	{
 		this.validateOldPIN();
 		this.validateNewPIN();
-		Card.setPIN(newPIN1);
+		Card.setPin(newPIN1);
 	}
 }

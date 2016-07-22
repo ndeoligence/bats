@@ -2,27 +2,27 @@ package com.innotec.bats.general;
 
 public class Account 
 {
-	private String accNo;
+	private String accountNo;
 	private double balance;
 	private boolean active;
 	private double maxWithdrawalPerDay;
 	private double maxTransferPerDay;
 	private int startDate;
 	
-	public Account(String accNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay)
+	public Account(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay)
 	{
-		this.accNo = accNo;
+		this.accountNo = accountNo;
 		this.balance = balance;
 		this.active = active;
 		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
 		this.maxTransferPerDay = maxTransferPerDay;
 	}
-	public String getAccNo() {
-		return accNo;
+	public String getAccountNo() {
+		return accountNo;
 	}
 
-	public void setAccNo(String accNo) {
-		this.accNo = accNo;
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
 	}
 
 	public double getBalance() {

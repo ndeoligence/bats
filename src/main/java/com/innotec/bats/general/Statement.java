@@ -1,27 +1,31 @@
 package com.innotec.bats.general;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Statement
 {
-	private ArrayList<Transactions> transactions;
+	private ArrayList<Transaction> transactions;
+	private Date dateStamp;
+	private Time timeStamp;
 	
 	public Statement ()
 	{
-		transactions = new ArrayList<Transactions>();
+		transactions = new ArrayList<Transaction>();
 	}
 	
 	public boolean addTransaction(Transaction transaction)
 	{
-		transactions.add(transaction);
+		return transactions.add(transaction);
 	}
 
-	public ArrayList<Transactions> getTransactions ()
+	public ArrayList<Transaction> getTransactions ()
 	{
 		return transactions;
 	}
 
-	public void setTransactions (ArrayList<Transactions> transactions)
+	public void setTransactions (ArrayList<Transaction> transactions)
 	{
 		this.transactions = transactions;
 	}

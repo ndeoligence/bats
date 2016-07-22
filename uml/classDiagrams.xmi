@@ -699,7 +699,7 @@
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="zz7OzMFR2qxQ" type="QktUmxJJ7Rlw" name="dateFromStartOfNoticePeriod"/>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="eeLK4esUMjy8" name="SavingsAccount">
                  <UML:BehavioralFeature.parameter>
-                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="eFRmfAie7p07" type="RkjXUjonjr4y" value="" name="accNo"/>
+                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="eFRmfAie7p07" type="RkjXUjonjr4y" value="" name="accountNo"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="9DYA3Uah8tzC" type="Z6QoUezPig6x" value="" name="balance"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="VsgrbczEsP0X" type="K03HHk7gyMJ5" value="" name="active"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="Xi9fW8mdLInN" type="Z6QoUezPig6x" value="" name="maxWithdrawalAmountPerDay"/>
@@ -708,7 +708,7 @@
                 </UML:Operation>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="LZhBwhgUOn7s" name="SavingsAccount">
                  <UML:BehavioralFeature.parameter>
-                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="vrVF7Jcuegkr" type="RkjXUjonjr4y" value="" name="accNo"/>
+                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="vrVF7Jcuegkr" type="RkjXUjonjr4y" value="" name="accountNo"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="ipccXC4qllzg" type="Z6QoUezPig6x" value="" name="balance"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="Td8pRFhK4CZB" type="K03HHk7gyMJ5" value="" name="active"/>
                  </UML:BehavioralFeature.parameter>
@@ -757,7 +757,7 @@
               </UML:Class>
               <UML:Class visibility="public" isSpecification="false" namespace="UTXTspcAg7S5" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="h7YmA8k8XEfg" name="Account">
                <UML:Classifier.feature>
-                <UML:Attribute visibility="private" isSpecification="false" xmi.id="doy5CnQgEv76" type="RkjXUjonjr4y" name="accNo"/>
+                <UML:Attribute visibility="private" isSpecification="false" xmi.id="doy5CnQgEv76" type="RkjXUjonjr4y" name="accountNo"/>
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="kiGOphUWo2Gx" type="Z6QoUezPig6x" name="balance"/>
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="A05gClMpXJvj" type="K03HHk7gyMJ5" name="active"/>
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="4LPIGXMyFaM2" type="Z6QoUezPig6x" name="maxWithdrawalPerDay"/>
@@ -765,7 +765,7 @@
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="p1lNIg6MzUcD" type="5n2eomtRGR5D" name="startDate"/>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="zy9EZWEoMksD" name="Account">
                  <UML:BehavioralFeature.parameter>
-                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="VtCF0pDnowA7" type="RkjXUjonjr4y" value="" name="accNo"/>
+                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="VtCF0pDnowA7" type="RkjXUjonjr4y" value="" name="accountNo"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="bHTal4mk2vwZ" type="Z6QoUezPig6x" value="" name="balance"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="P8MmqExM67b4" type="K03HHk7gyMJ5" value="" name="active"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="wmrki2pJHHs2" type="Z6QoUezPig6x" value="" name="maxWithdrawalPerDay"/>
@@ -779,7 +779,7 @@
                 </UML:Operation>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="4v8qAlSaLP70" name="setAccNo">
                  <UML:BehavioralFeature.parameter>
-                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="ufZA6q8VxNDL" type="RkjXUjonjr4y" value="" name="accNo"/>
+                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="ufZA6q8VxNDL" type="RkjXUjonjr4y" value="" name="accountNo"/>
                  </UML:BehavioralFeature.parameter>
                 </UML:Operation>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Tv2AL7NP0TDB" name="getBalance">
@@ -995,7 +995,7 @@
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Gl8VuCgdbl6v" name="ViewStatement">
                  <UML:BehavioralFeature.parameter>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="qLDp5Di2mQZy" type="2E7M7OY9MCQ8" value="" name="statement"/>
-                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="KvccwAICvOip" type="RkjXUjonjr4y" value="" name="accNo"/>
+                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="KvccwAICvOip" type="RkjXUjonjr4y" value="" name="accountNo"/>
                  </UML:BehavioralFeature.parameter>
                 </UML:Operation>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="aOR97V4xrHlw" name="getStatement">

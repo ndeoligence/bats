@@ -2,7 +2,7 @@ package com.innotec.bats.general;
 
 import java.util.ArrayList;
 
-public class AccountHolder extends Person implements CardUser 
+public class AccountHolder extends Person
 {
     private String address;
     private String contactNo;
@@ -30,16 +30,19 @@ public class AccountHolder extends Person implements CardUser
     public boolean addAccount (Account newAccount)
     {
     	accounts.add(newAccount);
+    	return true;
     }
     
     public boolean addAccountArrayList(ArrayList accountArrayList)
     {
-    		accounts = accountArrayList;
+    	accounts = accountArrayList;
+    	return true;
     }
     
     public boolean addCard (Card card)
     {
     	this.card = card;
+    	return true;
     }
     
 	public String getAddress ()

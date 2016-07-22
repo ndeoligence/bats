@@ -9,6 +9,6 @@ public class Deposit extends Transaction {
         super(accountNo,amount);
     }
     public String toString() {
-        return "Deposit of R" + getAmount() + " to: " + getAccountNo();
+        return "Deposit of R" + getAmount() + " to: " + getPrimAccountNo();
     }
 }
