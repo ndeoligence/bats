@@ -2,6 +2,7 @@ package com.innotec.bats.server.control;
 
 import com.innotec.bats.general.*;
 import com.innotec.bats.general.Action;
+import com.innotec.bats.server.model.SessionTerminationException;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class Server {
     /*Static variables*/
-    private static final int SERVER_PORT_NR = 14300;
+    private static final int SERVER_PORT_NR = 13700;
     private static final int MAX_THREADS = 3000;
     /*Member variables*/
     private ServerSocket serverSocket;
@@ -58,33 +59,64 @@ public class Server {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (SessionTerminationException e) {
+                // This is after the session termination.
+                // The exception isn't an error. Fyi.
             }
 
         }
-        void processAction(Action action) {
-            if (action instanceof ATMAction) {
-                processAtmAction((ATMAction) action);
-            } else if (action instanceof TellerAction) {
-
-            } else {
-
-            }
-        }
-        void processAtmAction(ATMAction action) {
-            if (action instanceof Transaction) {
-                if (action instanceof Withdrawal) {
-                    System.out.println("Processing withdrawal...");
-                } else if (action instanceof Deposit) {
-                    System.out.println("Processing deposit...");
-                } else if (action instanceof Transfer) {
-                    System.out.println("Processing transfer...");
+        void processAction(Action action) throws SessionTerminationException {
+            /*First check for session termination first*/
+            if (action instanceof SessionTermination) {
+                System.out.print("Connection termination: ");
+                if (terminateSession()) {
+                    System.out.println("Success!");
+                } else {
+                    System.out.println("Failed.");
                 }
+                throw new SessionTerminationException();
+            }
+            /*Then check for other actions*/
+            // Action: Card Retrieve
+            if (action instanceof CardRetrieval) {
+                processCardRetrieval((CardRetrieval) action);
+            } else if (action instanceof TellerAction) {
+                processTellerAction((TellerAction) action);
             } else {
+                System.out.println("Unimplemented action handler: " + action);
+            }
+        }
+        public boolean terminateSession() {
+            System.out.println("Terminating session...");
+            try {
+                socket.close();
+            } catch (IOException e) {
+                return socket.isClosed();
+            }
+            return socket.isClosed();
+        }
+        void processCardRetrieval(CardRetrieval action) {
+            Card card = null;
+            if (action.getCardNo().length() == AdminCard.CARD_NO_LEN) {
+                card = new AdminCard(action.getCardNo(),"1234",true,"12345678");
+            } else if (action.getCardNo().length() == AdminCard.CARD_NO_LEN) {
+                String accountNumber = "";
+                card = new AccountHolderCard(action.getCardNo(),"1234",true);
+                ((AccountHolderCard)card).addAccountNo(accountNumber);
+            } else {
+                System.out.println("Error: Received a card with an invalid length: "
+                        + action.getCardNo().length() + ".\nWill send 'null' back.");
 
+            }
+
+            try {
+                outs.writeObject(card);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         void processTellerAction(TellerAction action) {
-            if (action instanceof AccountManagement) {
+            /*if (action instanceof AccountManagement) {
                 if (action instanceof AccountCreation) {
 
                 } else if (action instanceof CardReactivation) {
@@ -94,9 +126,21 @@ public class Server {
                 }
             } else {
 
-            }
+            }*/
         }
+        /*void processAtmAction(ATMAction action) {
+            if (action instanceof Transaction) {
+                if (action instanceof innotec.bats.general_code.Withdrawal) {
+                    System.out.println("Processing withdrawal...");
+                } else if (action instanceof Deposit) {
+                    System.out.println("Processing deposit...");
+                } else if (action instanceof Transfer) {
+                    System.out.println("Processing transfer...");
+                }
+            } else {
 
+            }
+        }*/
     }
 
     /*Main method*/

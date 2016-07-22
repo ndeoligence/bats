@@ -1,35 +1,20 @@
-package innotec.bats.general_code;
+package com.innotec.bats.general;
 
-public class AccountClosure extends TellerAction
-{
-	private Account acc;
-	private String accNo;
-	private boolean isActive;
-	
-	public AccountClosure(String tellerName, String accNo, boolean isActive)
-	{
-		super(tellerName);
-		this.accNo = accNo;
-		this.isActive = isActive;
-	}
-	
-	public boolean closeAccount()
-	{
-		if(acc.getAccNo().equals(accNo))
-		{
-		acc.setActive(isActive);
-		if(acc.getisActive() == true)
-		{
-			return false;
-		}
-		return true;
-		}
-		else
-		{
-			return false;
-		}
-		
-	}
-	
-	
+/**
+ * Created by phoenix on 7/22/16.
+ */
+public class AccountClosure extends TellerAction {
+    private String accountNo;
+    public AccountClosure(String employeeNo, String accountNo) {
+        super(employeeNo);
+        this.accountNo = accountNo;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
 }

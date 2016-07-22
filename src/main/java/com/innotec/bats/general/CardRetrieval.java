@@ -3,8 +3,6 @@ package com.innotec.bats.general;
 public class CardRetrieval extends Action
 {
 	String cardNo;
-	Card card;
-	String accountNo;
 
 	public CardRetrieval (String cardNo)
 	{
@@ -21,21 +19,9 @@ public class CardRetrieval extends Action
 		this.cardNo = cardNo;
 	}
 
-	public Card getCard ()
-	{
-		return card;
-	}
-
-	public void setCard (Card card)
-	{
-		this.card = card;
-	}
-
 	@Override
 	public String toString ()
 	{
 		return "CardRetrieval [cardNo=" + cardNo + "]";
 	}
-	
-	
 }
