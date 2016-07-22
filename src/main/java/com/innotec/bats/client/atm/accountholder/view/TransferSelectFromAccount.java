@@ -1,15 +1,16 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 
 
-public class ViewSelectAccount extends JPanel
+public class TransferSelectFromAccount extends JPanel
 {
 
 /**
  * Create the panel.
  */
-public ViewSelectAccount ()
+public TransferSelectFromAccount ()
 {
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -103,11 +104,10 @@ public ViewSelectAccount ()
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to view:");
+	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to transfer FROM:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 222, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 116, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
 }
-
 }

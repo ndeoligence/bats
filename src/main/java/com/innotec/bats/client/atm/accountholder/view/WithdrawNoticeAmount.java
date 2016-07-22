@@ -1,3 +1,4 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;

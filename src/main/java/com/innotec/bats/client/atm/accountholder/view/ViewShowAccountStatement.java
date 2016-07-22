@@ -1,15 +1,16 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 
 
-public class DepositInsertEnvelope extends JPanel
+public class ViewShowAccountStatement extends JPanel
 {
 
 /**
  * Create the panel.
  */
-public DepositInsertEnvelope ()
+public ViewShowAccountStatement ()
 {
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -48,7 +49,6 @@ public DepositInsertEnvelope ()
 	panel_1.setLayout(sl_panel_1);
 	
 	JPanel panel_2 = new JPanel();
-	sl_panel_1.putConstraint(SpringLayout.NORTH, panel_2, 84, SpringLayout.NORTH, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.WEST, panel_2, 232, SpringLayout.WEST, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.SOUTH, panel_2, -30, SpringLayout.SOUTH, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.EAST, panel_2, -233, SpringLayout.EAST, panel_1);
@@ -58,38 +58,27 @@ public DepositInsertEnvelope ()
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnTransferMoney = new JButton("");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 20, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 282, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -282, SpringLayout.EAST, panel_2);
-	btnTransferMoney.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\InsertEnvelopeIcon.jpg"));
-	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
-	btnTransferMoney.setBorder(BorderFactory.createRaisedBevelBorder());
-	panel_2.add(btnTransferMoney);
-	
-	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -42, SpringLayout.NORTH, btnHelp);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 388, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
-	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
-	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnHelp);
-	
-	JButton btnCancel = new JButton("Cancel");
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -23, SpringLayout.WEST, btnCancel);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\CancelIcon.jpg"));
+	JButton btnCancel = new JButton("OK");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 404, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 238, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -8, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -234, SpringLayout.EAST, panel_2);
+	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblWhatWouldYou = new JLabel("Insert the envelope");
+	JLabel lblWhatWouldYou = new JLabel("Statement for x account as at xx-xx-xxxx");
+	sl_panel_1.putConstraint(SpringLayout.NORTH, panel_2, 14, SpringLayout.SOUTH, lblWhatWouldYou);
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 463, SpringLayout.WEST, panel_1);
-	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 193, SpringLayout.WEST, panel_1);
+	
+	JTextArea textArea = new JTextArea();
+	sl_panel_2.putConstraint(SpringLayout.NORTH, textArea, 26, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.WEST, textArea, 26, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, textArea, -23, SpringLayout.NORTH, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.EAST, textArea, -27, SpringLayout.EAST, panel_2);
+	panel_2.add(textArea);
+	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 56));
 	panel_1.add(lblWhatWouldYou);
 }
 

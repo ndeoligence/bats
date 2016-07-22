@@ -1,3 +1,4 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -16,6 +17,9 @@ import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
+
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -25,12 +29,15 @@ import java.awt.event.MouseEvent;
 public class ATMWelcomeScreen extends JPanel implements ActionListener
 {
 
-JButton button;
+private JButton button;
+private JPanel Panel, framePanel;
 /**
  * Create the panel.
  */
-public ATMWelcomeScreen ()
+public ATMWelcomeScreen (JPanel framePanel)
 {
+	this.framePanel = framePanel;
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -83,9 +90,15 @@ public ATMWelcomeScreen ()
 	sl_panel_1.putConstraint(SpringLayout.WEST, label_1, 526, SpringLayout.WEST, panel_1);
 	label_1.setFont(new Font("Cambria", Font.PLAIN, 70));
 	panel_1.add(label_1);
+	
+	framePanel.add(this);
 
 }
 
+//public JPanel passPanel (JPanel framePanel)
+//{
+//		
+//}
 @Override
 public void actionPerformed (ActionEvent e)
 {
@@ -93,9 +106,15 @@ public void actionPerformed (ActionEvent e)
 	
 	if (source == button)
 	{
-		ATMUserLogin atmUserLogin = new ATMUserLogin();
-		MainGUI mainGUI = new MainGUI(atmUserLogin);
-		System.out.println("blah");
+		
+		framePanel.removeAll();
+		framePanel.validate();
+		ATMUserLogin atmUserLogin = new ATMUserLogin(framePanel);
+		//MainGUI mainGUI = new MainGUI();
+		//mainGUI.setVisible(true);
+		
+		
+		
 	}
 }
 }

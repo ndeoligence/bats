@@ -1,15 +1,16 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 
 
-public class ChangePINOldPIN extends JPanel
+public class ChangePINNewPIN extends JPanel
 {
 
 /**
  * Create the panel.
  */
-public ChangePINOldPIN ()
+public ChangePINNewPIN ()
 {
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -60,21 +61,20 @@ public ChangePINOldPIN ()
 	
 	JButton btnTransferMoney = new JButton("OK");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 236, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -236, SpringLayout.EAST, panel_2);
 	btnTransferMoney.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
 	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnTransferMoney);
 	
 	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -54, SpringLayout.NORTH, btnHelp);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 42, SpringLayout.SOUTH, btnTransferMoney);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
 	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
 	JButton btnCancel = new JButton("Cancel");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 0, SpringLayout.NORTH, btnCancel);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -40, SpringLayout.NORTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -23, SpringLayout.WEST, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
@@ -85,14 +85,15 @@ public ChangePINOldPIN ()
 	panel_2.add(btnCancel);
 	
 	JLabel lblR = new JLabel("PIN:");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 67, SpringLayout.SOUTH, lblR);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, lblR, -298, SpringLayout.SOUTH, panel_2);
 	lblR.setFont(new Font("Cambria", Font.PLAIN, 70));
 	panel_2.add(lblR);
 	
 	JTextField textField = new JTextField();
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 70, SpringLayout.SOUTH, textField);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, textField, -310, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, textField, 112, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, textField, -77, SpringLayout.NORTH, btnTransferMoney);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -42, SpringLayout.EAST, textField);
 	sl_panel_2.putConstraint(SpringLayout.EAST, lblR, -73, SpringLayout.WEST, textField);
 	sl_panel_2.putConstraint(SpringLayout.WEST, textField, 318, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, textField, -194, SpringLayout.EAST, panel_2);
@@ -100,9 +101,9 @@ public ChangePINOldPIN ()
 	panel_2.add(textField);
 	textField.setColumns(10);
 	
-	JLabel lblWhatWouldYou = new JLabel("Enter your old PIN:");
+	JLabel lblWhatWouldYou = new JLabel("Enter the new PIN:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 462, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 467, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
 }

@@ -1,15 +1,15 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 
-
-public class HelpChooseTopic extends JPanel
+public class WithdrawCashSelectAccount extends JPanel
 {
 
 /**
  * Create the panel.
  */
-public HelpChooseTopic ()
+public WithdrawCashSelectAccount (JPanel framePanel)
 {
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -48,6 +48,7 @@ public HelpChooseTopic ()
 	panel_1.setLayout(sl_panel_1);
 	
 	JPanel panel_2 = new JPanel();
+	sl_panel_1.putConstraint(SpringLayout.NORTH, panel_2, 84, SpringLayout.NORTH, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.WEST, panel_2, 232, SpringLayout.WEST, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.SOUTH, panel_2, -30, SpringLayout.SOUTH, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.EAST, panel_2, -233, SpringLayout.EAST, panel_1);
@@ -57,63 +58,44 @@ public HelpChooseTopic ()
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnWithdrawCash = new JButton("  Deposit cash");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnWithdrawCash, 25, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash, -447, SpringLayout.EAST, panel_2);
-	
-	btnWithdrawCash.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\DepositIcon.jpg"));
+	JButton btnWithdrawCash = new JButton("Savings Account");
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash, -32, SpringLayout.EAST, panel_2);
+	btnWithdrawCash.setIcon(null);
 	btnWithdrawCash.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnWithdrawCash);
 	
-	JButton btnWithdrawCash_1 = new JButton("  Withdraw cash");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash, 4, SpringLayout.SOUTH, btnWithdrawCash_1);
+	JButton btnWithdrawCash_1 = new JButton("Current account");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash, 0, SpringLayout.NORTH, btnWithdrawCash_1);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnWithdrawCash, 18, SpringLayout.EAST, btnWithdrawCash_1);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash, 0, SpringLayout.SOUTH, btnWithdrawCash_1);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash_1, 22, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash_1, -376, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash_1, -447, SpringLayout.EAST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnWithdrawCash_1, 25, SpringLayout.WEST, panel_2);
-	btnWithdrawCash_1.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\WithdrawIcon.jpg"));
+	btnWithdrawCash_1.setIcon(null);
 	btnWithdrawCash_1.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnWithdrawCash_1);
 	
-	JButton btnTransferMoney = new JButton(" Transfer money");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 204, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash, -6, SpringLayout.NORTH, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 25, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -194, SpringLayout.SOUTH, panel_2);
+	JButton btnTransferMoney = new JButton("Credit card account");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 6, SpringLayout.SOUTH, btnWithdrawCash_1);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 0, SpringLayout.WEST, btnWithdrawCash_1);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -278, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -447, SpringLayout.EAST, panel_2);
-	btnTransferMoney.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\TransferIcon.jpg"));
+	btnTransferMoney.setIcon(null);
 	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnTransferMoney);
 	
-	JButton btnViewStatement = new JButton("   View statement");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnViewStatement, 0, SpringLayout.NORTH, btnWithdrawCash);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnViewStatement, 0, SpringLayout.SOUTH, btnWithdrawCash);
-	btnViewStatement.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\ViewStatementIcon.jpg"));
-	btnViewStatement.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnViewStatement);
-	
-	JButton btnChangePin = new JButton("  Change PIN");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnChangePin, 18, SpringLayout.EAST, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnChangePin, -32, SpringLayout.EAST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnViewStatement, 0, SpringLayout.WEST, btnChangePin);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnViewStatement, 0, SpringLayout.EAST, btnChangePin);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnChangePin, 0, SpringLayout.NORTH, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnChangePin, 0, SpringLayout.SOUTH, btnTransferMoney);
-	btnChangePin.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\ChangePINIcon.jpg"));
-	btnChangePin.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnChangePin);
-	
-	JButton btnViewBalance = new JButton("   View balance");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnViewBalance, 22, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnViewBalance, 0, SpringLayout.WEST, btnChangePin);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnViewBalance, 0, SpringLayout.SOUTH, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnViewBalance, 0, SpringLayout.EAST, btnChangePin);
-	btnViewBalance.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\ViewBalanceIcon.jpg"));
-	btnViewBalance.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnViewBalance);
+	JButton btnHelp = new JButton("Help");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnWithdrawCash_1);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnWithdrawCash_1);
+	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
+	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnHelp);
 	
 	JButton btnCancel = new JButton("Cancel");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 384, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 0, SpringLayout.NORTH, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
@@ -121,12 +103,13 @@ public HelpChooseTopic ()
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblWhatWouldYou = new JLabel("What do you need help with?");
-	sl_panel_1.putConstraint(SpringLayout.NORTH, panel_2, 14, SpringLayout.SOUTH, lblWhatWouldYou);
+	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to withdraw from:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 323, SpringLayout.WEST, panel_1);
-	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 56));
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 110, SpringLayout.WEST, panel_1);
+	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
 }
 
 }

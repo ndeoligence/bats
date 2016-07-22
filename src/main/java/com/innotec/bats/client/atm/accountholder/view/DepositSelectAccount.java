@@ -1,15 +1,16 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 
 
-public class TransferSelectToAccount extends JPanel
+public class DepositSelectAccount extends JPanel
 {
 
 /**
  * Create the panel.
  */
-public TransferSelectToAccount ()
+public DepositSelectAccount ()
 {
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -86,16 +87,16 @@ public TransferSelectToAccount ()
 	panel_2.add(btnTransferMoney);
 	
 	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 174, SpringLayout.SOUTH, btnTransferMoney);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -447, SpringLayout.EAST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnWithdrawCash_1);
 	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
 	JButton btnCancel = new JButton("Cancel");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 0, SpringLayout.NORTH, btnHelp);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 0, SpringLayout.NORTH, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
@@ -103,9 +104,9 @@ public TransferSelectToAccount ()
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to transfer TO:");
+	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to deposit to:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 151, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 166, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
 }

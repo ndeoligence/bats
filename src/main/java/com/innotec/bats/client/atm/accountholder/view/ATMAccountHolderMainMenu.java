@@ -1,24 +1,24 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import java.awt.SystemColor;
 
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.layout.FormSpecs;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-public class ATMAccountHolderMainMenu extends JPanel
+public class ATMAccountHolderMainMenu extends JPanel implements ActionListener
 {
 
-/**
- * Create the panel.
- */
-public ATMAccountHolderMainMenu ()
+	private JPanel framePanel;
+	private JButton btnWithdrawCash, btnViewStatement, btnWithdrawCash_1, btnTransferMoney, btnChangePin, btnHelp, btnViewBalance, btnCancel;
+
+public ATMAccountHolderMainMenu (JPanel framePanel)
 {
+	framePanel.removeAll();
+	this.framePanel = framePanel;
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -65,18 +65,15 @@ public ATMAccountHolderMainMenu ()
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnWithdrawCash = new JButton("  Deposit cash");
+	btnWithdrawCash = new JButton("  Deposit cash");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnWithdrawCash, 25, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash, -447, SpringLayout.EAST, panel_2);
-	btnWithdrawCash.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent arg0) {
-		}
-	});
+	btnWithdrawCash.addActionListener(this);
 	btnWithdrawCash.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\DepositIcon.jpg"));
 	btnWithdrawCash.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnWithdrawCash);
 	
-	JButton btnWithdrawCash_1 = new JButton("  Withdraw cash");
+	btnWithdrawCash_1 = new JButton("  Withdraw cash");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash, 4, SpringLayout.SOUTH, btnWithdrawCash_1);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash_1, 22, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash_1, -376, SpringLayout.SOUTH, panel_2);
@@ -85,8 +82,9 @@ public ATMAccountHolderMainMenu ()
 	btnWithdrawCash_1.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\WithdrawIcon.jpg"));
 	btnWithdrawCash_1.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnWithdrawCash_1);
+	btnWithdrawCash_1.addActionListener(this);
 	
-	JButton btnTransferMoney = new JButton(" Transfer money");
+	btnTransferMoney = new JButton(" Transfer money");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 204, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash, -6, SpringLayout.NORTH, btnTransferMoney);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 25, SpringLayout.WEST, panel_2);
@@ -96,14 +94,14 @@ public ATMAccountHolderMainMenu ()
 	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnTransferMoney);
 	
-	JButton btnViewStatement = new JButton("   View statement");
+	btnViewStatement = new JButton("   View statement");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnViewStatement, 0, SpringLayout.NORTH, btnWithdrawCash);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnViewStatement, 0, SpringLayout.SOUTH, btnWithdrawCash);
 	btnViewStatement.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\ViewStatementIcon.jpg"));
 	btnViewStatement.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnViewStatement);
 	
-	JButton btnChangePin = new JButton("  Change PIN");
+	btnChangePin = new JButton("  Change PIN");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnChangePin, 18, SpringLayout.EAST, btnTransferMoney);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnChangePin, -32, SpringLayout.EAST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnViewStatement, 0, SpringLayout.WEST, btnChangePin);
@@ -114,14 +112,14 @@ public ATMAccountHolderMainMenu ()
 	btnChangePin.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnChangePin);
 	
-	JButton btnHelp = new JButton("Help");
+	btnHelp = new JButton("Help");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnWithdrawCash);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnWithdrawCash);
 	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
-	JButton btnViewBalance = new JButton("   View balance");
+	btnViewBalance = new JButton("   View balance");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnViewBalance, 22, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnViewBalance, 0, SpringLayout.WEST, btnChangePin);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnViewBalance, 0, SpringLayout.SOUTH, btnWithdrawCash_1);
@@ -130,7 +128,7 @@ public ATMAccountHolderMainMenu ()
 	btnViewBalance.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnViewBalance);
 	
-	JButton btnCancel = new JButton("Cancel");
+	btnCancel = new JButton("Cancel");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 0, SpringLayout.NORTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 384, SpringLayout.NORTH, panel_2);
@@ -147,6 +145,18 @@ public ATMAccountHolderMainMenu ()
 	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 344, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 56));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
 }
-
+@Override
+public void actionPerformed (ActionEvent ae)
+{
+	Object source = ae.getSource();
+	
+	if (source == btnWithdrawCash_1)
+	{
+		WithdrawCashSelectAccount withdrawCashSelectAccount = new WithdrawCashSelectAccount(framePanel);
+	}
+}
+	
 }

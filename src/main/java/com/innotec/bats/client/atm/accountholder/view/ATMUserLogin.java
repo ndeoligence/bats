@@ -1,23 +1,43 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
+import com.innotec.bats.client.atm.accountholder.model.CardValidation;
+import com.innotec.bats.client.atm.control.ATM_ServerComm;
+import com.innotec.bats.general.Card;
+import com.innotec.bats.general.CardRetrieval;
 
-public class ATMUserLogin extends JPanel
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+
+public class ATMUserLogin extends JPanel implements KeyListener
 {
 	private JTextField textField;
 	private JPasswordField passwordField;
+	private int pinDigitCounter;
+	private CardRetrieval cardRetrieval;
+	private Card insertedCard, retrievedCard;
+	private CardValidation cardValidation;
+	private JPanel framePanel;
 
 /**
  * Create the panel.
  */
-public ATMUserLogin ()
+public ATMUserLogin (JPanel framePanel)
 {
+	framePanel.removeAll();
+	this.framePanel = framePanel;
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
 	
+	pinDigitCounter = 0;
 	
 	JPanel panel = new JPanel();
 	springLayout.putConstraint(SpringLayout.NORTH, panel, 10, SpringLayout.NORTH, this);
@@ -71,6 +91,7 @@ public ATMUserLogin ()
 	panel_1.add(label_2);
 	
 	passwordField = new JPasswordField();
+	passwordField.addKeyListener(this);
 	sl_panel_1.putConstraint(SpringLayout.NORTH, passwordField, 18, SpringLayout.SOUTH, label_2);
 	sl_panel_1.putConstraint(SpringLayout.WEST, passwordField, 0, SpringLayout.WEST, textField);
 	sl_panel_1.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, textField);
@@ -78,5 +99,48 @@ public ATMUserLogin ()
 	passwordField.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 	panel_1.add(passwordField);
 	
+	framePanel.add(this);
+	framePanel.validate();
+	framePanel.repaint();
+	
 }
+
+@Override
+public void keyPressed (KeyEvent arg0)
+{
+}
+
+@Override
+public void keyReleased (KeyEvent arg0)
+{
+}
+
+@Override
+public void keyTyped (KeyEvent ke)
+{
+	Object source = ke.getSource();
+	if (source == passwordField)
+	{
+		if (pinDigitCounter < 3)
+		{
+			pinDigitCounter++;
+		}
+		else
+		{
+			cardRetrieval = new CardRetrieval(textField.getText());
+			insertedCard = new Card(textField.getText(), String.copyValueOf(passwordField.getPassword()), true);
+			ATMApplication.serverComm.openConnection();
+			retrievedCard = ATMApplication.serverComm.sendCardRetrieval(cardRetrieval);
+			cardValidation = new CardValidation(insertedCard, retrievedCard);
+			
+			if (cardValidation.validate())
+			{
+				
+				ATMAccountHolderMainMenu accountHolderMain = new ATMAccountHolderMainMenu(framePanel);
+			}
+		}
+	}
+}
+
+
 }

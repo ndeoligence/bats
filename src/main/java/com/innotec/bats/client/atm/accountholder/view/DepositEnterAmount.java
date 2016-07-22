@@ -1,17 +1,16 @@
+package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
-
 import java.awt.*;
-import java.util.Date;
-
 import javax.swing.border.*;
 
-public class ViewShowAccountBalance extends JPanel
+
+public class DepositEnterAmount extends JPanel
 {
 
 /**
  * Create the panel.
  */
-public ViewShowAccountBalance ()
+public DepositEnterAmount ()
 {
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -60,38 +59,53 @@ public ViewShowAccountBalance ()
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
+	JButton btnTransferMoney = new JButton("OK");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 236, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -157, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -236, SpringLayout.EAST, panel_2);
+	btnTransferMoney.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
+	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnTransferMoney);
+	
 	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 393, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 22, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -10, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -450, SpringLayout.EAST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 55, SpringLayout.SOUTH, btnTransferMoney);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
 	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
-	JButton btnCancel = new JButton("OK");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 242, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -41, SpringLayout.NORTH, btnHelp);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
+	JButton btnCancel = new JButton("Cancel");
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -23, SpringLayout.WEST, btnCancel);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
+	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblR = new JLabel("R XX XXX.XX");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 94, SpringLayout.SOUTH, lblR);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, 9, SpringLayout.EAST, lblR);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, lblR, 88, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, lblR, 251, SpringLayout.WEST, panel_2);
+	JLabel lblR = new JLabel("R");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 54, SpringLayout.SOUTH, lblR);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, lblR, -298, SpringLayout.SOUTH, panel_2);
 	lblR.setFont(new Font("Cambria", Font.PLAIN, 70));
 	panel_2.add(lblR);
 	
-	//Date date = System.currentTimeMillis();
+	JTextField textField = new JTextField();
+	sl_panel_2.putConstraint(SpringLayout.NORTH, textField, 112, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, textField, -66, SpringLayout.NORTH, btnTransferMoney);
+	sl_panel_2.putConstraint(SpringLayout.EAST, lblR, -73, SpringLayout.WEST, textField);
+	sl_panel_2.putConstraint(SpringLayout.WEST, textField, 318, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, textField, -194, SpringLayout.EAST, panel_2);
+	textField.setFont(new Font("Calibri", Font.PLAIN, 54));
+	panel_2.add(textField);
+	textField.setColumns(10);
 	
-	JLabel lblWhatWouldYou = new JLabel("Account balance as at xx-xx-xxxx");
+	JLabel lblWhatWouldYou = new JLabel("Enter the amount you would like to deposit:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 315, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 198, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
 }
-
 
 }
