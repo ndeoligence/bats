@@ -16,7 +16,7 @@ import java.util.List;
 public class Server {
     /*Static variables*/
     private static final int SERVER_PORT_NR = 13700;
-    private static final int MAX_THREADS = 3000;
+//    private static final int MAX_THREADS = 3000;
     /*Member variables*/
     private ServerSocket serverSocket;
     private List<ClientHandler> clientHandlers;
