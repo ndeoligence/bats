@@ -22,7 +22,7 @@ public class CardRetrieval extends Action
 	@Override
 	public String toString ()
 	{
-		return "CardRetrieval [cardNo=" + cardNo + "]";
+		return "CardRetrieval [idNo=" + cardNo + "]";
 	}
 	
 	
