@@ -7,21 +7,21 @@ import java.io.Serializable;
  */
 public class Card implements Serializable {
 	private String cardNo;
-	private String pin;
+	private String pinNo;
 	private boolean active;
-	public Card(String cardNo, String pin, boolean active) {
+	public Card(String cardNo, String pinNo, boolean active) {
 		this.cardNo=cardNo;
-		this.pin=pin;
+		this.pinNo = pinNo;
 		this.active=active;
 	}
 	public String getCardNo() {return cardNo;}
-	public String getPin() {return pin;}
+	public String getPinNo() {return pinNo;}
 	public boolean isActive() {return active;}
 	public void setCardNo(String cardNo) {
 		this.cardNo = cardNo;
 	}
-	public void setPin(String pin) {
-		this.pin = pin;
+	public void setPinNo(String pinNo) {
+		this.pinNo = pinNo;
 	}
 	public void setActive(boolean active) {
 		this.active = active;
