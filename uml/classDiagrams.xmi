@@ -1104,12 +1104,12 @@
               <UML:Class visibility="public" isSpecification="false" namespace="UTXTspcAg7S5" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="X94STgb0Xt9w" name="PINChange">
                <UML:Classifier.feature>
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="VrNuJ7v4g9qT" type="RkjXUjonjr4y" name="oldPIN"/>
-                <UML:Attribute visibility="private" isSpecification="false" xmi.id="9AJkdpaAwcbP" type="RkjXUjonjr4y" name="newPIN1"/>
+                <UML:Attribute visibility="private" isSpecification="false" xmi.id="9AJkdpaAwcbP" type="RkjXUjonjr4y" name="newPIN"/>
                 <UML:Attribute visibility="private" isSpecification="false" xmi.id="ICQp5XlYO7Sh" type="RkjXUjonjr4y" name="newPIN2"/>
                 <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ELmsVaKckbKM" name="PINChange">
                  <UML:BehavioralFeature.parameter>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="QuWMW7knH8aL" type="RkjXUjonjr4y" value="" name="oldPIN"/>
-                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="fMt1RMgffQWA" type="RkjXUjonjr4y" value="" name="newPIN1"/>
+                  <UML:Parameter visibility="private" isSpecification="false" xmi.id="fMt1RMgffQWA" type="RkjXUjonjr4y" value="" name="newPIN"/>
                   <UML:Parameter visibility="private" isSpecification="false" xmi.id="1qkjP55qxaAS" type="RkjXUjonjr4y" value="" name="newPIN2"/>
                  </UML:BehavioralFeature.parameter>
                 </UML:Operation>
