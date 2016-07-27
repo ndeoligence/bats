@@ -4,28 +4,14 @@ package com.innotec.bats.general;
  * Created by phoenix on 7/18/16.
  */
 public class CurrentAccount extends Account {
-    public static final double DEF_MIN_BALANCE = 100.0;
-    public static final double DEF_MAX_WITHDRAWAL_PER_DAY = 1000.0;
-    public static final double DEF_MAX_TRANSFER_PER_DAY = 1000.0;
-    private double minBalance;
-    public CurrentAccount(String accountNo, double balance, boolean active, double minBalance, double maxWithdrawalPerDay, double maxTransferPerDay) {
-        super(accountNo, balance, active, maxWithdrawalPerDay, maxTransferPerDay);
-        this.minBalance = minBalance;
-    }
-    public CurrentAccount(String accountNo, double balance, boolean active, double minBalance) {
-        this(accountNo, balance, active, minBalance, DEF_MAX_WITHDRAWAL_PER_DAY, DEF_MAX_TRANSFER_PER_DAY);
-    }
+    public static final double MIN_BALANCE = 100.0;
+    public static final double MAX_WITHDRAWAL_PER_DAY = 1000.0;
+    public static final double MAX_TRANSFER_PER_DAY = 1000.0;
     public CurrentAccount(String accountNo, double balance, boolean active) {
-        this(accountNo,balance,active,DEF_MIN_BALANCE);
+        super(accountNo, balance, active, MAX_WITHDRAWAL_PER_DAY, MAX_TRANSFER_PER_DAY);
     }
-
-    public double getMinBalance() {
-        return minBalance;
+    @Override
+    public String toString() {
+        return "CurrentAccount{"+super.toString()+"}";
     }
-
-    public void setMinBalance(double minBalance) {
-        this.minBalance = minBalance;
-    }
-
-    public String toString() {return super.toString();}
 }
