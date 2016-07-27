@@ -1,23 +1,10 @@
 package com.innotec.bats.server.dao;
 
-import com.innotec.bats.general.Account;
-import com.innotec.bats.general.AccountHolder;
-import com.innotec.bats.general.AccountHolderCard;
-import com.innotec.bats.general.AdminCard;
-import com.innotec.bats.general.Card;
-import com.innotec.bats.general.CreditCardAccount;
-import com.innotec.bats.general.CurrentAccount;
-import com.innotec.bats.general.Employee;
-import com.innotec.bats.general.SavingsAccount;
-import com.innotec.bats.general.Transaction;
-
-import java.sql.Connection;
+import com.innotec.bats.general.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Vector;
 public class DAO_Class implements DAO_Interface
 {
 	private static final String SAVINGS_ACCOUNT = "Savings Account";
