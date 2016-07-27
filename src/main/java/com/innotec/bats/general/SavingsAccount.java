@@ -8,20 +8,18 @@ public class SavingsAccount extends Account
 	private final int WITHDRAWAL_NOTICE_PERIOD = 32;
 	private final int MAX_WITHDRAWALS_PER_MONTH = 1;
 	private Date dateFromStartOfNoticePeriod;
+	private boolean withdrawalPending;
 	
-	public SavingsAccount(String accNo, double balance, boolean active, double maxWithdrawalAmountPerDay, double maxTransferalAmountPerDay)
+	public SavingsAccount(String accNo, double balance, boolean active, double maxWithdrawalAmountPerDay, double maxTransferralAmountPerDay)
 	{
-		super(accNo, balance, active, maxWithdrawalAmountPerDay, maxTransferalAmountPerDay);
+		super(accNo, balance, active, maxWithdrawalAmountPerDay, maxTransferralAmountPerDay);
+		withdrawalPending = false;
 	}
 	
 	public SavingsAccount(String accNo, double balance, boolean active)
 	{
 		super(accNo, balance, active);
-	}
-
-	public Date startOfNoticePeriod()
-	{
-		dateFromStartOfNoticePeriod = new Date();
+		withdrawalPending = false;
 	}
 	
 	public Date getDateFromStartOfNoticePeriod()
@@ -49,16 +47,9 @@ public class SavingsAccount extends Account
 		return MAX_WITHDRAWALS_PER_MONTH;
 	}
 
-	public boolean withdrawalPending()//if account holder wants to make a withdrawal notice, while another is still pending
+	public boolean getWithdrawalPending()//if account holder wants to make a withdrawal notice, while another is still pending
 	{
-		if(true)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return withdrawalPending;
 	}
 	
 	public String toString()

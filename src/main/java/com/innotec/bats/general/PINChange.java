@@ -2,12 +2,13 @@ package com.innotec.bats.general;
 
 public class PINChange extends Action
 {
-	private String oldPIN;
+	private String cardNo;
 	private String newPIN;
-
-	public PINChange(String oldPIN, String newPIN)
+	
+	public PINChange(String cardNo, String newPIN)
 	{
-		this.oldPIN = oldPIN;
+		this.cardNo = cardNo;
 		this.newPIN = newPIN;
 	}
+	
 }

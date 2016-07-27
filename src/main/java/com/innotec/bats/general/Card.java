@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by phoenix on 7/18/16.
  */
-public class Card implements Serializable {
+public abstract class Card implements Serializable {
 	private String cardNo;
 	private String pinNo;
 	private boolean active;
