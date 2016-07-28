@@ -1,16 +1,18 @@
 package com.innotec.bats.general;
 
-public class Withdrawal 
+public class Withdrawal extends Transaction
 {
-	public static final double MIN_BALANCE = 10.00; // Why should this be here?
-	private int waitingPeriod;
+	public static final double MIN_AMOUNT = 10.0; 
+	private boolean waitingPeriod;
 	
-	public Withdrawal(int waitingPeriod)
+	public Withdrawal (String accountNo, double amount, boolean waitingPeriod)
 	{
+		super (accountNo, amount);
 		this.waitingPeriod = waitingPeriod;
 	}
-
-	public int getWaitingPeriod() {
+	
+	public boolean getWaitingPeriodApplicable() 
+	{
 		return waitingPeriod;
 	}
 }

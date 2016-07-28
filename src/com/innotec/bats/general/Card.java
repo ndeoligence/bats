@@ -5,26 +5,33 @@ import java.io.Serializable;
 /**
  * Created by phoenix on 7/18/16.
  */
-public class Card implements Serializable {
+public abstract class Card implements Serializable {
 	private String cardNo;
-	private String pin;
+	private String pinNo;
 	private boolean active;
-	public Card(String cardNo, String pin, boolean active) {
+	public Card(String cardNo, String pinNo, boolean active) {
 		this.cardNo=cardNo;
-		this.pin=pin;
+		this.pinNo = pinNo;
 		this.active=active;
 	}
 	public String getCardNo() {return cardNo;}
-	public String getPinNo() {return pin;}
+	public String getPinNo() {return pinNo;}
 	public boolean isActive() {return active;}
 	public void setCardNo(String cardNo) {
 		this.cardNo = cardNo;
 	}
-	public void setPinNo(String pin) {
-		this.pin = pin;
+	public void setPinNo(String pinNo) {
+		this.pinNo = pinNo;
 	}
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-    public String toString() {return "Card; No.: " + cardNo;}
+
+	@Override
+	public String toString() {
+		return "Card{" +
+				"cardNo='" + cardNo + '\'' +
+				", active=" + active +
+				'}';
+	}
 }

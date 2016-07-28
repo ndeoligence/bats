@@ -8,7 +8,7 @@ public class AccountHolder extends Person
     private String contactNo;
     Card card;
     ArrayList<Account> accounts;
-    
+
     public AccountHolder (String name, String surname, String idNo, String address, String contactNo) 
     {
         super (name, surname, idNo);
@@ -77,7 +77,7 @@ public class AccountHolder extends Person
     
 	public String toString ()
 	{
-		return "AccountHolder Details= \t" + super.toString() + address + "\t" + contactNo;
+		return "AccountHolder Details= \t" + super.toString() +"\taddress: "+ address + "\tcontactNo: " + contactNo;
 	}
     
 }

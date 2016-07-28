@@ -8,6 +8,8 @@ public class Account
 	private double maxWithdrawalPerDay;
 	private double maxTransferPerDay;
 	private int startDate;
+	private final double defaultMaxWithdrawalPerDay = 1000.00;
+	private final double defaultMaxTransferPerDay = 1000.00;
 	
 	public Account(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay)
 	{
@@ -17,6 +19,16 @@ public class Account
 		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
 		this.maxTransferPerDay = maxTransferPerDay;
 	}
+	
+	public Account(String accountNo, double balance, boolean active)
+	{
+		this.accountNo = accountNo;
+		this.balance = balance;
+		this.active = active;
+		this.maxWithdrawalPerDay = defaultMaxWithdrawalPerDay;
+		this.maxTransferPerDay = defaultMaxTransferPerDay;
+	}
+	
 	public String getAccountNo() {
 		return accountNo;
 	}
