@@ -30,6 +30,8 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 
+import com.innotec.bats.general.AccountHolder;
+
 
 public class UnblockAccount extends JPanel implements ActionListener
 {
@@ -42,7 +44,7 @@ public class UnblockAccount extends JPanel implements ActionListener
 	private UnblockAccConfirmation unblockAccConfirmation;
 	private JLabel lblBlocked;
 
-	public UnblockAccount(JPanel framePanel)
+	public UnblockAccount(JPanel framePanel, AccountHolder accountHolder)
 	{
 		framePanel.removeAll();
 		this.framePanel = framePanel;
@@ -196,6 +198,7 @@ public class UnblockAccount extends JPanel implements ActionListener
 			unblockAccConfirmation = new UnblockAccConfirmation();
 //			if()
 //			{
+				
 				lblBlocked.setText("Acc Open!");
 //			}
 		}

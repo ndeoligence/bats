@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
 
 public class AccountNumber_Teller extends JDialog implements ActionListener
@@ -33,6 +34,7 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 	private JLabel lblAccountNo;
 	private JTextField textField;
 	private JButton btnOk, button_1;
+    static String accountNo;
 
 	/**
 	 * Launch the application.
@@ -114,6 +116,8 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 		Object source = acEvent.getSource();
 		if(source == btnOk)
 		{
+			accountNo = textField.getText();
+			//accholder = retrieveaccholderbyaccno(aacNo)
 			this.dispose();
 		}
 		if(source == button_1)
@@ -121,4 +125,9 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 			this.dispose();
 		}
 	}
+	
+//	public String getAccNo()
+//	{
+//		return accountNo;
+//	}
 }
