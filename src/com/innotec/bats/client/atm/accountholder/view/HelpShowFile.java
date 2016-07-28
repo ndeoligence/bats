@@ -7,16 +7,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.border.*;
 
+import com.innotec.bats.general.AccountHolder;
+
 
 public class HelpShowFile extends JPanel implements ActionListener
 {
 	private JPanel framePanel;
 	private JButton button;
+	private AccountHolder accountHolder;
 
-public HelpShowFile (JPanel framePanel, ImageIcon imageIcon)
+public HelpShowFile (JPanel framePanel, ImageIcon imageIcon, AccountHolder accountHolder)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
+	
+	this.accountHolder = accountHolder;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -95,7 +100,7 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == button)
 	{
-		new HelpChooseTopic(framePanel);
+		new HelpChooseTopic(framePanel, accountHolder);
 	}
 }
 }

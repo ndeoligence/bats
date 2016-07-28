@@ -1,39 +1,52 @@
 package com.innotec.bats.server.control;
 
-import com.innotec.bats.general.*;
-import com.innotec.bats.general.Action;
-import com.innotec.bats.server.model.SessionTerminationException;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.innotec.bats.general.*;
+import com.innotec.bats.server.dao.BankDAO;
+import com.innotec.bats.server.dao.BankDAO_Impl;
+import com.innotec.bats.server.model.SessionTerminationException;
 
 public class Server
 {
 	/* Static variables */
 	private static final int SERVER_PORT_NR = 13700;
-	private static final int MAX_THREADS = 3000;
 	/* Member variables */
 	private ServerSocket serverSocket;
 	private List<ClientHandler> clientHandlers;
+	private BankDAO dao;
 
-	/* Methods */
+	/* ctor */
 	public Server () throws IOException
 	{
 		clientHandlers = new ArrayList<>();
 		/* connect to dbms */
+		try
+		{
+			dao = new BankDAO_Impl();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error connecting to the DAO!!" + "");
+		}
 		/* server socket */
 		serverSocket = new ServerSocket(SERVER_PORT_NR);
 	}
 
-	public Socket newClientSocket () throws IOException
+	/* Methods */
+	public ClientHandler newClientHandler () throws IOException
 	{
-		return serverSocket.accept();
+		ClientHandler handler = new ClientHandler(serverSocket.accept());
+		clientHandlers.add(handler);
+		System.out.println("Connected to " + handler.socket.getLocalAddress());
+		return handler;
 	}
 
 	/* Nested classes */
@@ -58,10 +71,8 @@ public class Server
 			}
 			catch (IOException e)
 			{
-				JOptionPane.showMessageDialog(null,
-						"Error while trying to connect I/O streams.",
-						"Client/Server Communication Error",
-						JOptionPane.ERROR_MESSAGE);
+				System.err
+						.println("Error while trying to connect I/O streams.");
 				e.printStackTrace();
 			}
 			/* handle individual connection */
@@ -71,7 +82,7 @@ public class Server
 				while (true)
 				{
 					object = ins.readObject();
-					processAction((Action)object);
+					processAction((Action) object);
 				}
 			}
 			catch (IOException e)
@@ -92,6 +103,22 @@ public class Server
 
 		void processAction (Action action) throws SessionTerminationException
 		{
+			if (action == null)
+			{ // make sure action isn't null
+				System.err
+						.println("Null action received.\n\tWrite back 'Null' and retry...");
+				try
+				{
+					Object obj = null;
+					outs.writeObject(obj);
+				}
+				catch (IOException e)
+				{
+					System.err.println("Error writing back Null");
+					e.printStackTrace();
+				}
+				return;
+			}
 			/* First check for session termination first */
 			if (action instanceof SessionTermination)
 			{
@@ -99,13 +126,13 @@ public class Server
 				if (terminateSession())
 				{
 					System.out.println("Success!");
-					System.exit(0);
 				}
 				else
 				{
 					System.out.println("Failed.");
 				}
-				throw new SessionTerminationException("");
+				throw new SessionTerminationException(
+						"session termination failure");
 			}
 			/* Then check for other actions */
 			// Action: Card Retrieve
@@ -114,16 +141,63 @@ public class Server
 				processCardRetrieval((CardRetrieval) action);
 			}
 			else
-				if (action instanceof TellerAction)
+				if (action instanceof AccountRetrieval)
 				{
-					processTellerAction((TellerAction) action);
+					//processAccountRetrieval((AccountRetrieval) action);
 				}
 				else
-				{
-					System.out.println("Unimplemented action handler: "
-							+ action);
-				}
+					if (action instanceof TellerAction)
+					{
+						processTellerAction((TellerAction) action);
+					}
+					else
+					{
+						System.out.println("Unimplemented action handler: "
+								+ action);
+					}
 		}
+
+//		private void processAccountRetrieval (AccountRetrieval action)
+//		{
+//			List<Account> accounts;
+//			if (action instanceof AccountRetrievalByAccountNo)
+//			{
+//				accounts = new ArrayList<>();
+//				accounts.add(dao
+//						.getAccount(((AccountRetrievalByAccountNo) action)
+//								.getAccountNo()));
+//			}
+//			else
+//				if (action instanceof AccountRetrievalByIdNo)
+//				{
+//					accounts = (dao
+//							.getAccountsByIdNo(((AccountRetrievalByIdNo) action)
+//									.getIdNo()));
+//				}
+//				else
+//					if (action instanceof AccountRetrievalByCardNo)
+//					{
+//						accounts = (dao
+//								.getAccountsByCardNo(((AccountRetrievalByCardNo) action)
+//										.getCardNo()));
+//					}
+//					else
+//					{
+//						System.err
+//								.println("ClientHandler::processAccountRetrieval() >> Unrecognized AccountRetrieval sub-action"
+//										+ "\n\tWill return empty list");
+//						accounts = new ArrayList<>();
+//					}
+//
+//			try
+//			{
+//				outs.writeObject(accounts);
+//			}
+//			catch (IOException e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
 
 		public boolean terminateSession ()
 		{
@@ -142,26 +216,25 @@ public class Server
 		void processCardRetrieval (CardRetrieval action)
 		{
 			Card card = null;
-			if (action.getCardNo().length() == AdminCard.CARD_NO_LEN)
-			{
-				card = new AdminCard(action.getCardNo(), "1234", true,
-						"12345678");
+			String cardNo = action.getCardNo();
+			System.out.println("ClientHandler::processCardRetrieval (card#: "
+					+ cardNo + ")");
+
+			if (cardNo.length() == AdminCard.CARD_NO_LEN)
+			{ // admin card
+				card = dao.getAdminCard(cardNo);
 			}
 			else
-				if (action.getCardNo().length() == AdminCard.CARD_NO_LEN)	//Shouldn't this be Accountholder.CARD_NO_LENGTH ?
+				if (cardNo.length() == AccountHolderCard.CARD_NO_LEN)
 				{
-					String accountNumber = "";
-					card = new AccountHolderCard(action.getCardNo(), "1234",
-							true);
-					((AccountHolderCard) card).addAccountNo(accountNumber);
+					card = dao.getAccountHolderCard(cardNo);
 				}
 				else
 				{
-					System.out
+					System.err
 							.println("Error: Received a card with an invalid length: "
-									+ action.getCardNo().length()
+									+ cardNo.length()
 									+ ".\nWill send 'null' back.");
-
 				}
 
 			try
@@ -189,17 +262,6 @@ public class Server
 			 * }
 			 */
 		}
-		/*
-		 * void processAtmAction(ATMAction action) { if (action instanceof
-		 * Transaction) { if (action instanceof
-		 * innotec.bats.general_code.Withdrawal) {
-		 * System.out.println("Processing withdrawal..."); } else if (action
-		 * instanceof Deposit) { System.out.println("Processing deposit..."); }
-		 * else if (action instanceof Transfer) {
-		 * System.out.println("Processing transfer..."); } } else {
-		 * 
-		 * } }
-		 */
 	}
 
 	/* Main method */
@@ -211,20 +273,18 @@ public class Server
 			System.out.println("Server started.");
 			while (true)
 			{
-				(server.new ClientHandler(server.newClientSocket())).start();
+				System.out.println("Waiting for connection...");
+				(server.newClientHandler()).start();
+				System.out.println("New client found!");
 			}
 		}
 		catch (IOException e)
 		{
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"Error starting server up and listening for connections.\nTry restarting the program",
-							"Server Startup Error", JOptionPane.ERROR_MESSAGE);
+			System.err
+					.println("Error starting server up and listening for connections.\nTry restarting the program");
 			e.printStackTrace();
-			// System.exit(1); because the server stops anyways.
+			System.out.println("Server is stopping.");
+			System.exit(1);
 		}
-
-		System.out.println("Server Stopped.");
 	}
 }

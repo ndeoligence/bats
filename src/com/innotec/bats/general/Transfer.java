@@ -2,25 +2,25 @@ package com.innotec.bats.general;
 
 public class Transfer extends Transaction
 {
-	private String SecondaryAccountNumber;
+	private String SecondaryAccountNo;
     private final double MIN_AMOUNT = 100.00;
     private double transferAmount = 0.00;
     
-    public Transfer(String secondaryAccountNumber,double transferAmount, String primaryAccountNo)
+    public Transfer(String primaryAccountNo, String secondaryAccountNo, double transferAmount)
     {
     	super(primaryAccountNo, transferAmount);
-    	this.SecondaryAccountNumber = secondaryAccountNumber;
+    	this.SecondaryAccountNo = secondaryAccountNo;
     	this.transferAmount = transferAmount;
     	this.transferIsNotLessThanMinAmount();
     }
 	
     public String getSecondaryAccountNumber()
 	{
-		return SecondaryAccountNumber;
+		return SecondaryAccountNo;
 	}
 	public void setSecondaryAccountNumber(String secondaryAccountNumber)
 	{
-		SecondaryAccountNumber = secondaryAccountNumber;
+		SecondaryAccountNo = secondaryAccountNumber;
 	}
     
     public boolean transferIsNotLessThanMinAmount()
@@ -37,7 +37,7 @@ public class Transfer extends Transaction
 
 	public String toString()
 	{
-		return "Transfer [SecondaryAccountNumber=" + SecondaryAccountNumber
+		return "Transfer [SecondaryAccountNumber=" + SecondaryAccountNo
 				+ ", MIN_AMOUNT=" + MIN_AMOUNT + ", transferAmount="
 				+ transferAmount + "]";
 	}

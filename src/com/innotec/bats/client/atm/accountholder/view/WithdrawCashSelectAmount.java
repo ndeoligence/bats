@@ -9,6 +9,7 @@ import javax.swing.border.*;
 
 import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
 import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
+import com.innotec.bats.general.Action;
 import com.innotec.bats.general.AccountHolder;
 import com.innotec.bats.general.AccountHolderRetrievalByAccountNo;
 import com.innotec.bats.general.SessionTermination;
@@ -20,15 +21,17 @@ public class WithdrawCashSelectAmount extends JPanel implements ActionListener
 	private AccountHolder accountHolder;
 	private String accountNo;
 	private JButton btnR100, btnR200, btnR300, btnR500, btnR1000, btnCancel, btnHelp, btnOtherAmount;
+	private Action action;
 	private boolean waitingPeriod;
 
-public WithdrawCashSelectAmount (JPanel framePanel, AccountHolder accountholder, String accountNo, boolean waitingPeriod)
+public WithdrawCashSelectAmount (JPanel framePanel, AccountHolder accountholder, Action action, boolean waitingPeriod)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
 	
 	this.accountHolder = accountholder;
-	this.accountNo = accountNo;
+	this.action = action;
+//	this.accountNo = accountNo;
 	this.waitingPeriod = waitingPeriod;
 	
 	setBackground(SystemColor.inactiveCaption);
@@ -218,8 +221,8 @@ public void executeWithdrawal (Withdrawal withdrawal)
 	if (withdrawalSuccesful)
 	{
 		System.out.println("Withdrawal successfully processed: " + withdrawal.toString());
-		JOptionPane.showMessageDialog(null, "Withdrawal successfully processed.", "Status", JOptionPane.INFORMATION_MESSAGE);
-		
+		JOptionPane.showMessageDialog(null, "Thank you - please collect your cash", "Transaction Complete", JOptionPane.INFORMATION_MESSAGE);
+		//Call DNR_Manager methods
 		
 		if (JOptionPane.showInternalConfirmDialog(null, "Would you like to do another transaction?", "Transaction complete", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 		{

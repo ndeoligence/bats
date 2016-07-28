@@ -139,9 +139,17 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnOK)
 	{
-		Withdrawal withdrawal = new Withdrawal (accountNo, 1000.00, waitingPeriod);
-		System.out.println("Withdrawal object created: " + withdrawal.toString());
-		this.executeWithdrawal(withdrawal);
+		double enteredAmount = Double.parseDouble(textField.getText());
+		if (enteredAmount%10!=0)
+		{
+			JOptionPane.showMessageDialog(null, "The amount you have entered is invalid. Please enter an amount in increments of ten.", "Invalid amount", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+		{
+			Withdrawal withdrawal = new Withdrawal (accountNo, enteredAmount, waitingPeriod);
+			System.out.println("Withdrawal object created: " + withdrawal.toString());
+			this.executeWithdrawal(withdrawal);
+		}
 	}
 }
 
@@ -153,7 +161,7 @@ public void executeWithdrawal (Withdrawal withdrawal)
 	{
 		System.out.println("Withdrawal successfully processed: " + withdrawal.toString());
 		JOptionPane.showMessageDialog(null, "Withdrawal successfully processed.", "Status", JOptionPane.INFORMATION_MESSAGE);
-		
+		//DNR_Manager methods
 		
 		if (JOptionPane.showInternalConfirmDialog(null, "Would you like to do another transaction?", "Transaction complete", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 		{

@@ -9,12 +9,19 @@ import java.util.Date;
 
 import javax.swing.border.*;
 
-import com.innotec.bats.general.Account;
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
+import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
+import com.innotec.bats.general.Action;
+import com.innotec.bats.general.*;
 import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.AccountHolderRetrievalByAccountNo;
 import com.innotec.bats.general.CurrentAccount;
 import com.innotec.bats.general.SavingsAccount;
+import com.innotec.bats.general.SessionTermination;
+import com.innotec.bats.general.Transaction;
+import com.innotec.bats.general.Withdrawal;
 
-public class WithdrawCashSelectAccount extends JPanel implements ActionListener
+public class SelectAccount extends JPanel implements ActionListener
 {
 	private JPanel framePanel;
 	private AccountHolder accountHolder;
@@ -23,12 +30,14 @@ public class WithdrawCashSelectAccount extends JPanel implements ActionListener
 	private JButton btnSavingsAccount, btnCurrentAccount, btnHelp, btnCancel;
 	private CurrentAccount currentAccount;
 	private SavingsAccount savingsAccount;
+	private Action action;
 
-public WithdrawCashSelectAccount (JPanel framePanel, AccountHolder accountHolder)
+public SelectAccount (JPanel framePanel, AccountHolder accountHolder, Action action, String actionWord)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
 	
+	this.action = action;
 	this.accountHolder = accountHolder;
 	this.accounts = accountHolder.getAccounts();
 	
@@ -154,7 +163,7 @@ public WithdrawCashSelectAccount (JPanel framePanel, AccountHolder accountHolder
 	panel_2.add(btnCancel);
 	btnCancel.addActionListener(this);
 	
-	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to withdraw from:");
+	JLabel lblWhatWouldYou = new JLabel("Select the account for " + actionWord + " :");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 110, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
@@ -171,8 +180,40 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnCurrentAccount)
 	{
-		new WithdrawCashSelectAmount(framePanel, accountHolder, currentAccount.getAccountNo(), false);
-		System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+		if (action instanceof Withdrawal)
+		{
+			((Withdrawal)action).setPrimAccountNo(currentAccount.getAccountNo());
+			new WithdrawCashSelectAmount(framePanel, accountHolder, action, false);
+			System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+		}
+		
+		if (action instanceof Deposit)
+		{
+			((Deposit)action).setPrimAccountNo(currentAccount.getAccountNo());
+			new WithdrawCashSelectAmount(framePanel, accountHolder, action, false);
+			System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+		}
+		
+		if (action instanceof Transfer)
+		{
+			if ((((Transfer) action).getPrimAccountNo() == null) || (((Transfer) action).getPrimAccountNo() == ""))
+			{
+				((Transfer)action).setPrimAccountNo(currentAccount.getAccountNo());
+				new SelectAccount(framePanel, accountHolder, action, "transfer TO");
+				System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+			}
+			else
+			{
+				((Transfer)action).setSecondaryAccountNumber(currentAccount.getAccountNo());
+				new WithdrawCashSelectAmount(framePanel, accountHolder, action, false);
+				System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+			}
+		}
+		
+		if (action instanceof ViewBalance)
+		{
+			
+		}
 	}
 	
 	if (source == btnSavingsAccount)
@@ -181,7 +222,24 @@ public void actionPerformed (ActionEvent ae)
 		{
 			if (savingsAccount.getFundsAvailableDate().after(new Date()))
 			{
-				JOptionPane.showMessageDialog(null, "You already have a withdrawal pending on this account. The funds will be available on " + savingsAccount.getFundsAvailableDate());
+				JOptionPane.showMessageDialog(null, "You already have a withdrawal pending on this account. The amount of " + savingsAccount.getPendingWithdrawalAmount() + " will be available on " + savingsAccount.getFundsAvailableDate());
+			}
+			else
+			{
+				if (JOptionPane.showInternalConfirmDialog(null, "You have R" + savingsAccount.getPendingWithdrawalAmount() + " available for withdrawal. Would you like to withdraw this amount now?", "Confirm Withdraw", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+				{
+					if (this.executeWithdrawal(new Withdrawal(savingsAccount.getAccountNo(), savingsAccount.getPendingWithdrawalAmount(), true)))
+					{
+						//Call DNRManager methods
+						
+					}
+					
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "You will be returned to the main menu");
+					new ATMAccountHolderMainMenu(framePanel, accountHolder);
+				}
 			}
 		}
 		else
@@ -193,7 +251,7 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnHelp)
 	{
-		new HelpShowFile(framePanel, new ImageIcon("resources/Help File Withdrawal.jpg"));
+		new HelpShowFile(framePanel, new ImageIcon("resources/Help File Withdrawal.jpg"), accountHolder);
 	}
 	
 	if (source == btnCancel)
@@ -202,4 +260,30 @@ public void actionPerformed (ActionEvent ae)
 	}
 }
 
+public boolean executeWithdrawal (Withdrawal withdrawal)
+{
+	boolean withdrawalSuccesful = ATMApplication.serverComm.sendWithdrawal(withdrawal);
+	
+	if (withdrawalSuccesful)
+	{
+		System.out.println("Withdrawal successfully processed: " + withdrawal.toString());
+		JOptionPane.showMessageDialog(null, "Thank you - please collect your cash", "Transaction Complete", JOptionPane.INFORMATION_MESSAGE);
+		//DNR_Manager methods
+		
+		if (JOptionPane.showInternalConfirmDialog(null, "Would you like to do another transaction?", "Transaction Complete", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+		{
+			accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByAccountNo(new AccountHolderRetrievalByAccountNo(withdrawal.getPrimAccountNo()));
+			new ATMAccountHolderMainMenu(framePanel, accountHolder);
+		}
+		else
+		{
+			SessionTermination sessionTermination = new SessionTermination();
+			new ATMUserLogout(sessionTermination);
+			framePanel.removeAll();
+			new ATMWelcomeScreen(framePanel);
+		}
+		return true;
+	}
+	return false;
+}
 }
