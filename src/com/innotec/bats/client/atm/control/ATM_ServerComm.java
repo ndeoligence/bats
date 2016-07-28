@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -21,6 +22,7 @@ public class ATM_ServerComm
 	private Object serverObject = null;
 	private AccountHolder accountHolder;
 	private final String ATM_ID, ATM_Password;
+	private ArrayList statement;
 	
 	//method takes in cardRetrieval object & sends to server
 	//method receives object from server & casts it to card be a object
@@ -133,6 +135,23 @@ public class ATM_ServerComm
 			boolean tf = false;
 			return tf;
 		}		
+	}
+	
+	public ArrayList sendStatementRetrieval(StatementRetrieval statementRetrieval)
+	{
+		try
+		{
+			oos.writeObject(statementRetrieval);
+			oos.flush();
+			statement = (ArrayList)this.getServerObject();
+			return statement;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			statement = null;
+			return statement;
+		}
 	}
 	
 	public boolean sendCardDeactivation (CardDeactivation cardDeactivation)

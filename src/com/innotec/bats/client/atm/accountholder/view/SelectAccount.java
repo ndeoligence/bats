@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.border.*;
@@ -13,13 +14,6 @@ import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
 import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
 import com.innotec.bats.general.Action;
 import com.innotec.bats.general.*;
-import com.innotec.bats.general.AccountHolder;
-import com.innotec.bats.general.AccountHolderRetrievalByAccountNo;
-import com.innotec.bats.general.CurrentAccount;
-import com.innotec.bats.general.SavingsAccount;
-import com.innotec.bats.general.SessionTermination;
-import com.innotec.bats.general.Transaction;
-import com.innotec.bats.general.Withdrawal;
 
 public class SelectAccount extends JPanel implements ActionListener
 {
@@ -31,6 +25,7 @@ public class SelectAccount extends JPanel implements ActionListener
 	private CurrentAccount currentAccount;
 	private SavingsAccount savingsAccount;
 	private Action action;
+	private Account account;
 
 public SelectAccount (JPanel framePanel, AccountHolder accountHolder, Action action, String actionWord)
 {
@@ -180,74 +175,121 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnCurrentAccount)
 	{
+		account = currentAccount;
+		
 		if (action instanceof Withdrawal)
 		{
-			((Withdrawal)action).setPrimAccountNo(currentAccount.getAccountNo());
-			new WithdrawCashSelectAmount(framePanel, accountHolder, action, false);
-			System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+			((Withdrawal)action).setPrimAccountNo(account.getAccountNo());
+			this.executeCurrentAccountWithdrawal((Withdrawal)action);
 		}
 		
 		if (action instanceof Deposit)
 		{
-			((Deposit)action).setPrimAccountNo(currentAccount.getAccountNo());
-			new WithdrawCashSelectAmount(framePanel, accountHolder, action, false);
-			System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+			((Deposit)action).setPrimAccountNo(account.getAccountNo());
+			this.executeDeposit((Deposit)action);
 		}
 		
 		if (action instanceof Transfer)
 		{
+			
 			if ((((Transfer) action).getPrimAccountNo() == null) || (((Transfer) action).getPrimAccountNo() == ""))
 			{
-				((Transfer)action).setPrimAccountNo(currentAccount.getAccountNo());
-				new SelectAccount(framePanel, accountHolder, action, "transfer TO");
-				System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+				((Transfer)action).setPrimAccountNo(account.getAccountNo());
+				this.executeTransferPrimary((Transfer)action);
 			}
 			else
 			{
-				((Transfer)action).setSecondaryAccountNumber(currentAccount.getAccountNo());
-				new WithdrawCashSelectAmount(framePanel, accountHolder, action, false);
-				System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+				((Transfer)action).setSecondaryAccountNumber(account.getAccountNo());
+				this.executeTransferSecondary((Transfer)action);
 			}
 		}
 		
 		if (action instanceof ViewBalance)
 		{
+			this.executeViewBalance();
+		}
+		
+		if (action instanceof ViewStatement)
+		{
+			((ViewStatement)action).setAccountNo(account.getAccountNo());
+			this.executeViewStatement((StatementRetrieval)action);
 			
 		}
 	}
 	
 	if (source == btnSavingsAccount)
 	{
-		if (savingsAccount.getWithdrawalPending())
+		account = savingsAccount;
+		
+		if (action instanceof Withdrawal)
 		{
-			if (savingsAccount.getFundsAvailableDate().after(new Date()))
+			if (savingsAccount.getWithdrawalPending()) 		//To see if there is already a pending withdrawal
 			{
-				JOptionPane.showMessageDialog(null, "You already have a withdrawal pending on this account. The amount of " + savingsAccount.getPendingWithdrawalAmount() + " will be available on " + savingsAccount.getFundsAvailableDate());
+				if (savingsAccount.getFundsAvailableDate().after(new Date()))		 //Returns true if the funds are not yet available
+				{
+					JOptionPane.showMessageDialog(null, "You already have a withdrawal pending on this account. The amount of " + savingsAccount.getPendingWithdrawalAmount() + " will be available on " + savingsAccount.getFundsAvailableDate());
+				}
+				else		 //There is a withdrawal pending and the funds are already available
+				{
+					if (JOptionPane.showInternalConfirmDialog(null, "You have R" + savingsAccount.getPendingWithdrawalAmount() + " available for withdrawal. Would you like to withdraw this amount now?", "Confirm Withdraw", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+					{
+						if (this.executeSavingsAccountWithdrawal((Withdrawal)action)) 		//Successful withdrawal - transaction sent to server
+						{
+							//Call DNRManager methods
+							
+						}
+						
+					}
+					else 		//User chose not to draw funds now
+					{
+						JOptionPane.showMessageDialog(null, "You will be returned to the main menu");
+						new ATMAccountHolderMainMenu(framePanel, accountHolder);
+					}
+				}
+			}
+			else		//There is no withdrawal pending
+			{
+				Withdrawal withdrawal = new Withdrawal(account.getAccountNo(), 0.0, true);
+				new WithdrawCashSelectAmount(framePanel, accountHolder, withdrawal, true);
+				System.out.println("Withdrawal started. Account: " + savingsAccount.toString());
+			}
+		}
+		
+		if (action instanceof Deposit)
+		{
+			((Deposit)action).setPrimAccountNo(currentAccount.getAccountNo());
+			this.executeDeposit((Deposit)action);
+		}
+		
+		if (action instanceof Transfer)
+		{
+			
+			if ((((Transfer) action).getPrimAccountNo() == null) || (((Transfer) action).getPrimAccountNo() == ""))
+			{
+				((Transfer)action).setPrimAccountNo(account.getAccountNo());
+				this.executeTransferPrimary((Transfer)action);
 			}
 			else
 			{
-				if (JOptionPane.showInternalConfirmDialog(null, "You have R" + savingsAccount.getPendingWithdrawalAmount() + " available for withdrawal. Would you like to withdraw this amount now?", "Confirm Withdraw", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-				{
-					if (this.executeWithdrawal(new Withdrawal(savingsAccount.getAccountNo(), savingsAccount.getPendingWithdrawalAmount(), true)))
-					{
-						//Call DNRManager methods
-						
-					}
-					
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null, "You will be returned to the main menu");
-					new ATMAccountHolderMainMenu(framePanel, accountHolder);
-				}
+				((Transfer)action).setSecondaryAccountNumber(currentAccount.getAccountNo());
+				this.executeTransferSecondary((Transfer)action);
 			}
 		}
-		else
+		
+		if (action instanceof ViewBalance)
 		{
-			new WithdrawCashSelectAmount(framePanel, accountHolder, savingsAccount.getAccountNo(), true);
-			System.out.println("Withdrawal started. Account: " + savingsAccount.toString());
+			this.executeViewBalance();
 		}
+		
+		if (action instanceof ViewStatement)
+		{
+			((ViewStatement)action).setAccountNo(currentAccount.getAccountNo());
+			this.executeViewStatement(new StatementRetrieval(account.getAccountNo()));
+				
+		}
+		
 	}
+	
 	
 	if (source == btnHelp)
 	{
@@ -260,14 +302,23 @@ public void actionPerformed (ActionEvent ae)
 	}
 }
 
-public boolean executeWithdrawal (Withdrawal withdrawal)
+public boolean executeCurrentAccountWithdrawal(Withdrawal withdrawal)
+{
+	new WithdrawCashSelectAmount(framePanel, accountHolder, withdrawal, false);
+	System.out.println("Withdrawal started. Account: " + account.toString());
+	return true;
+}
+
+public boolean executeSavingsAccountWithdrawal (Withdrawal withdrawal)
 {
 	boolean withdrawalSuccesful = ATMApplication.serverComm.sendWithdrawal(withdrawal);
 	
 	if (withdrawalSuccesful)
 	{
 		System.out.println("Withdrawal successfully processed: " + withdrawal.toString());
-		JOptionPane.showMessageDialog(null, "Thank you - please collect your cash", "Transaction Complete", JOptionPane.INFORMATION_MESSAGE);
+		Calendar calender = Calendar.getInstance();
+		calender.add(Calendar.DATE, 32);
+		JOptionPane.showMessageDialog(null, "Request processed - your funds will be available on " + calender, "Request Processed", JOptionPane.INFORMATION_MESSAGE);
 		//DNR_Manager methods
 		
 		if (JOptionPane.showInternalConfirmDialog(null, "Would you like to do another transaction?", "Transaction Complete", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
@@ -286,4 +337,42 @@ public boolean executeWithdrawal (Withdrawal withdrawal)
 	}
 	return false;
 }
+
+public boolean executeDeposit(Deposit deposit)
+{
+	new WithdrawCashSelectAmount(framePanel, accountHolder, deposit, false);
+	System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+	return true;
+}
+
+public boolean executeTransferPrimary (Transfer transfer)
+{
+	transfer.setPrimAccountNo(currentAccount.getAccountNo());
+	new SelectAccount(framePanel, accountHolder, transfer, "transfer TO");
+	System.out.println("Withdrawal started. Account: " + account.toString());
+	return true;
+}
+
+public boolean executeTransferSecondary (Transfer transfer)
+{
+	new WithdrawCashSelectAmount(framePanel, accountHolder, transfer, false);
+	System.out.println("Withdrawal started. Account: " + account.toString());
+	return true;
+}
+
+public boolean executeViewBalance()
+{
+	new ViewShowAccountBalance(framePanel, accountHolder, account.getBalance());
+	return true;
+}
+
+public boolean executeViewStatement(StatementRetrieval statementRetrieval)
+{
+	ArrayList<Transaction>statement = ATMApplication.serverComm.sendStatementRetrieval(statementRetrieval);
+	new ViewShowAccountStatement(framePanel, accountHolder, statement);
+	return true;
+}
+
+
+
 }

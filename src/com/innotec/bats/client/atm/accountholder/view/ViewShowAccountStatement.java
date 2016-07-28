@@ -2,15 +2,18 @@ package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import javax.swing.border.*;
+
+import com.innotec.bats.general.AccountHolder;
 
 
 public class ViewShowAccountStatement extends JPanel
 {
 	private JPanel framePanel;
 
-public ViewShowAccountStatement (JPanel framePanel)
+public ViewShowAccountStatement (JPanel framePanel, AccountHolder accountHolder, ArrayList statement)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
