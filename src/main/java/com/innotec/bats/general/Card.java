@@ -26,5 +26,12 @@ public abstract class Card implements Serializable {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-    public String toString() {return "Card; No.: " + cardNo;}
+
+	@Override
+	public String toString() {
+		return "Card{" +
+				"cardNo='" + cardNo + '\'' +
+				", active=" + active +
+				'}';
+	}
 }

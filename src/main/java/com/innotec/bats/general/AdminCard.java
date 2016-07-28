@@ -14,4 +14,11 @@ public class AdminCard extends Card {
     public void setEmployeeNo(String employeeNo) {
         this.employeeNo = employeeNo;
     }
+
+    @Override
+    public String toString() {
+        return "AdminCard{" +
+                "employeeNo='" + employeeNo + '\'' +
+                '}';
+    }
 }

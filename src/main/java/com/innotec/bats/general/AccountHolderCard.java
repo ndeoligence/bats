@@ -1,8 +1,5 @@
 package com.innotec.bats.general;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by phoenix on 7/21/16.
  */
