@@ -1,4 +1,4 @@
-package com.innotec.bats.server.DAO;
+package com.innotec.bats.server.dao;
 
 import com.innotec.bats.general.ATMAdmin;
 import com.innotec.bats.general.Account;
@@ -542,4 +542,120 @@ public class DAO_Class implements DAO_Interface
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}
+		
+		return accounts;
+	}
+	@Override
+	public AccountHolder addAccountHolder(AccountHolder newHolder,
+			String tellerId) 
+	{
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_CURRENTACCOUNT);
+			pStmt.setString(1, newHolder.getIdNo());
+			pStmt.setString(2, newHolder.getName()+" "+newHolder.getSurname());
+			pStmt.setString(3, newHolder.getAddress());
+			pStmt.setString(4, newHolder.getContactNo());
+			pStmt.setString(5, tellerId);
+			pStmt.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+				return newHolder;
+	}
+	@Override
+	public AccountHolderCard addAccountHolderCard(AccountHolderCard newCard)
+	{
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_ACCOUNTHOLDERCARD);
+			pStmt.setString(1, newCard.getCardNo());
+			pStmt.setBoolean(3, newCard.isActive());
+			pStmt.setString(4, newCard.getPinNo());
+			pStmt.setString(5, newCard.getAccountHolderId());
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		return newCard;
+		
+	}
+	@Override
+	public Account addCurrentAccount(String accountHolderId,
+			CurrentAccount account) 
+	{
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_CURRENTACCOUNT);
+			pStmt.setString(1, account.getAccountNo());
+			pStmt.setString(2, "Current Account");
+			pStmt.setDouble(3, account.getBalance());
+			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+			pStmt.setDouble(5, account.getMaxTransferPerDay());
+			pStmt.setBoolean(6, account.isActive());
+			pStmt.setDate(7, null);
+			pStmt.setBoolean(8, (Boolean) null);
+			pStmt.setString(9, accountHolderId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+				return account;
+
+	}
+	@Override
+	public Account addSavingsAccount(String accountHolderId,
+			SavingsAccount account) {
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_CURRENTACCOUNT);
+			pStmt.setString(1, account.getAccountNo());
+			pStmt.setString(2, "Current Account");
+			pStmt.setDouble(3, account.getBalance());
+			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+			pStmt.setDouble(5, account.getMaxTransferPerDay());
+			pStmt.setBoolean(6, account.isActive());
+			pStmt.setDate(7, (Date) account.getDateFromStartOfNoticePeriod());
+			pStmt.setBoolean(8, account.getWithdrawalPending());
+			pStmt.setString(9, accountHolderId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+				return account;	}
+	@Override
+	public Account addCreditCardAccount(String accountHolderId,
+			CreditCardAccount account) {
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_CURRENTACCOUNT);
+			pStmt.setString(1, account.getAccountNo());
+			pStmt.setString(2, "Current Account");
+			pStmt.setDouble(3, account.getBalance());
+			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+			pStmt.setDouble(5, account.getMaxTransferPerDay());
+			pStmt.setBoolean(6, account.isActive());
+			pStmt.setDate(7, null);
+			pStmt.setBoolean(8, (Boolean) null);
+			pStmt.setString(9, accountHolderId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return account;
+		
+	}
+	@Override
+	public Teller addTeller(Teller newTeller) {
+		
+	}
+	@Override
+	public ATMAdmin addATMAdmin(ATMAdmin newAdmin) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public ATMAdmin getATMAdmin(String atmAdminId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Teller getTeller(String tellerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+}
