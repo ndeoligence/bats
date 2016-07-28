@@ -25,7 +25,7 @@ public class Server {
         clientHandlers = new ArrayList<>();
         /*connect to dbms*/
         try {
-            dao = new BankDAO_Impl();
+            dao = new DAO_Class();
         } catch (SQLException e) {
             System.err.println("Error connecting to the DAO!!" + "");
         }
