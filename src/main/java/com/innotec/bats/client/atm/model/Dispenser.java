@@ -7,16 +7,9 @@ import java.util.*;
  */
 public class Dispenser {
     /**
-     * The count of slots of different notes within the dispenser.
-     * Essentially a count of the different possible notes
-     * In the case of ZAR_Note,
-     * this just counts distinct notes from R10 to R200
+     * The number of each note initially. {@code reset()} uses this value to figure out how many of each note to reset to.
      */
-    // static public final int COUNT_SLOT = 5;
-    /**
-     * The number of each note initially. reset() uses this value to figure out how many of each note to reset to.
-     */
-    static private int COUNT_NOTES_DEF = 500;
+    private static int DEF_SLOT_SIZE = 500;
     /**
      * Contains pointers to the notes.
      */
@@ -33,21 +26,43 @@ public class Dispenser {
         reset();
     }
     private void reset() {
-        slots = new ArrayList<>(COUNT_SLOT);
-        for (int i = 0; i < COUNT_SLOT; ++i) {
-            slots.add(new ArrayList<ZAR_Note>(COUNT_NOTES_DEF));
+        slots = new ArrayList<>(notes.length);
+        for (int i = 0; i < slots.size(); ++i) {
+            slots.add(new ArrayList<ZAR_Note>(DEF_SLOT_SIZE));
+            for (int j = 0; j < DEF_SLOT_SIZE; ++j) {
+                slots.get(j).add(notes[j]);
+            }
         }
 
     }
-    public boolean dispense(double amount) {
+    public boolean dispense(double amount) { // takes care of user giving a double as argument
         if (amount == (int) amount)
             return dispense((int) amount);
         else throw new IllegalArgumentException("Invalid dispense amount");
     }
+
+    /**
+     * Simulates dispensing a specified amount to account holder.
+     * The method first does a check to make sure the amount is available.
+     * @param amount - the amount to be dispensed.
+     * @return {@code true} if the balance was successfully reduced by the specified amount.
+     * Otherwise {@code false} is returned.
+     */
     public boolean dispense(int amount) {
-        return false;
+        if (amount > getBalance())
+            return false;
+        int count;
+        for (int i = 0; amount > 0; ++i) {
+
+        }
+        return true;
     }
-    public double getBalance() {return 0.0;}
+    public double getBalance() {
+        double total = 0;
+        for (int i = 0; i < notes.length; ++i)
+            total += notes[i].getValue() * slots.get(i).size();
+        return total;
+    }
 
     private static class ZAR_Note implements Comparable{
         public static final int R10 = 10;
@@ -62,7 +77,7 @@ public class Dispenser {
             this.value = value;
         }
         public int getValue() {return value;}
-        public int[] getPossibleValues() {
+        public static int[] getPossibleValues() {
             return new int[] {R10,R20,R50,R100,R200};
         }
         @Override
@@ -79,5 +94,10 @@ public class Dispenser {
         }
         @Override
         public String toString() {return "R" + Integer.toString(value) + ".00";}
+    }
+
+    public static void main(String[] args) {
+        Dispenser disp = new Dispenser();
+        System.out.println("Dispenser bal = " + disp.getBalance());
     }
 }
