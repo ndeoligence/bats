@@ -5,15 +5,15 @@ import com.innotec.bats.general.*;
 
 public interface DAO_Interface
 {
-//	public void addAccountHolder(AccountHolder newHolder );
-//	public void addAccountHolderCard(AccountHolderCard newCard);
-//	public void addCurrentAccount(CurrentAccount newCurrentAccount);
-//	public void addEmployee(Employee newEmployee);
-//	public void addAdmin(AdminCard newAdmin);
-//	public void addTransaction(Transaction newTransaction);
+	
+	
+	public void addCurrentAccount(CurrentAccount newCurrentAccount);
+	public void addEmployee(Employee newEmployee);
+	public void addAdmin(AdminCard newAdmin);
+	public void addTransaction(Transaction newTransaction);
 ////	public void addATM(ATM newATM);
-//	public void addSavingsAccount(SavingsAccount newSavingsAccount);
-//	public void addCreditCardAccount(CreditCardAccount newCreditCardAccount);
+	public void addSavingsAccount(SavingsAccount newSavingsAccount);
+	public void addCreditCardAccount(CreditCardAccount newCreditCardAccount);
 //	
 //	
 //	public Employee getEmployee(String employeeID);
@@ -27,17 +27,29 @@ public interface DAO_Interface
 //	public boolean updateAccountActivity(boolean activity, String accountNo);
 	
 	/*get account holder*/
-	public AccountHolder getAccountHolderByCardNo(String cardNo);			//3
-	public AccountHolder getAccountHolderByidNo(String idNo);				//4
+	public AccountHolder getAccountHolderByCardNo(String cardNo);
+	public AccountHolder getAccountHolderByidNo(String idNo);
 	/*get cards*/
-	public AccountHolderCard getAccountHolderCardByCardNo(String cardNo);	//1
+	public AccountHolderCard getAccountHolderCardByCardNo(String cardNo);
 	public AccountHolderCard getAccountHolderCardByIdNo(String idNo);		
 	public AdminCard getAdminCardById(String idNo);
-	public AdminCard getAdminCardByCardNo(String cardNo);					//2
+	public AdminCard getAdminCardByCardNo(String cardNo);
 	/*get accounts*/
 	public CreditCardAccount getCreditCardAccount(String accountHolderIdNo);
 	public CurrentAccount getCurrentAccount(String accountHolderIdNo);
 	public SavingsAccount getSavingsAccount(String accountHolderIdNo);
 	public List<Account> getAccounts(String accountHolderIdNo);
-	
+	/*Adder methods*/
+	//teller
+	public AccountHolder addAccountHolder(AccountHolder newHolder, String tellerId);		//1	
+	public AccountHolderCard addAccountHolderCard(AccountHolderCard newCard);
+	public Account addCurrentAccount(String accountHolderId, CurrentAccount account);		//2
+	public Account addSavingsAccount(String accountHolderId, SavingsAccount account);		//3
+	public Account addCreditCardAccount(String accountHolderId, CreditCardAccount account);	//extra
+	//server
+	public Teller addTeller(Teller newTeller);												//4
+	public ATMAdmin addATMAdmin(ATMAdmin newAdmin);											//5
+	/*getter methods*/ // very low priority
+	public ATMAdmin getATMAdmin(String atmAdminId);
+	public Teller getTeller(String tellerId);
 }
