@@ -1,4 +1,4 @@
-package innotec.bats.server.dao;
+package com.innotec.bats.server.DAO;
 
 
 import java.io.FileInputStream;
@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Vector;
