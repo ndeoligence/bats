@@ -1,27 +1,23 @@
 package com.innotec.bats.server.dao;
 
-import java.util.ArrayList;
+import java.util.List;
 import com.innotec.bats.general.*;
 
 public interface DAO_Interface
 {
-	void addAccountHolder(AccountHolder newHolder);
-	void addAccountHolderCard(AccountHolderCard newCard);
-	void addCurrentAccount(CurrentAccount newCurrentAccount);
-	void addEmployee(Employee newEmployee);
-	void addAdmin(AdminCard newAdmin);
-	void addTransaction(Transaction newTransaction);
-	void addSavingsAccount(SavingsAccount newSavingsAccount);
-	void addCreditCardAccount(CreditCardAccount newCreditCardAccount);
-	AccountHolder getAccountHolder(String cardNo);
-	ArrayList<CreditCardAccount> getCreditCardAccounts(String cardNo);
-	Card getCard(String cardNo);
-	Employee getEmployee(String employeeID);
-	AdminCard getAdmin(String adminID);
-	Transaction getTransactionForAccount(String accountID);
-	boolean updateCardActivity(boolean cardActivity, String cardNo);
-	boolean changePIN(String newPIN, String cardNo);
-	boolean updateAccountActivity(boolean activity, String accountNo);
-	ArrayList<CurrentAccount> getCurrentAccount(String cardNo);
-	ArrayList<SavingsAccount> getSavingsAccount(String cardNo);
+	/*get account holder*/
+	AccountHolder getAccountHolderByCardNo(String cardNo);			//3
+	AccountHolder getAccountHolderByidNo(String idNo);				//4
+
+	/*get cards*/
+	AccountHolderCard getAccountHolderCardByCardNo(String cardNo);	//1
+	AccountHolderCard getAccountHolderCardByIdNo(String idNo);
+	AdminCard getAdminCardById(String idNo);
+	AdminCard getAdminCardByCardNo(String cardNo);					//2
+
+	/*get accounts*/
+	CreditCardAccount getCreditCardAccount(String accountHolderIdNo);
+	CurrentAccount getCurrentAccount(String accountHolderIdNo);
+	SavingsAccount getSavingsAccount(String accountHolderIdNo);
+	List<Account> getAccounts(String accountHolderIdNo);
 }
