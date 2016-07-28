@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.innotec.bats.general.*;
-import com.innotec.bats.server.dao.BankDAO;
-import com.innotec.bats.server.dao.BankDAO_Impl;
+import com.innotec.bats.server.dao.*;
 import com.innotec.bats.server.model.SessionTerminationException;
 
 public class Server {
@@ -20,7 +19,7 @@ public class Server {
     /*Member variables*/
     private ServerSocket serverSocket;
     private List<ClientHandler> clientHandlers;
-    private BankDAO dao;
+    private DAO_Interface dao;
     /*ctor*/
     public Server() throws IOException {
         clientHandlers = new ArrayList<>();
