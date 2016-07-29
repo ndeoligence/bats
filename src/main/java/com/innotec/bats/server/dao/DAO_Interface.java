@@ -8,6 +8,7 @@ public interface DAO_Interface
 	/*get account holder*/
 	AccountHolder getAccountHolderByCardNo(String cardNo);			//3
 	AccountHolder getAccountHolderByidNo(String idNo);				//4
+	AccountHolder getAccountHolderByAccountNo(String accountNo);	// new
 
 	/*get cards*/
 	AccountHolderCard getAccountHolderCardByCardNo(String cardNo);	//1
