@@ -1,7 +1,6 @@
 package com.innotec.bats.client.atm.model;
 
-import javax.swing.JOptionPane; // for testing (main)
-import java.util.Stack;
+import javax.swing.*;
 
 /**
  * Created by phoenix on 7/18/16.
@@ -75,17 +74,17 @@ public class Dispenser {
             int multiples = amount/curNoteValue;
             if (curNoteCount < multiples)
                 multiples = curNoteCount;
-            int rem = dispense(amount-curNoteValue*multiples,startIndex-1, stack);
+            int rem = dispense(amount-curNoteValue*multiples,startIndex-1, record);
             if (rem==0) {
                 notesCount[startIndex] -= multiples;
-                stack.push(""+multiples+"*R"+notesValues[startIndex]);
+                record[startIndex] = multiples;
                 return 0;
             } else {
                 return rem;
             }
         } else {
-            stack.push("0*R"+notesValues[startIndex]);
-            return dispense(amount,startIndex-1, stack);
+            record[startIndex] = 0;
+            return dispense(amount,startIndex-1, record);
         }
     }
 
@@ -112,12 +111,11 @@ public class Dispenser {
             String ans = JOptionPane.showInputDialog(null,"Balance: R" + disp.getBalance() + ".00\nEnter amount:","");
             if (ans == null)
                 break;
-            if (!disp.dispense(Double.parseDouble(ans)))
-                System.out.println("Dispenser returned an error!");
-            else {
-                for (int i = 0; i < notesValues.length; ++i)
-                    System.out.println("R"+notesValues[i]+": " + disp.notesCount[i]);
-            }
+
+            int[] record = disp.dispense(Double.parseDouble(ans));
+            System.out.println("Balances:");
+            for (int i = 0; i < notesValues.length; ++i)
+                System.out.println("R"+notesValues[i]+": " + disp.notesCount[i]);
         }
     }
 }
