@@ -20,20 +20,14 @@ public class ATM_ServerComm
 	private Card card = null;
 	private Object serverObject = null;
 	private AccountHolder accountHolder;
-    final static String ATM_ID = "13701";
-	private final String ATM_Password;
+	private final String ATM_ID, ATM_Password;
 	
-	public static String getATM_ID()
-	{
-		return ATM_ID;
-	}
-
 	//method takes in cardRetrieval object & sends to server
 	//method receives object from server & casts it to card be a object
 	//open/close connection methods
 	public ATM_ServerComm()
 	{
-		//ATM_ID = "13701";
+		ATM_ID = "13701";
 		ATM_Password = "chiroptera13701";
 	}
 	
@@ -54,19 +48,6 @@ public class ATM_ServerComm
 			}		
 	}
 	
-	public void sendAccountHolderCreation(AccountHolderCreation accountHolderCreation)
-	{
-		try
-		{
-			oos.writeObject(accountHolderCreation);
-			oos.flush();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
 	public AccountHolder sendAccountHolderRetrievalByCardNo (AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo)
 	{
 		try
@@ -82,6 +63,111 @@ public class ATM_ServerComm
 			accountHolder = null;
 			return accountHolder;
 		}		
+	}
+	
+	public AccountHolder sendAccountHolderRetrievalByIdNo (AccountHolderRetrievalByIdNo accountHolderRetrievalByIdNo)
+	{
+		try
+		{
+			oos.writeObject(accountHolderRetrievalByIdNo);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			accountHolder = null;
+			return accountHolder;
+		}		
+	}
+	
+	public AccountHolder sendAccountHolderRetrievalByAccountNo (AccountHolderRetrievalByAccountNo accountHolderRetrievalByAccountNo)
+	{
+		try
+		{
+			oos.writeObject(accountHolderRetrievalByAccountNo);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			accountHolder = null;
+			return accountHolder;
+		}		
+	}
+	
+	public AccountHolder sendAccountHolderCreation(AccountHolderCreation accountHolderCreation)
+	{
+		try 
+		{
+			oos.writeObject(accountHolderCreation);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
+			
+		}
+		catch (IOException e)
+		{
+			accountHolder = null;
+			e.printStackTrace();
+			return accountHolder;
+		}
+	}
+	
+	public boolean sendWithdrawal (Withdrawal withdrawal)
+	{
+		try
+		{
+			oos.writeObject(withdrawal);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+	}
+	
+	public boolean sendCardDeactivation (CardDeactivation cardDeactivation)
+	{
+		try
+		{
+			oos.writeObject(cardDeactivation);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+	}
+	
+	public boolean sendCardReactivation(CardReactivation cardReactivation)
+	{
+		try
+		{
+			oos.writeObject(cardReactivation);
+			oos.flush();
+			boolean tf = (Boolean)this.getServerObject();
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}
 	}
 	
 	public void sendSessionTermination (SessionTermination sessionTermination)
@@ -124,13 +210,11 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			socket = new Socket("localhost", 13700);
+			socket = new Socket("192.168.43.67", 13700);
 			
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			ois = new ObjectInputStream(socket.getInputStream());
-			
-			
-			
+				
 			return true;
 		}
 		catch (UnknownHostException e)

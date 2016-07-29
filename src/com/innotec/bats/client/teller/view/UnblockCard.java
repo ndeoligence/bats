@@ -30,10 +30,12 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 
+import com.innotec.bats.client.teller.control.BankTellerApplication;
 import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.CardReactivation;
 
 
-public class UnblockAccount extends JPanel implements ActionListener
+public class UnblockCard extends JPanel implements ActionListener
 {
 	private JTextField textField;
 	private JTextField textField_1;
@@ -43,8 +45,10 @@ public class UnblockAccount extends JPanel implements ActionListener
 	private ConfirmExitDialog confirmExitDialog;
 	private UnblockAccConfirmation unblockAccConfirmation;
 	private JLabel lblBlocked;
+	private AccountHolder accountHolder;
+	private CardReactivation cardReactivation;
 
-	public UnblockAccount(JPanel framePanel, AccountHolder accountHolder)
+	public UnblockCard(JPanel framePanel)
 	{
 		framePanel.removeAll();
 		this.framePanel = framePanel;
@@ -181,6 +185,11 @@ public class UnblockAccount extends JPanel implements ActionListener
 		framePanel.repaint();
 	}
 
+	public UnblockCard(AccountHolder accountHolder)
+	{
+		this.accountHolder = accountHolder;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent acEvent)
 	{
@@ -198,8 +207,11 @@ public class UnblockAccount extends JPanel implements ActionListener
 			unblockAccConfirmation = new UnblockAccConfirmation();
 //			if()
 //			{
-				
-				lblBlocked.setText("Acc Open!");
+				cardReactivation = new CardReactivation(accountHolder.getCard().getCardNo(), TellerHomePage.tellerID);
+				if(BankTellerApplication.serverComm.sendCardReactivation(cardReactivation) == true)
+				{
+					lblBlocked.setText("Acc Open!");		
+				}
 //			}
 		}
 	}

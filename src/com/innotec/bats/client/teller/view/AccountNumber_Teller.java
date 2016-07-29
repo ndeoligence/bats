@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -25,6 +26,10 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
+import com.innotec.bats.client.teller.control.BankTellerApplication;
+import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.AccountHolderRetrievalByAccountNo;
+
 
 public class AccountNumber_Teller extends JDialog implements ActionListener
 {
@@ -34,7 +39,11 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 	private JLabel lblAccountNo;
 	private JTextField textField;
 	private JButton btnOk, button_1;
-    static String accountNo;
+    private String accountNo;
+    private AccountHolder accountHolder;
+    private UnblockCard unblockAccount;
+    private AccountHolderRetrievalByAccountNo accountHolderRetrievalByAccountNo;
+    
 
 	/**
 	 * Launch the application.
@@ -117,7 +126,13 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 		if(source == btnOk)
 		{
 			accountNo = textField.getText();
-			//accholder = retrieveaccholderbyaccno(aacNo)
+			accountHolderRetrievalByAccountNo = new AccountHolderRetrievalByAccountNo(accountNo);
+			accountHolder = BankTellerApplication.serverComm.sendAccountHolderRetrievalByAccountNo(accountHolderRetrievalByAccountNo);
+			if(accountHolder != null)
+			{
+				unblockAccount = new UnblockCard(accountHolder);
+			}
+			JOptionPane.showMessageDialog(null, "Account Holder error! /nIs account number correct?", "Account Holder does not exist", JOptionPane.INFORMATION_MESSAGE);
 			this.dispose();
 		}
 		if(source == button_1)
@@ -126,8 +141,8 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 		}
 	}
 	
-//	public String getAccNo()
-//	{
-//		return accountNo;
-//	}
+	public AccountHolder getAccountHolder()
+	{
+		return accountHolder;
+	}
 }

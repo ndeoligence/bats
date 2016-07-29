@@ -9,6 +9,7 @@ import javax.swing.border.EtchedBorder;
 
 import java.awt.Color;
 import java.awt.BorderLayout;
+import java.awt.TextArea;
 import java.awt.Toolkit;
 
 import javax.swing.border.TitledBorder;
@@ -50,6 +51,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 	private JTextField textField_3;
 	private JTextField textField_4;
 	private JTextField textField_5;
+	private JTextArea textArea;
 	private ButtonGroup bg, bg1;
 	private JPanel framePanel;
 	private JButton btnOpenAccount, btnCancel, btnBackBtn;
@@ -67,6 +69,8 @@ public class OpenNewAccount extends JPanel implements ActionListener
 	private boolean active = true; 
 	private double maxWithdrawalPerDay, maxTransferPerDay;
 	private final double balanceCurrent = 100, balanceSavings = 1000;
+	private MissingInformation missingInformation;
+	private boolean tf;
 
 	public OpenNewAccount(JPanel framePanel)
 	{
@@ -147,7 +151,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		rdbtnNewRadioButton.addActionListener(this);
 		rdbtnNewRadioButton.setSelected(true);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setFont(new Font("Cambria", Font.PLAIN, 20));
 		address = textArea.getText();
@@ -306,6 +310,64 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		framePanel.repaint();
 	}
 
+	public boolean areAllCriteriaMet()
+	{
+		if(textField.getText().equals(""))
+		{
+			textField.setBackground(new Color(255, 77, 77));
+			tf = false;			
+		}
+		if(textField_1.getText().equals(""))
+		{
+			textField_1.setBackground(new Color(255, 77, 77));
+			tf = false;
+		}
+		if(textField_2.getText().equals(""))
+		{
+			textField_2.setBackground(new Color(255, 77, 77));
+			tf = false;
+		}
+		if(textField_3.getText().equals(""))
+		{
+			textField_3.setBackground(new Color(255, 77, 77));
+			tf = false;
+		}
+		if((textArea.getText().equals("")))
+		{
+			textArea.setBackground(new Color(255, 77, 77));
+			tf = false;
+		}
+
+		if(!(textField.getText().equals("")))
+		{
+			textField.setBackground(Color.WHITE);
+		}
+		if(!(textField_1.getText().equals("")))
+		{
+			textField_1.setBackground(Color.WHITE);
+		}
+		if(!(textField_2.getText().equals("")))
+		{
+			textField_2.setBackground(Color.WHITE);
+		}
+		if(!(textField_3.getText().equals("")))
+		{
+			textField_3.setBackground(Color.WHITE);
+		}
+		if(!((textArea.getText().equals(""))))
+		{
+			textArea.setBackground(Color.WHITE);
+		}
+
+		if((!(textField.getText().equals(""))) && (!(textField_1.getText().equals("")))
+				&& (!(textField_2.getText().equals(""))) && (!(textField_3.getText().equals(""))) && 
+				(!((textArea.getText().equals("")))))
+		{
+			tf = true;
+		}
+		return tf;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent acEvent)
 	{
@@ -338,7 +400,23 @@ public class OpenNewAccount extends JPanel implements ActionListener
 				Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay);
 				accountHolder.addAccount(currentAccount);
 			}
-			accHolderPIN_Entry = new AccHolderPIN_Entry(framePanel, accountHolder);
+			if(this.areAllCriteriaMet() == true)
+			{
+				accHolderPIN_Entry = new AccHolderPIN_Entry(framePanel, accountHolder);	
+				framePanel.removeAll();
+				framePanel.add(this);
+				framePanel.revalidate();
+				framePanel.repaint();
+			}
+			else
+			{
+				missingInformation = new MissingInformation(framePanel);
+				framePanel.removeAll();
+				framePanel.add(this);
+				framePanel.revalidate();
+				framePanel.repaint();
+				this.areAllCriteriaMet();
+			}
 		}
 		if(rdbtnNewRadioButton.isSelected())
 		{

@@ -44,7 +44,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 	private AccHolderIDno_Teller idDialog;
 	private AccountNumber_Teller accNoDialog, accNoDialog2;
 	private CloseAccount_Teller closeAccountPanel;
-	private UnblockAccount unblockAccPanel;
+	private UnblockCard unblockCardPanel;
 	private ConfirmExitDialog confirmExitDialog;
 	public static final String tellerID = "chiroptera13801";
 	
@@ -138,7 +138,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 		label_1.setFont(new Font("Cambria", Font.BOLD, 34));
 		panel_1.add(label_1);
 		
-		btnUnblockAcc = new JButton("Unblock Acc");
+		btnUnblockAcc = new JButton("Unblock Card");
 		sl_panel_1.putConstraint(SpringLayout.NORTH, btnUnblockAcc, -45, SpringLayout.SOUTH, label_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, btnUnblockAcc, -630, SpringLayout.EAST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, btnUnblockAcc, 0, SpringLayout.SOUTH, label_1);
@@ -187,12 +187,12 @@ public class TellerHomePage extends JPanel implements ActionListener
 		if(source == btnUnblockAcc)
 		{
 			accNoDialog2 = new AccountNumber_Teller();
-//			if()
+//			if(accNoDialog.getAccountHolder() != null)
 //			{
 				framePanel.removeAll();
 				framePanel.validate();
 				
-				unblockAccPanel = new UnblockAccount(framePanel);
+				unblockCardPanel = new UnblockCard(framePanel);
 //			}
 		}
 		if(source == btnExit)

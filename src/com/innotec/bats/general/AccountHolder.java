@@ -6,8 +6,8 @@ public class AccountHolder extends Person
 {
     private String address;
     private String contactNo;
-    Card card;
-    ArrayList<Account> accounts;
+    private Card card;
+    private ArrayList<Account> accounts;
     
     public AccountHolder (String name, String surname, String idNo, String address, String contactNo) 
     {
@@ -75,6 +75,11 @@ public class AccountHolder extends Person
 		this.accounts = accounts;
 	}
     
+    public Card getCard()
+    {
+		return card;
+    }
+	
 	public String toString ()
 	{
 		return "AccountHolder Details= \t" + super.toString() + address + "\t" + contactNo;
