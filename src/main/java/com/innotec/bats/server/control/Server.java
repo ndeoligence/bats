@@ -25,9 +25,14 @@ public class Server {
         clientHandlers = new ArrayList<>();
         /*connect to dbms*/
         try {
+            System.out.println("Server::ctor >>\n\tConnecting to Database...");
             dao = new DAO_Class();
+            if (dao!=null) System.out.println("\tSuccess!");
+            else throw new SQLException("dao returned null to server");
         } catch (SQLException e) {
-            System.err.println("Error connecting to the DAO!!" + "");
+            System.err.println("Server::ctor >>\n\tFailed connecting to the Database.\n\t: " + e +
+                    "\n\tServer will stop!");
+            System.exit(-1);
         }
         /*server socket*/
         serverSocket = new ServerSocket(SERVER_PORT_NR);
@@ -36,7 +41,7 @@ public class Server {
     public ClientHandler newClientHandler() throws IOException {
         ClientHandler handler = new ClientHandler(serverSocket.accept());
         clientHandlers.add(handler);
-        System.out.println("Connected to "+handler.socket.getLocalAddress());
+        System.out.println("Server::newClientHandler >> Connected to "+handler.socket.getLocalAddress());
         return handler;
     }
     /*Nested classes*/
@@ -44,17 +49,19 @@ public class Server {
         Socket socket;
         ObjectInputStream ins = null;
         ObjectOutputStream outs = null;
+        /*ctor*/
         public ClientHandler(Socket socket) {
             this.socket = socket;
         }
+        /*methods*/
+        @Override
         public void run() {
             /*connect streams*/
             try {
                 ins = new ObjectInputStream(socket.getInputStream());
                 outs = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
-                System.err.println("Error while trying to connect I/O streams.");
-                e.printStackTrace();
+                System.err.println("Server::ClientHandler::run >>\n\tFailed to connect client-server I/O streams.");
             }
             /*handle individual connection*/
             try {
@@ -63,37 +70,50 @@ public class Server {
                     object = ins.readObject();
                     processAction((Action) object);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException|ClassNotFoundException e) {
+                System.err.println("Server::ClientHandler::run >>\n" +
+                        "\tError reading action from client.\n\t"+e);
             } catch (SessionTerminationException e) {
                 // This is after the session termination.
+                System.out.println("Server::ClientHandler::run >>\n\tClient handler stopping...");
+                return;
                 // The exception isn't an error. Fyi.
+            } finally {
+                try {
+                    if (socket.isConnected()) socket.close();
+                } catch (IOException e) {
+                    System.err.println("Server::ClientHandler::run >>\n\tFailed to close socket for"+
+                            socket.getLocalAddress());
+                }
             }
 
         }
+
+        /**
+         * Processes the action given by client - either ATM or Teller.
+         * Calls helper methods to handle specific action types, after narrowing down the possible actions.
+         * @param action - the action to process
+         * @throws SessionTerminationException
+         */
         void processAction(Action action) throws SessionTerminationException {
             if (action==null) { // make sure action isn't null
-                System.err.println("Null action received.\n\tWrite back 'Null' and retry...");
-                try {
-                    Object obj = null;
-                    outs.writeObject(obj);
-                } catch (IOException e) {
-                    System.err.println("Error writing back Null");
-                    e.printStackTrace();
-                }
+                System.err.println("Server::ClientHandler::run >>\n\t" +
+                        "Null action received.\n\tWriting back Null");
+                sendToClient(null);
                 return;
             }
             /*First check for session termination first*/
             if (action instanceof SessionTermination) {
-                System.out.print("Connection termination: ");
+                System.err.println("Server::ClientHandler::run >>\n"+
+                        "\tHonoring session termination request from "+
+                        socket.getLocalAddress());
                 if (terminateSession()) {
-                    System.out.println("Success!");
+                    System.out.println("\tSuccess!");
+                    throw new SessionTerminationException("Session end success");
                 } else {
-                    System.out.println("Failed.");
+                    System.out.println("\tFailed.");
+                    throw new SessionTerminationException("Session end fail");
                 }
-                throw new SessionTerminationException("session termination failure");
             }
             /*Then check for other actions*/
             // Action: Card Retrieve
@@ -108,34 +128,43 @@ public class Server {
             }
         }
 
+        private boolean processAccountHolderRetrieval(AccountHolderRetrieval action) {
+            AccountHolder accountHolder = null;
+
+            if (action instanceof AccountHolderRetrievalByIdNo) {
+//                accountHolder = dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo) action).getIdNo());
+            } else if (action instanceof AccountHolderRetrievalByCardNo) {
+//                accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo) action).getCardNo());
+            } else if (action instanceof AccountHolderRetrievalByAccountNo) {
+//                accountHolder = dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo) action).getAccountNo());
+            }
+
+            return sendToClient(accountHolder);
+        }
         private void processAccountRetrieval(AccountRetrieval action) {
-            List<Account> accounts;
+            List<Account> accounts = null;
             if (action instanceof AccountRetrievalByAccountNo) {
                 accounts = new ArrayList<>();
-                accounts.add(dao.getAccount(((AccountRetrievalByAccountNo) action).getAccountNo()));
+//                accounts.add(dao.getAccount(((AccountRetrievalByAccountNo) action).getAccountNo()));
             } else if (action instanceof AccountRetrievalByIdNo) {
-                accounts = (dao.getAccountsByIdNo(((AccountRetrievalByIdNo) action).getIdNo()));
+//                accounts = (dao.getAccountsByIdNo(((AccountRetrievalByIdNo) action).getIdNo()));
             } else if (action instanceof AccountRetrievalByCardNo) {
-                accounts = (dao.getAccountsByCardNo(((AccountRetrievalByCardNo) action).getCardNo()));
+//                accounts = (dao.getAccountsByCardNo(((AccountRetrievalByCardNo) action).getCardNo()));
             } else {
                 System.err.println("ClientHandler::processAccountRetrieval() >> Unrecognized AccountRetrieval sub-action"+
                                     "\n\tWill return empty list");
                 accounts = new ArrayList<>();
             }
 
-            try {
-                outs.writeObject(accounts);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            sendToClient(accounts);
         }
 
         public boolean terminateSession() {
-            System.out.println("Terminating session...");
+            System.out.println("ClientHandler::terminateSession() >>\n\tTerminating session...");
             try {
-                socket.close();
+                if (socket.isConnected()) socket.close();
             } catch (IOException e) {
-                return socket.isClosed();
+                System.err.println("ClientHandler::processAccountRetrieval() >>\n\tFailed closing socket");
             }
             return socket.isClosed();
         }
@@ -145,12 +174,14 @@ public class Server {
             System.out.println("ClientHandler::processCardRetrieval (card#: " + cardNo + ")");
 
             if (cardNo.length() == AdminCard.CARD_NO_LEN) { // admin card
-                card = dao.getAdminCard(cardNo);
+//                card = dao.getAdminCardByCardNo(cardNo);
             } else if (cardNo.length() == AccountHolderCard.CARD_NO_LEN) {
-                card = dao.getAccountHolderCard(cardNo);
+                try {
+                    card = dao.getAccountHolderCardByCardNo(cardNo);
+                } catch (SQLException e) {System.out.println("Exception from dao!!\n\t"+e);}
             } else {
-                System.err.println("Error: Received a card with an invalid length: "
-                        + cardNo.length() + ".\nWill send 'null' back.");
+                System.err.println("Error: Received a card with an invalid card# length: "
+                        + cardNo.length() + ".\nWill send write back: 'null'.");
             }
 
             try {
@@ -172,6 +203,15 @@ public class Server {
             } else {
 
             }*/
+        }
+        synchronized private boolean sendToClient(Object obj) {
+            try {
+                outs.writeObject(obj);
+                return true;
+            } catch (IOException e) {
+                System.err.println("Server::ClientHandler::sendToClient >>\n\tFailed writing "+obj);
+                return false;
+            }
         }
     }
 
