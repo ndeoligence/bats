@@ -36,6 +36,17 @@ public class Server {
         }
         /*server socket*/
         serverSocket = new ServerSocket(SERVER_PORT_NR);
+
+        /*DB Test Code*/
+        System.out.println("Testing the database...");
+        System.out.println("Getting a card...");
+
+        try {
+            AccountHolderCard card = dao.getAccountHolderCardByCardNo("1234567890123450");
+            System.out.println("Server >>\n\tReceived card:" + card);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     /*Methods*/
     public ClientHandler newClientHandler() throws IOException {
@@ -184,11 +195,7 @@ public class Server {
                         + cardNo.length() + ".\nWill send write back: 'null'.");
             }
 
-            try {
-                outs.writeObject(card);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            sendToClient(card);
         }
 
         void processTellerAction(TellerAction action) {
@@ -205,6 +212,7 @@ public class Server {
             }*/
         }
         synchronized private boolean sendToClient(Object obj) {
+            System.out.println("ClientHandler -> Client >> " + obj);
             try {
                 outs.writeObject(obj);
                 return true;
@@ -217,14 +225,16 @@ public class Server {
 
     /*Main method*/
     public static void main(String[] args) {
+
         try {
             Server server = new Server();
             System.out.println("Server started.");
-            while (true) {
+            /*while (true) {
                 System.out.println("Waiting for connection...");
                 (server.newClientHandler()).start();
                 System.out.println("New client found!");
-            }
+            }*/
+
         } catch (IOException e) {
             System.err.println("Error starting server up and listening for connections.\nTry restarting the program");
             e.printStackTrace();

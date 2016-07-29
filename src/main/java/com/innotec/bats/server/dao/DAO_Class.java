@@ -71,7 +71,7 @@ public class DAO_Class implements DAO_Interface
 		pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTHOLDERCARDBYCARD);
 		pStmt.setString(1, cardNo);
 		rs = pStmt.executeQuery();
-		rs.next();
+//		rs.next();
 		// AccountHolderCard(cardNo, cardPinNo, cardActive, accountHolderIdNo)
 		// AccountHolderCard(String cardNo, String pinNo, boolean active)
 		temp = new AccountHolderCard(rs.getString(1),rs.getString(3),rs.getBoolean(2),rs.getString(4));
