@@ -9,18 +9,25 @@ public class Dispenser {
     /**
      * The number of each note initially. {@code reset()} uses this value to figure out how many of each note to reset to.
      */
-    private static int DEF_SLOT_SIZE = 500;
+    private static int DEF_SLOT_SIZE = 5;
 
     /**Note constants*/
     public static final int R10=10, R20=20, R50=50, R100=100, R200=200;
+    /**
+     * Contains all the possible notes in an array.
+     * This will serve as a count of how many notes there are in total
+     * as well as their values.
+     */
     private static final int[] notesValues = {
             R10, R20, R50, R100, R200
     };
+    /**Keeps count of how many notes remain in the dispenser*/
     private int[] notesCount;
 
     public Dispenser() {
         reset();
     }
+
     private void reset() {
         notesCount = new int[notesValues.length];
         for (int i = 0; i < notesCount.length; ++i)
@@ -30,17 +37,19 @@ public class Dispenser {
      * Simulates dispensing a specified amount to account holder.
      * The method first does a check to make sure the amount is available.
      * @param amount - the amount to be dispensed.
-     * @return {@code true} if the balance was successfully reduced by the specified amount.
-     * Otherwise {@code false} is returned.
+     * @return an array containing a record of how many of each note was dispensed.
+     * Returns null if nothing was dispensed, due to insufficient funds in dispenser.
+     * @throws IllegalArgumentException if the requested amount is impossible to dispense.
      */
     public int[] dispense(int amount) {
         System.out.println("Attempting to dispense R"+amount+".00");
         int[] record = new int[notesValues.length];
-        if (amount < 0 || amount > getBalance())
-            return record;
-        if (amount % R10 != 0)
-            return record;
-        if (dispense(amount, notesValues.length-1, record) > 0);
+        if ((amount < 0) || (amount % R10 != 0))
+            throw new IllegalArgumentException("Illegal amount entered + R" + amount + ".00");
+        if (amount > getBalance())
+            return null;
+        if (dispense(amount, notesValues.length-1, record) > 0)
+            return null;
 
         return record;
     }
@@ -113,9 +122,16 @@ public class Dispenser {
                 break;
 
             int[] record = disp.dispense(Double.parseDouble(ans));
+            if (record != null) {
+                System.out.println("Dispensed notes:");
+                for (int i = 0; i < record.length; ++i) {
+                    if (record[i] > 0)
+                        System.out.println("\t"+record[i] + " * R" + notesValues[i]);
+                }
+            }
             System.out.println("Balances:");
             for (int i = 0; i < notesValues.length; ++i)
-                System.out.println("R"+notesValues[i]+": " + disp.notesCount[i]);
+                System.out.println("\tR"+notesValues[i]+": " + disp.notesCount[i]);
         }
     }
 }
