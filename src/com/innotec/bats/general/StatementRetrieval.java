@@ -2,14 +2,14 @@ package com.innotec.bats.general;
 
 import java.util.ArrayList;
 
-public class StatementRetrieval extends Action
+public class StatementRetrieval extends AccountAction
 {
 	private ArrayList<Transaction> statement;
-	private String accountNo;
+
 	
 	public StatementRetrieval (String accountNo)
 	{
-		this.accountNo = accountNo;
+		super(accountNo);
 	}
 
 	public ArrayList<Transaction> getStatement ()
@@ -28,21 +28,11 @@ public class StatementRetrieval extends Action
 		return true;
 	}
 	
-	public String getAccountNo ()
-	{
-		return accountNo;
-	}
-
-	public void setAccountNo (String accountNo)
-	{
-		this.accountNo = accountNo;
-	}
 	
 	@Override
 	public String toString ()
 	{
-		return "StatementRetrieval [statement=" + statement + ", accountNo="
-				+ accountNo + "]";
+		return "StatementRetrieval [statement=" + statement + super.toString() + "]";
 	}
 
 }

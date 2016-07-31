@@ -9,21 +9,25 @@ import javax.swing.border.*;
 
 import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
 import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
+import com.innotec.bats.general.Action;
 import com.innotec.bats.general.AccountHolder;
 import com.innotec.bats.general.AccountHolderRetrievalByAccountNo;
+import com.innotec.bats.general.Deposit;
 import com.innotec.bats.general.SessionTermination;
+import com.innotec.bats.general.Transfer;
 import com.innotec.bats.general.Withdrawal;
 
-public class WithdrawCashEnterAmount extends JPanel implements ActionListener
+public class EnterAmount extends JPanel implements ActionListener
 {
 	private JTextField textField;
 	private JPanel framePanel;
 	private AccountHolder accountHolder;
 	private String accountNo;
 	private boolean waitingPeriod;
-	private JButton btnOK;
+	private JButton btnOK, btnHelp, btnCancel;;
+	private Action action;
 
-public WithdrawCashEnterAmount (JPanel framePanel, AccountHolder accountholder, String accountNo, boolean waitingPeriod)
+public EnterAmount (JPanel framePanel, AccountHolder accountholder, Action action, boolean waitingPeriod)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
@@ -31,6 +35,7 @@ public WithdrawCashEnterAmount (JPanel framePanel, AccountHolder accountholder, 
 	this.accountHolder = accountholder;
 	this.accountNo = accountNo;
 	this.waitingPeriod = waitingPeriod;
+	this.action = action;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -88,7 +93,7 @@ public WithdrawCashEnterAmount (JPanel framePanel, AccountHolder accountholder, 
 	panel_2.add(btnOK);
 	btnOK.addActionListener(this);
 	
-	JButton btnHelp = new JButton("Help");
+	btnHelp = new JButton("Help");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 55, SpringLayout.SOUTH, btnOK);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
@@ -96,7 +101,7 @@ public WithdrawCashEnterAmount (JPanel framePanel, AccountHolder accountholder, 
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
-	JButton btnCancel = new JButton("Cancel");
+	btnCancel = new JButton("Cancel");
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -23, SpringLayout.WEST, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
@@ -140,20 +145,62 @@ public void actionPerformed (ActionEvent ae)
 	if (source == btnOK)
 	{
 		double enteredAmount = Double.parseDouble(textField.getText());
-		if (enteredAmount%10!=0)
+		
+		if (action instanceof Withdrawal)
 		{
-			JOptionPane.showMessageDialog(null, "The amount you have entered is invalid. Please enter an amount in increments of ten.", "Invalid amount", JOptionPane.INFORMATION_MESSAGE);
+			if (enteredAmount%10!=0)
+			{
+				JOptionPane.showMessageDialog(null, "The amount you have entered is invalid. Please enter an amount in increments of ten.", "Invalid amount", JOptionPane.INFORMATION_MESSAGE);
+			}
+			else
+				if (enteredAmount<10.0)
+				{
+					JOptionPane.showMessageDialog(null, "The amount you have entered is invalid. Please enter an amount larger than R10.00.", "Invalid amount", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else
+				{
+					Withdrawal withdrawal = new Withdrawal (accountNo, enteredAmount, waitingPeriod);
+					System.out.println("Withdrawal object created: " + withdrawal.toString());
+					this.executeWithdrawal(withdrawal);
+				}
 		}
-		else
+		
+		if (action instanceof Deposit)
 		{
-			Withdrawal withdrawal = new Withdrawal (accountNo, enteredAmount, waitingPeriod);
-			System.out.println("Withdrawal object created: " + withdrawal.toString());
-			this.executeWithdrawal(withdrawal);
+			((Deposit) action).setAmount(Double.parseDouble(textField.getText()));
+			this.executeDeposit((Deposit)action);
 		}
+		
+		if (action instanceof Transfer)
+		{
+			((Transfer)action).setAmount(Double.parseDouble(textField.getText()));
+			this.executeTransfer((Transfer)action);
+		}
+	}
+	
+	if (source == btnHelp)
+	{
+		if (action instanceof Deposit)
+		{
+			new HelpShowFile(framePanel, new ImageIcon("resources/Help File Deposit.jpg"), accountHolder);
+		}
+		if (action instanceof Withdrawal)
+		{
+			new HelpShowFile(framePanel, new ImageIcon("resources/Help File Withdrawal.jpg"), accountHolder);
+		}
+		if (action instanceof Transfer)
+		{
+			new HelpShowFile(framePanel, new ImageIcon("resources/Help File Transfer.jpg"), accountHolder);
+		}
+	}
+	
+	if (source == btnCancel)
+	{
+		new ATMAccountHolderMainMenu(framePanel, accountHolder);
 	}
 }
 
-public void executeWithdrawal (Withdrawal withdrawal)
+public boolean executeWithdrawal (Withdrawal withdrawal)
 {
 	boolean withdrawalSuccesful = ATMApplication.serverComm.sendWithdrawal(withdrawal);
 	
@@ -176,6 +223,24 @@ public void executeWithdrawal (Withdrawal withdrawal)
 			new ATMWelcomeScreen(framePanel);
 		}
 	}
+	return withdrawalSuccesful;
 }
+
+public void executeDeposit(Deposit deposit)
+{
+	new DepositInsertEnvelope(framePanel, accountHolder, deposit);
+}
+
+public void executeTransfer(Transfer transfer)
+{
+	if (ATMApplication.serverComm.sendTransfer(transfer))
+	{
+		JOptionPane.showMessageDialog(null, "Transfer successfully processed", "Transaction Completed", JOptionPane.INFORMATION_MESSAGE);
+		accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByAccountNo(new AccountHolderRetrievalByAccountNo(transfer.getPrimAccountNo()));
+		new ATMAccountHolderMainMenu(framePanel, accountHolder);
+	}
+}
+
+
 
 }

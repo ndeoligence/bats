@@ -161,29 +161,29 @@ public void keyReleased (KeyEvent ke)
 					new ATMUserLogin(framePanel);
 				}
 				
-//				AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(accountHolderCardNo);
-//				AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
-//				System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
-//				framePanel.removeAll();
-//				framePanel.revalidate();
-//				new ATMAccountHolderMainMenu(framePanel, accountHolder);
+				AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(accountHolderCardNo);
+				AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
+				System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
+				framePanel.removeAll();
+				framePanel.revalidate();
+				new ATMAccountHolderMainMenu(framePanel, accountHolder);
 			}
 			else
 			{
-//				incorrectPINCounter++;
-//				if (incorrectPINCounter < 3)
-//				{
-//					JOptionPane.showMessageDialog(null, "The PIN you entered is incorrect. You have " + (3 - incorrectPINCounter) + " tries left. Please try again.", "Incorrect PIN", JOptionPane.INFORMATION_MESSAGE);
-//				}
-//				
-//				if (incorrectPINCounter == 3)
-//				{
-//					if (ATMApplication.serverComm.sendCardDeactivation(new CardDeactivation(insertedCard.getCardNo())))
-//					{
-//						JOptionPane.showMessageDialog(null, "You have entered your PIN incorrectly 3 times. Your card has been blocked. Please visit your nearest branch to unblock.", "Card Blocked", JOptionPane.INFORMATION_MESSAGE);
-//						new ATMWelcomeScreen(framePanel);
-//					}
-//				}
+				incorrectPINCounter++;
+				if (incorrectPINCounter < 3)
+				{
+					JOptionPane.showMessageDialog(null, "The PIN you entered is incorrect. You have " + (3 - incorrectPINCounter) + " tries left. Please try again.", "Incorrect PIN", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+				if (incorrectPINCounter == 3)
+				{
+					if (ATMApplication.serverComm.sendCardDeactivation(new CardDeactivation(insertedCard.getCardNo(), ATMApplication.serverComm.getAtmId())))
+					{
+						JOptionPane.showMessageDialog(null, "You have entered your PIN incorrectly 3 times. Your card has been blocked. Please visit your nearest branch to unblock.", "Card Blocked", JOptionPane.INFORMATION_MESSAGE);
+						new ATMWelcomeScreen(framePanel);
+					}
+				}
 				System.out.println("Validate returned false");
 				//textField.setText("");
 				passwordField.setText("");

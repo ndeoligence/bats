@@ -18,12 +18,33 @@ public class Transfer extends Transaction
 	{
 		return SecondaryAccountNo;
 	}
+    
 	public void setSecondaryAccountNumber(String secondaryAccountNumber)
 	{
 		SecondaryAccountNo = secondaryAccountNumber;
 	}
     
-    public boolean transferIsNotLessThanMinAmount()
+    public String getSecondaryAccountNo ()
+	{
+		return SecondaryAccountNo;
+	}
+
+	public void setSecondaryAccountNo (String secondaryAccountNo)
+	{
+		SecondaryAccountNo = secondaryAccountNo;
+	}
+
+	public double getTransferAmount ()
+	{
+		return transferAmount;
+	}
+
+	public void setTransferAmount (double transferAmount)
+	{
+		this.transferAmount = transferAmount;
+	}
+
+	public boolean transferIsNotLessThanMinAmount()
     {
     	if(MIN_AMOUNT > transferAmount)
     	{

@@ -340,8 +340,8 @@ public boolean executeSavingsAccountWithdrawal (Withdrawal withdrawal)
 
 public boolean executeDeposit(Deposit deposit)
 {
-	new WithdrawCashSelectAmount(framePanel, accountHolder, deposit, false);
-	System.out.println("Withdrawal started. Account: " + currentAccount.toString());
+	new EnterAmount(framePanel, accountHolder, deposit, false);
+	System.out.println("Deposit started. Account: " + account.toString());
 	return true;
 }
 
@@ -349,14 +349,14 @@ public boolean executeTransferPrimary (Transfer transfer)
 {
 	transfer.setPrimAccountNo(currentAccount.getAccountNo());
 	new SelectAccount(framePanel, accountHolder, transfer, "transfer TO");
-	System.out.println("Withdrawal started. Account: " + account.toString());
+	System.out.println("Transfer phase one started. Account: " + account.toString());
 	return true;
 }
 
 public boolean executeTransferSecondary (Transfer transfer)
 {
 	new WithdrawCashSelectAmount(framePanel, accountHolder, transfer, false);
-	System.out.println("Withdrawal started. Account: " + account.toString());
+	System.out.println("Transfer phase two started. Account: " + account.toString());
 	return true;
 }
 

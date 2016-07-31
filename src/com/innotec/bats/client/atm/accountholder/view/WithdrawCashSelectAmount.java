@@ -174,42 +174,42 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnR100)
 	{
-		Withdrawal withdrawal = new Withdrawal (accountNo, 100.00, waitingPeriod);
-		System.out.println("Withdrawal object created: " + withdrawal.toString());
-		this.executeWithdrawal(withdrawal);
+		((Withdrawal)action).setAmount(100.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
 	}
 	
 	if (source == btnR200)
 	{
-		Withdrawal withdrawal = new Withdrawal (accountNo, 200.00, waitingPeriod);
-		System.out.println("Withdrawal object created: " + withdrawal.toString());
-		this.executeWithdrawal(withdrawal);
+		((Withdrawal)action).setAmount(200.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
 	}
 	
 	if (source == btnR300)
 	{
-		Withdrawal withdrawal = new Withdrawal (accountNo, 300.00, waitingPeriod);
-		System.out.println("Withdrawal object created: " + withdrawal.toString());
-		this.executeWithdrawal(withdrawal);
+		((Withdrawal)action).setAmount(300.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
 	}
 	
 	if (source == btnR500)
 	{
-		Withdrawal withdrawal = new Withdrawal (accountNo, 500.00, waitingPeriod);
-		System.out.println("Withdrawal object created: " + withdrawal.toString());
-		this.executeWithdrawal(withdrawal);
+		((Withdrawal)action).setAmount(500.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
 	}
 	
 	if (source == btnR1000)
 	{
-		Withdrawal withdrawal = new Withdrawal (accountNo, 1000.00, waitingPeriod);
-		System.out.println("Withdrawal object created: " + withdrawal.toString());
-		this.executeWithdrawal(withdrawal);
+		((Withdrawal)action).setAmount(1000.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
 	}
 	
 	if (source == btnOtherAmount)
 	{
-		new WithdrawCashEnterAmount(framePanel, accountHolder, accountNo, waitingPeriod);
+		new EnterAmount(framePanel, accountHolder, action, waitingPeriod);
 	}
 	
 }

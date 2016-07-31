@@ -204,7 +204,8 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnChangePin)
 	{
-		new ChangePINOldPIN(framePanel);
+		PINChange pinChange = new PINChange(accountHolder.getCard().getCardNo(), "");
+		new ChangePINOldPIN(framePanel, accountHolder, pinChange);
 	}
 	
 	if (source == btnHelp)
