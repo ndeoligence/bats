@@ -42,8 +42,13 @@ public class Server {
         System.out.println("Getting a card...");
 
         try {
-            AccountHolderCard card = dao.getAccountHolderCardByCardNo("1234567890123450");
+            String cardNo = "1234567890123450";
+            System.out.println("Asking for card from database (card # = " + cardNo + ")");
+            AccountHolderCard card = dao.getAccountHolderCardByCardNo(cardNo);
             System.out.println("Server >>\n\tReceived card:" + card);
+            System.out.println("Asking for account holder from database (id # = " +card.getAccountHolderIdNo()+")");
+            AccountHolder accountHolder = dao.getAccountHolderByIdNo(card.getAccountHolderIdNo());
+            System.out.println("Server >>\n\tReceived account holder:" + accountHolder);
         } catch (SQLException e) {
             e.printStackTrace();
         }
