@@ -10,9 +10,9 @@ public class SavingsAccount extends Account
 	private Date dateFromStartOfNoticePeriod;
 	private boolean withdrawalPending;
 	
-	public SavingsAccount(String accNo, double balance, boolean active, double maxWithdrawalAmountPerDay, double maxTransferralAmountPerDay)
+	public SavingsAccount(String accNo, double balance, boolean active, double maxWithdrawalAmountPerDay, double maxTransferralAmountPerDay, String accountHolderId)
 	{
-		super(accNo, balance, active, maxWithdrawalAmountPerDay, maxTransferralAmountPerDay);
+		super(accNo, balance, active, maxWithdrawalAmountPerDay, maxTransferralAmountPerDay,accountHolderId);
 		withdrawalPending = false;
 	}
 	

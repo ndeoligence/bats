@@ -1,4 +1,4 @@
-package com.innotec.bats.server.DAO;
+package com.innotec.bats.server.dao;
 
 
 import java.io.FileInputStream;

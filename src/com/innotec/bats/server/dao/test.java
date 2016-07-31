@@ -14,22 +14,20 @@ public class test {
 		AccountHolderCard card = new AccountHolderCard("503956778694658", "1234", true, "9701015029089");
 		AdminCard cardAdmin = new AdminCard("4593456820349567", "4321", true, "1234568734503");
 		
-		dao.addAccountHolder(holder, "1234568734503");
-		dao.addAccountHolderCard(card);
+		//dao.addAccountHolder(holder, "1234568734503");
+	//	dao.addAccountHolderCard(card);
 		//dao.addTeller(tell);
 		
-		try {
-			dao.addAdmin(cardAdmin);
+		//	dao.addAdmin(cardAdmin);
 			holder = dao.getAccountHolderByidNo("9701015029089");
 			//holder = dao.getAccountHolderByCardNo("5039567843094568");
+			CurrentAccount account = dao.getCurrentAccount("9701015029089");
 			card = dao.getAccountHolderCardByCardNo("503956778694658");
 		//	tell = dao.getATMAdmin("1234568734503");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	
 		System.out.println(holder);
 		System.out.println(card);
+		System.out.println(account);
 		//System.out.println(tell);
 	}
 }

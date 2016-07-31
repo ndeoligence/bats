@@ -41,10 +41,10 @@ public class DAO_Class implements DAO_Interface
 	private static final String GET_ACCOUNTHOLDERBYID = "Select * from accountholdertbl where accountHolderID = ?;";
 	private static final String GET_ACCOUNTHOLDERCARDBYCARD = "select * from accountHolderCardtbl where cardNo = ?;";
 	private static final String GET_ACCOUNTHOLDERCARDBYID = "select * from accountHolderCardtbl where accountHolderID = ?;";
-	private static final String GET_CURRENTACCOUNT = "select * from account where accountHolderID=?, type =?;";
-	private static final String GET_SAVINGSACCOUNT = "select * from account where accountHolderID = ?,type =?;";
-	private static final String GET_CREDITCARDACCOUNT = "select * from account where accountHolderID =?, type =?;";
-	private static final String GET_ACCOUNTS = "select * from accounttbl where accountHolderID = ?;";
+	private static final String GET_CURRENTACCOUNT = "select * from accounts where accountHolderID=? and type =?;";
+	private static final String GET_SAVINGSACCOUNT = "select * from accounts where accountHolderID = ? and type =?;";
+	private static final String GET_CREDITCARDACCOUNT = "select * from accounts where accountHolderID =? and type =?;";
+	private static final String GET_ACCOUNTS = "select * from accounts where accountHolderID = ?;";
 	private static final String GET_EMPLOYEE = "select * from employeetbl where employeeID = ?;";
 	private static final String GET_ADMINCARDBYID = "select * from adminCardtbl where employeeID = ?;";
 	private static final String GET_ADMINCARDBYCARD = "select * from adminCardtbl where cardNo = ?;";
@@ -101,8 +101,7 @@ public class DAO_Class implements DAO_Interface
 		AccountHolderCard temp = null;
 		
 		try {
-			pStmt = conn.getConnection().prepareStatement(
-					GET_ACCOUNTHOLDERCARDBYCARD);
+			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTHOLDERCARDBYCARD);
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
 			rs.next();
@@ -147,4 +146,161 @@ public class DAO_Class implements DAO_Interface
 		}
 		
 	}
+
+	@SuppressWarnings("null")
+	@Override
+	public void addCurrentAccount(String accountHolderId,CurrentAccount account) 
+	{
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_CURRENTACCOUNT);
+			pStmt.setString(1, account.getAccountNo());
+			pStmt.setString(2, "Current Account");
+			pStmt.setDouble(3, account.getBalance());
+			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+			pStmt.setDouble(5, account.getMaxTransferPerDay());
+			pStmt.setBoolean(6, account.isActive());
+			pStmt.setDate(7,null);
+			pStmt.setBoolean(8, (Boolean) null);
+			pStmt.setString(9, account.getAccountHolderId());
+			pStmt.executeUpdate();
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void addSavingsAccount(String accountHolderId, SavingsAccount account) 
+	{
+			try {
+				pStmt = conn.getConnection().prepareStatement(ADD_SAVINGSACCOUNT);
+				pStmt.setString(1, account.getAccountNo());
+				pStmt.setString(2, "Savings Account");
+				pStmt.setDouble(3, account.getBalance());
+				pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+				pStmt.setDouble(5, account.getMaxTransferPerDay());
+				pStmt.setBoolean(6, account.isActive());
+				pStmt.setDate(7,(Date) account.getDateFromStartOfNoticePeriod());
+				pStmt.setBoolean(8, account.getWithdrawalPending());
+				pStmt.setString(9, account.getAccountHolderId());
+				pStmt.executeUpdate();
+			} catch (SQLException e) 
+			{
+				e.printStackTrace();
+			}
+	}
+
+	@SuppressWarnings("null")
+	@Override
+	public void addCreditCardAccount(String accountHolderId,CreditCardAccount account) {
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_CREDITCARDACCOUNT);
+			pStmt.setString(1, account.getAccountNo());
+			pStmt.setString(2, "Credit Card Account");
+			pStmt.setDouble(3, account.getBalance());
+			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+			pStmt.setDouble(5, account.getMaxTransferPerDay());
+			pStmt.setBoolean(6, account.isActive());
+			pStmt.setDate(7,null);
+			pStmt.setBoolean(8,(Boolean) null);
+			pStmt.setString(9, account.getAccountHolderId());
+			pStmt.executeUpdate();
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public CreditCardAccount getCreditCardAccount(String accountHolderIdNo) {
+		CreditCardAccount temp;
+			try {
+				pStmt = conn.getConnection().prepareStatement(GET_CREDITCARDACCOUNT);
+				pStmt.setString(1, accountHolderIdNo);
+				pStmt.setString(2, "CreditCardAccount");
+				rs = pStmt.executeQuery();
+				rs.next();
+				temp = new CreditCardAccount(rs.getString("accountNo"), rs.getDouble("balance"),
+						rs.getBoolean("active"), rs.getDouble("maxWithdrawal/day"), rs.getDouble("maxTransfer/day"), rs.getString("accountHolderID"));
+				rs.close();
+			} catch (Exception e) {
+				return null;
+			}
+	return temp;
+	}
+
+	@Override
+	public CurrentAccount getCurrentAccount(String accountHolderIdNo) {
+		CurrentAccount temp;
+		try {
+			pStmt = conn.getConnection().prepareStatement(GET_CURRENTACCOUNT);
+			pStmt.setString(1, accountHolderIdNo);
+			pStmt.setString(2, "Current Account");
+			rs = pStmt.executeQuery();
+			rs.next();
+			temp = new CurrentAccount(rs.getString("accountNo"), rs.getDouble("balance"),
+					rs.getBoolean("active"), rs.getString("accountHolderID"));
+			rs.close();
+		} catch (Exception e) {
+			return null;
+		}
+		return temp;
+	}
+
+	@Override
+	public SavingsAccount getSavingsAccount(String accountHolderIdNo) {
+		SavingsAccount temp;
+		try {
+			pStmt = conn.getConnection().prepareStatement(GET_CREDITCARDACCOUNT);
+			pStmt.setString(1, accountHolderIdNo);
+			pStmt.setString(2, "CreditCardAccount");
+			rs = pStmt.executeQuery();
+			rs.next();
+			temp = new SavingsAccount(rs.getString("accountNo"), rs.getDouble("balance"),
+					rs.getBoolean("active"), rs.getDouble("maxWithdrawal/day"), rs.getDouble("maxTransfer/day"), rs.getString("accountHolderID"));
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+return temp;
+	}
+
+	@Override
+	public List<Account> getAccounts(String accountHolderIdNo) {
+		List<Account> temp = null ;
+		try {
+			pStmt = conn.getConnection().prepareStatement(GET_CREDITCARDACCOUNT);
+			pStmt.setString(1, accountHolderIdNo);
+			pStmt.setString(2, "CreditCardAccount");
+			rs = pStmt.executeQuery();
+
+			while(rs.next())
+			{
+				Account account = new Account(rs.getString("accountNo"), rs.getDouble("balance"),
+					rs.getBoolean("active"), rs.getDouble("maxWithdrawal/day"), rs.getDouble("maxTransfer/day"), rs.getString("accountHolderID"));
+				temp.add(account);
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return temp;
+	}
+
+	@Override
+	public void addEmployee(Employee newEmployee) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addAdminCard(AdminCard newAdmin) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	
 }
