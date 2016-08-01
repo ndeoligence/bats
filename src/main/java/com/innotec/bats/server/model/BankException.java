@@ -1,4 +1,4 @@
-package com.innotec.bats.general;
+package com.innotec.bats.server.model;
 
 /**
  * Created by phoenix on 7/18/16.

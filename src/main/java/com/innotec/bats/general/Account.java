@@ -1,57 +1,71 @@
 package com.innotec.bats.general;
-import java.io.Serializable;
 
-/**
- * Created by phoenix on 7/18/16.
- */
-public class Account implements Serializable {
-    private double minBalance;
-    private AccountHolder accountHolder;
-    private String accountNo;
-    private double balance;
-    private boolean active;
-    public Account(AccountHolder accountHolder, String accountNo, double balance, double minBalance, boolean active) {
-        if (accountHolder==null || accountNo==null)
-            throw new IllegalArgumentException("null Account argument");
-        this.accountHolder = accountHolder;
-        this.accountNo = new String(accountNo);
-        this.balance = balance;
-        this.active = active;
-    }
-    public String toString() {
-        return accountHolder.toString() + ": " + accountNo + "; R" + balance;
-    }
-    public AccountHolder getAccountHolder() {
-        return accountHolder;
-    }
-    public String getAccountNo() {
-        return accountNo;
-    }
-    public double getBalance() {
-        return balance;
-    }
-    public double getMinBalance() {return minBalance;}
-    public boolean isActive() {
-        return active;
-    }
-    public boolean setBalance(double balance) {
-        if (balance >= minBalance) {
-            this.balance = balance;
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public void setMinBalance(double minBalance) {this.minBalance=minBalance;}
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+public class Account 
+{
+	private String accountNo;
+	private double balance;
+	private boolean active;
+	private double maxWithdrawalPerDay;
+	private double maxTransferPerDay;
+	private int startDate;
+	private final double defaultMaxWithdrawalPerDay = 1000.00;
+	private final double defaultMaxTransferPerDay = 1000.00;
+	
+	public Account(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay)
+	{
+		this.accountNo = accountNo;
+		this.balance = balance;
+		this.active = active;
+		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
+		this.maxTransferPerDay = maxTransferPerDay;
+	}
+	
+	public Account(String accountNo, double balance, boolean active)
+	{
+		this.accountNo = accountNo;
+		this.balance = balance;
+		this.active = active;
+		this.maxWithdrawalPerDay = defaultMaxWithdrawalPerDay;
+		this.maxTransferPerDay = defaultMaxTransferPerDay;
+	}
+	
+	public String getAccountNo() {
+		return accountNo;
+	}
 
-    public boolean addAmount(double amount) {
-        setBalance(getBalance() + amount);
-        return true;
-    }
-    public boolean subtractAmount(double amount) {
-        return setBalance(balance - amount);
-    }
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean isActive) {
+		this.active = isActive;
+	}
+
+	public double getMaxWithdrawalPerDay() {
+		return maxWithdrawalPerDay;
+	}
+
+	public void setMaxWithdrawalPerDay(double maxWithdrawalPerDay) {
+		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
+	}
+
+	public double getMaxTransferPerDay() {
+		return maxTransferPerDay;
+	}
+
+	public void setMaxTransferPerDay(double maxTransferPerDay) {
+		this.maxTransferPerDay = maxTransferPerDay;
+	}
 }

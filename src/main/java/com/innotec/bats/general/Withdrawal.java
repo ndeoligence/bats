@@ -1,7 +1,18 @@
 package com.innotec.bats.general;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class Withdrawal extends Transaction {
+public class Withdrawal extends Transaction
+{
+	public static final double MIN_AMOUNT = 10.0; 
+	private boolean waitingPeriod;
+	
+	public Withdrawal (String accountNo, double amount, boolean waitingPeriod)
+	{
+		super (accountNo, amount);
+		this.waitingPeriod = waitingPeriod;
+	}
+	
+	public boolean getWaitingPeriodApplicable() 
+	{
+		return waitingPeriod;
+	}
 }

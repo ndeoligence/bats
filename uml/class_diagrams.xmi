@@ -50,7 +50,7 @@
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="JjjfTJMT8TWm" type="B1wN0VVfyMGn" name="name"/>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="q9vI5luFNdRZ" type="B1wN0VVfyMGn" name="surname"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="sTr5Q0ZjhGOB" type="B1wN0VVfyMGn" name="idNumber"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="sTr5Q0ZjhGOB" type="B1wN0VVfyMGn" name="idNo"/>
         <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="akegB8SzHMHN" name="toString">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="mHeB8ZlfUvv9" type="B1wN0VVfyMGn"/>
@@ -88,7 +88,7 @@
       <UML:Class visibility="public" isSpecification="false" namespace="Logical View" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="myJOVMUemQv9" name="Card">
        <UML:Classifier.feature>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="HLDZ6R0qPHCs" type="B1wN0VVfyMGn" name="cardNumber"/>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="beXM4SVIT21N" type="B1wN0VVfyMGn" name="pin"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="beXM4SVIT21N" type="B1wN0VVfyMGn" name="pinNo"/>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="KvxnpfL4zWb5" type="EZUAvixgY0l7" name="active"/>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="sV1JFRqgqi1f" type="Ciw2MpAsVMYB" name="accounts"/>
         <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="xZuLo6DQjkmn" name="getCardNumber">
@@ -101,7 +101,7 @@
           <UML:Parameter kind="return" xmi.id="IgLuKY6yMUFy" type="B1wN0VVfyMGn"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="dincENfAwXVl" name="isActive">
+        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="dincENfAwXVl" name="active">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="LYFlYPtTutYk" type="EZUAvixgY0l7"/>
          </UML:BehavioralFeature.parameter>
@@ -171,7 +171,7 @@
         <UML:Generalization xmi.idref="Ee7La66uVeNB"/>
        </UML:GeneralizableElement.generalization>
        <UML:Classifier.feature>
-        <UML:Attribute visibility="private" isSpecification="false" xmi.id="mLpQo4KJjLwT" type="B1wN0VVfyMGn" name="accountNo"/>
+        <UML:Attribute visibility="private" isSpecification="false" xmi.id="mLpQo4KJjLwT" type="B1wN0VVfyMGn" name="idNo"/>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="54uYYK8a1H7n" type="0Cti5qd7iZ2m" initialValue="0.0" name="balance"/>
         <UML:Attribute visibility="private" isSpecification="false" xmi.id="pzfLYUF1P5RU" type="EZUAvixgY0l7" name="active"/>
         <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="4h8XnLzImjzW" name="getAccountNo">
@@ -194,7 +194,7 @@
           <UML:Parameter visibility="private" isSpecification="false" xmi.id="LBnLQv80yBKm" type="0Cti5qd7iZ2m" value="" name="newBalance"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="GciaDjLI7Fim" name="isActive">
+        <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="GciaDjLI7Fim" name="active">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="j2ZoHGbRBzZZ" type="EZUAvixgY0l7"/>
          </UML:BehavioralFeature.parameter>
@@ -288,7 +288,7 @@
         <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="vNhjO3OzK04y" name="getCard">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter kind="return" xmi.id="LePT3gHzWgN5" type="myJOVMUemQv9"/>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uxAUbjep32dS" type="B1wN0VVfyMGn" value="" name="cardNo"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="uxAUbjep32dS" type="B1wN0VVfyMGn" value="" name="idNo"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
         <UML:Operation visibility="public" isSpecification="false" isQuery="true" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="SipTkSvhlZbS" comment="Returns an employee with the given employee number" name="getEmployee">
@@ -299,7 +299,7 @@
         </UML:Operation>
         <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="Ay3VtkGEMfgQ" comment="Returns a card holder with the given card number" name="getCardHolder">
          <UML:BehavioralFeature.parameter>
-          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JvNpbkunVw9U" type="B1wN0VVfyMGn" value="" comment="The card number" name="cardNo"/>
+          <UML:Parameter visibility="private" isSpecification="false" xmi.id="JvNpbkunVw9U" type="B1wN0VVfyMGn" value="" comment="The card number" name="idNo"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
        </UML:Classifier.feature>
