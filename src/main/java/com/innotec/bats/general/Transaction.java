@@ -1,14 +1,28 @@
 package com.innotec.bats.general;
 
+import java.sql.Date;
+
 public class Transaction extends Action
 {
 		private String primAccountNo;
 		private double amount;
+		private Date datestamp;
 		
 		public Transaction (String primAccountNo, double amount)
 		{
 			this.primAccountNo = primAccountNo;
 			this.amount = amount;
+			datestamp = null;
+		}
+
+		public Date getDatestamp ()
+		{
+			return datestamp;
+		}
+
+		public void setDatestamp (Date datestamp)
+		{
+			this.datestamp = datestamp;
 		}
 
 		public String getPrimAccountNo ()
@@ -33,7 +47,7 @@ public class Transaction extends Action
 		
 		public String toString ()
 		{
-			return "Transaction Details= \t" + super.toString() +  primAccountNo + "\t" + amount;
+			return "Transaction Details= \t" +  primAccountNo + "\tR" + amount;
 		}
 		
 }

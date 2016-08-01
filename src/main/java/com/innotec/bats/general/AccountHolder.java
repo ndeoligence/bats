@@ -6,9 +6,9 @@ public class AccountHolder extends Person
 {
     private String address;
     private String contactNo;
-    Card card;
-    ArrayList<Account> accounts;
-
+    private Card card;
+    private ArrayList<Account> accounts;
+    
     public AccountHolder (String name, String surname, String idNo, String address, String contactNo) 
     {
         super (name, surname, idNo);
@@ -29,20 +29,25 @@ public class AccountHolder extends Person
 
     public boolean addAccount (Account newAccount)
     {
-    	accounts.add(newAccount);
-    	return true;
+        accounts.add(newAccount);
+        return true;
     }
     
     public boolean addAccountArrayList(ArrayList accountArrayList)
     {
-    	accounts = accountArrayList;
-    	return true;
+        accounts = accountArrayList;
+        return true;
     }
     
     public boolean addCard (Card card)
     {
     	this.card = card;
     	return true;
+    }
+    
+    public Card getCard()
+    {
+    	return card;
     }
     
 	public String getAddress ()
