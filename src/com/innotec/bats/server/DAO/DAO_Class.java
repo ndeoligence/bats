@@ -259,7 +259,6 @@ public class DAO_Class implements DAO_Interface
 					rs.getBoolean("active"), rs.getDouble("maxWithdrawal/day"), rs.getDouble("maxTransfer/day"), rs.getString("accountHolderID"));
 			rs.close();
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 return temp;
@@ -370,7 +369,6 @@ return temp;
 					rs.getDouble("transactionAmount"), rs.getString("accounts_accountNo"), rs.getString("type"));
 			rs.close();
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 		return temp;
@@ -383,11 +381,9 @@ return temp;
 			pStmt = conn.getConnection().prepareStatement(GET_ADMINCARDBYCARD);
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
-			rs.next();
 			temp = new AdminCard(rs.getString("cardNo"),rs.getString("pinNo"),rs.getBoolean("active"),rs.getString("employeeID"));
 			rs.close();
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 		return temp;
