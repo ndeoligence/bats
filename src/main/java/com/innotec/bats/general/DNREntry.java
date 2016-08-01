@@ -1,54 +1,66 @@
 package com.innotec.bats.general;
-import java.sql.Date;
 
-public class DNREntry 
+import java.util.Arrays;
+import java.util.Date;
+
+public class DNREntry
 {
 	private Date date;
-	private int dateStamp;
-	private long timeStamp;
-	private Account acc;
-	private String accNo;
+	private String accountNo;
 	private double amount;
-	
-	public DNREntry(double amount)
+	private int[] dispensedNotes;
+
+	public DNREntry (double amount, String accountNo, int[] dispensedNotes)
 	{
-		this.dateStamp = date.getDate();
-		this.timeStamp = date.getTime();
-		this.accNo = acc.getAccountNo();
+		date = new Date();
 		this.amount = amount;
+		this.accountNo = accountNo;
+		this.dispensedNotes = dispensedNotes;
 	}
 
-	public int getDateStamp() {
-		return dateStamp;
+	public Date getDateStamp ()
+	{
+		return date;
 	}
 
-	public void setDateStamp(int dateStamp) {
-		this.dateStamp = dateStamp;
+
+	public String getAccountNo ()
+	{
+		return accountNo;
 	}
 
-	public long getTimeStamp() {
-		return timeStamp;
+	public void setAccountNo (String accNo)
+	{
+		this.accountNo = accNo;
 	}
 
-	public void setTimeStamp(long timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	public String getAccNo() {
-		return accNo;
-	}
-
-	public void setAccNo(String accNo) {
-		this.accNo = accNo;
-	}
-
-	public double getAmount() {
+	public double getAmount ()
+	{
 		return amount;
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount (double amount)
+	{
 		this.amount = amount;
 	}
+
+	public int[] getDispensedNotes ()
+	{
+		return dispensedNotes;
+	}
+
+	public void setDispensedNotes (int[] dispensedNotes)
+	{
+		this.dispensedNotes = dispensedNotes;
+	}
+
+	@Override
+	public String toString ()
+	{
+		return "DNREntry [date=" + date + ", accountNo=" + accountNo
+				+ ", amount=" + amount + ", dispensedNotes="
+				+ Arrays.toString(dispensedNotes) + "]";
+	}
 	
-	
+
 }

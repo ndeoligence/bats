@@ -11,7 +11,10 @@ public class Account
 	private String accountHolderIdNo;
 	public final double DEFAULT_MAX_WITHDRAWAL_PER_DAY = 1000.00;
 	public final double DEFAULT_MAX_TRANSFER_PER_DAY = 1000.00;
-	public Account(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay,String accountHolderIdNo)
+
+	public Account (String accountNo, double balance, boolean active,
+			double maxWithdrawalPerDay, double maxTransferPerDay,
+			String accountHolderIdNo)
 	{
 		this.accountNo = accountNo;
 		this.balance = balance;
@@ -20,25 +23,28 @@ public class Account
 		this.maxTransferPerDay = maxTransferPerDay;
 		this.setAccountHolderId(accountHolderIdNo);
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString ()
+	{
 		return "Account [accountNo=" + accountNo + ", balance=" + balance
 				+ ", active=" + active + ", maxWithdrawalPerDay="
 				+ maxWithdrawalPerDay + ", maxTransferPerDay="
 				+ maxTransferPerDay + ",\nstartDate=" + startDate
-				+ ", accountHolderIdNo=" + accountHolderIdNo
-				+ "]";
+				+ ", accountHolderIdNo=" + accountHolderIdNo + "]";
 	}
-	public Account (String accountNo, double balance, boolean active)
+
+	public Account (String accountNo, double balance, boolean active,
+			String accountHolderId)
 	{
 		this.accountNo = accountNo;
 		this.balance = balance;
 		this.active = active;
+		this.accountHolderIdNo = accountHolderId;
 		this.maxWithdrawalPerDay = DEFAULT_MAX_WITHDRAWAL_PER_DAY;
 		this.maxTransferPerDay = DEFAULT_MAX_TRANSFER_PER_DAY;
 	}
-	
+
 	public String getAccountNo ()
 	{
 		return accountNo;
@@ -88,11 +94,14 @@ public class Account
 	{
 		this.maxTransferPerDay = maxTransferPerDay;
 	}
-		public String getAccountHolderId() {
+
+	public String getAccountHolderId ()
+	{
 		return accountHolderIdNo;
 	}
 
-	public void setAccountHolderId(String accountHolderIdNo) {
+	public void setAccountHolderId (String accountHolderIdNo)
+	{
 		this.accountHolderIdNo = accountHolderIdNo;
 	}
 }
