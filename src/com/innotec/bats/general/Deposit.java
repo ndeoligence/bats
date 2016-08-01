@@ -6,7 +6,7 @@ package com.innotec.bats.general;
 public class Deposit extends Transaction {
     public static final double MIN_AMOUNT = 100;
     public Deposit(String accountNo, double amount) {
-        super(accountNo,amount);
+        super(accountNo,amount,"Deposit");
     }
     public String toString() {
         return "Deposit of R" + getAmount() + " to: " + getPrimAccountNo();

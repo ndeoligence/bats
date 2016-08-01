@@ -290,15 +290,110 @@ return temp;
 
 	@Override
 	public void addEmployee(Employee newEmployee) {
-		// TODO Auto-generated method stub
-		
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_EMPLOYEE);
+			pStmt.setString(1, newEmployee.getIdNo());
+			pStmt.setString(2, newEmployee.getName()+" "+newEmployee.getSurname());
+			pStmt.executeUpdate();
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void addAdminCard(AdminCard newAdmin) {
-		// TODO Auto-generated method stub
-		
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_ADMINCARD);
+			pStmt.setString(1, newAdmin.getEmployeeNo());
+			pStmt.setString(2,newAdmin.getCardNo());
+			pStmt.setString(3, newAdmin.getPinNo());
+			pStmt.setBoolean(4, newAdmin.isActive());
+			pStmt.executeUpdate();
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}	
 	}
+
+	@Override
+	public void addTransaction(Transaction newTransaction) {
+		try {
+			pStmt = conn.getConnection().prepareStatement(ADD_TRANSACTION);
+			pStmt.setDouble(3,newTransaction.getAmount());
+			pStmt.setString(5, newTransaction.getPrimAccountNo());
+			pStmt.setString(6, newTransaction.getType());
+			pStmt.executeUpdate();
+		} catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+
+	@Override
+	public Employee getEmployee(String employeeID) {
+		Employee temp = null;
+		
+		try {
+			pStmt = conn.getConnection().prepareStatement(
+					GET_EMPLOYEE);
+			pStmt.setString(1, employeeID);
+			rs = pStmt.executeQuery();
+			String name = null, surname = null;
+			rs.next();
+			for (int pos = 0; pos < rs.getString("employeeName")
+					.length(); pos++) {
+				if (rs.getString("employeeName").charAt(pos) == ' ') {
+					name = rs.getString("employeeName").substring(0, pos);
+					surname = rs.getString("employeeName").substring(pos,
+							rs.getString("employeeName").length());
+				}
+			}
+			temp = new Employee(name, surname,
+					rs.getString("employeeIDNo"),rs.getInt("employeeID"));
+			rs.close();
+		} catch (SQLException e) {
+			return null;
+		}
+	return temp;
+	}
+
+	@Override
+	public Transaction getTransactionForAccount(String accountNo) {
+		Transaction temp;
+		try {
+			pStmt = conn.getConnection().prepareStatement(GET_TRANSACTIONFORACCOUNT);
+			pStmt.setString(1, accountNo);
+			rs = pStmt.executeQuery();
+			rs.next();
+			temp = new Transaction(rs.getInt("transactionID"), rs.getDate("transactionTimeStamp"),
+					rs.getDouble("transactionAmount"), rs.getString("accounts_accountNo"), rs.getString("type"));
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return temp;
+	}
+
+	@Override
+	public AdminCard getAdminCardByCardNo(String cardNo) {
+		AdminCard temp;
+		try {
+			pStmt = conn.getConnection().prepareStatement(GET_ADMINCARDBYCARD);
+			pStmt.setString(1, cardNo);
+			rs = pStmt.executeQuery();
+			rs.next();
+			temp = new AdminCard(rs.getString("cardNo"),rs.getString("pinNo"),rs.getBoolean("active"),rs.getString("employeeID"));
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return temp;
+	}
+
+
 	
 	
 	

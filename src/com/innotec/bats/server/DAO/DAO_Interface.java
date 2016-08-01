@@ -14,12 +14,8 @@ public interface DAO_Interface
 	public void addCurrentAccount(String accountHolderId, CurrentAccount account);
 	public void addSavingsAccount(String accountHolderId, SavingsAccount account);
 	public void addCreditCardAccount(String accountHolderId, CreditCardAccount account);
-//	public void addTransaction(Transaction newTransaction);
+	public void addTransaction(Transaction newTransaction);
 
-//	
-//	
-//	public Employee getEmployee(String employeeID);
-//	public Transaction getTransactionForAccount(String accountID);
 //	public boolean updateCardActivity(boolean cardActivity, String cardNo);
 //	public boolean changePIN(String newPIN, String cardNo);
 //	public boolean updateAccountActivity(boolean activity, String accountNo);
@@ -27,7 +23,9 @@ public interface DAO_Interface
 //	public AccountHolder getAccountHolderByCardNo(String cardNo) throws SQLException;
 //	public AccountHolderCard getAccountHolderCardByIdNo(String idNo);		
 //	public AdminCard getAdminCardById(String idNo);
-//	public AdminCard getAdminCardByCardNo(String cardNo);
+	public Employee getEmployee(String employeeID);
+	public Transaction getTransactionForAccount(String accountID);
+	public AdminCard getAdminCardByCardNo(String cardNo);
 	public AccountHolder getAccountHolderByidNo(String idNo);
 	public AccountHolderCard getAccountHolderCardByCardNo(String cardNo);
 	public CreditCardAccount getCreditCardAccount(String accountHolderIdNo);

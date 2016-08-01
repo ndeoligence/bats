@@ -7,7 +7,7 @@ public class Withdrawal extends Transaction
 	
 	public Withdrawal (String accountNo, double amount, boolean waitingPeriod)
 	{
-		super (accountNo, amount);
+		super (accountNo, amount,"Withdrawal");
 		this.waitingPeriod = waitingPeriod;
 	}
 	

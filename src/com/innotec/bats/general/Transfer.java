@@ -8,7 +8,7 @@ public class Transfer extends Transaction
     
     public Transfer(String secondaryAccountNumber,double transferAmount, String primaryAccountNo)
     {
-    	super(primaryAccountNo, transferAmount);
+    	super(primaryAccountNo, transferAmount,"Transfer");
     	this.SecondaryAccountNumber = secondaryAccountNumber;
     	this.transferAmount = transferAmount;
     	this.transferIsNotLessThanMinAmount();
