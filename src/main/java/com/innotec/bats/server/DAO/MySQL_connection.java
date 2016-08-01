@@ -22,16 +22,17 @@ public class MySQL_connection {
 	public Connection getConnection()
 	{
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-				is = new FileInputStream("resources/DatabaseConnection.properties");
-				prop = new Properties();
-				prop.load(is);
-				username = prop.getProperty("username");
-				password = prop.getProperty("password");
-				databaseName = prop.getProperty("database");
-				url = prop.getProperty("url");
-				is.close();
-				this.conn = DriverManager.getConnection(this.url+databaseName, this.username, this.password);
+				is = new FileInputStream("src/main/resources/dbConnection.properties");
+			prop = new Properties();
+			prop.load(is);
+			String dbDriverName = prop.getProperty("dbDriverName");
+			username = prop.getProperty("dbUsername");
+			password = prop.getProperty("dbPassword");
+			databaseName = prop.getProperty("dbName");
+			url = prop.getProperty("dbUrl");
+			is.close();
+			Class.forName(dbDriverName);
+			this.conn = DriverManager.getConnection(this.url+databaseName, this.username, this.password);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
