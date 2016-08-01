@@ -1,15 +1,53 @@
 package com.innotec.bats.general;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class Transaction extends ATMAction {
-    String accountNo;
-    double amount;
-    public Transaction(String accountNo, double amount) {
-        this.accountNo = new String(accountNo);
-        this.amount = amount;
-    }
-    public String getAccountNo() {return accountNo;}
-    public double getAmount() {return amount;}
+import java.sql.Date;
+
+public class Transaction extends Action
+{
+		private String primAccountNo;
+		private double amount;
+		private Date datestamp;
+		
+		public Transaction (String primAccountNo, double amount)
+		{
+			this.primAccountNo = primAccountNo;
+			this.amount = amount;
+			datestamp = null;
+		}
+
+		public Date getDatestamp ()
+		{
+			return datestamp;
+		}
+
+		public void setDatestamp (Date datestamp)
+		{
+			this.datestamp = datestamp;
+		}
+
+		public String getPrimAccountNo ()
+		{
+			return primAccountNo;
+		}
+
+		public void setPrimAccountNo (String primAccountNo)
+		{
+			this.primAccountNo = primAccountNo;
+		}
+
+		public double getAmount ()
+		{
+			return amount;
+		}
+
+		public void setAmount (double amount)
+		{
+			this.amount = amount;
+		}
+		
+		public String toString ()
+		{
+			return "Transaction Details= \t" +  primAccountNo + "\tR " + amount;
+		}
+		
 }

@@ -1,12 +1,26 @@
 package com.innotec.bats.general;
 
-/**
- * Created by phoenix on 7/20/16.
- */
-public class AccountAction {
-    private String accountNo;
-    public AccountAction(String accountNo) {
-        this.accountNo = accountNo;
-    }
-    public String getAccountNo() {return accountNo;}
+public class AccountAction extends Action
+{
+	private String accountNo;
+	
+	public AccountAction (String accountNo)
+	{
+		this.accountNo = accountNo;
+	}
+
+	public String getAccountNo ()
+	{
+		return accountNo;
+	}
+
+	public void setAccountNo (String accountNo)
+	{
+		this.accountNo = accountNo;
+	}
+	
+	public String toString ()
+	{
+		return "AccountAction [accountNo= " + super.toString() + accountNo + "]";
+	}
 }
