@@ -1,18 +1,19 @@
 package com.innotec.bats.client.atm.model;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 /**
  * Created by phoenix on 7/18/16.
  */
 public class Dispenser {
+    /**Note constants*/
+    public static final int R10=10, R20=20, R50=50, R100=100, R200=200;
+
     /**
      * The number of each note initially. {@code reset()} uses this value to figure out how many of each note to reset to.
      */
     private static int DEF_SLOT_SIZE = 500;
-
-    /**Note constants*/
-    public static final int R10=10, R20=20, R50=50, R100=100, R200=200;
     /**
      * Contains all the possible notes in an array.
      * This will serve as a count of how many notes there are in total
@@ -28,11 +29,7 @@ public class Dispenser {
         reset();
     }
 
-    private void reset() {
-        notesCount = new int[notesValues.length];
-        for (int i = 0; i < notesCount.length; ++i)
-            notesCount[i] = DEF_SLOT_SIZE;
-    }
+    
     /**
      * Simulates dispensing a specified amount to account holder.
      * The method first does a check to make sure the amount is available.
@@ -64,13 +61,44 @@ public class Dispenser {
             return dispense((int) amount);
         else throw new IllegalArgumentException("Invalid dispense amount");
     }
+
     /**
-     * A helper to the dispenser class
+     * Calculates the total sum of the notes within the dispenser.
+     * @return the balance in the dispenser
+     */
+    public int getBalance() {
+        int total = 0;
+        for (int i = 0; i < notesCount.length; ++i)
+            total += notesValues[i] * notesCount[i];
+        return total;
+    }
+
+    /**
+     * Gives a count of how many of each note still remains in the Dispenser.
+     * @return an array containing a count of each note, in the order they appear in within {@code notesValues}.
+     */
+    public int[] getNotesCount() {
+        return Arrays.copyOf(notesCount,notesCount.length);
+    }
+    /**
+     * Method works as though it returns a single (specified) entry from {@code getNotesCount()}.
+     * @param note - the note whose count is being enquired.
+     * @return the number of individual R[{@code note}] notes remaining.
+     */
+    public int getSingleNoteCount(final int note) {
+        for (int i = 0; i < notesValues.length; ++i) {
+            if (note == notesValues[i])
+                return notesCount[i];
+        }
+        throw new IllegalArgumentException("Invalid note amount! (Tip: Use Dispenser.R -constants)");
+    }
+    /**
+     * A helper to the dispense method.
      * @param amount the amount to try to dispense
      * @param startIndex the start index
      * @return {@code retVal} such that:
-     * If {@code retVal} == 0, the funds were dispensed.
-     * If {@code retVal} != 0, the funds weren't dispensed,
+     * If {@code retVal == 0}, the funds were dispensed.
+     * If {@code retVal != 0}, the funds weren't dispensed,
      * but (if they were) the ATM would have been shot by {@code retVal}.
      */
     private int dispense(int amount, int startIndex, int[] record) {
@@ -96,25 +124,13 @@ public class Dispenser {
             return dispense(amount,startIndex-1, record);
         }
     }
-
-    /**
-     * Calculates the total sum of the notes within the dispenser.
-     * @return the balance in the dispenser
-     */
-    public int getBalance() {
-        int total = 0;
+    private void reset() {
+        notesCount = new int[notesValues.length];
         for (int i = 0; i < notesCount.length; ++i)
-            total += notesValues[i] * notesCount[i];
-        return total;
+            notesCount[i] = DEF_SLOT_SIZE;
     }
-    public int getRemainingNoteCount(final int note) {
-        for (int i = 0; i < notesValues.length; ++i) {
-            if (note == notesValues[i])
-                return notesCount[i];
-        }
-        throw new IllegalArgumentException("Invalid note amount! (Tip: Use Dispenser.R -constants)");
-    }
-    public static void main(String[] args) { // for testing
+
+    public static void main(String[] args) { // one main() to test them all!
         Dispenser disp = new Dispenser();
         while (true) {
             String ans = JOptionPane.showInputDialog(null,"Balance: R" + disp.getBalance() + ".00\nEnter amount:","");
