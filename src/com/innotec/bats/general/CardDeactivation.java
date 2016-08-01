@@ -2,11 +2,22 @@ package com.innotec.bats.general;
 
 public class CardDeactivation
 {
-	private String cardNo;
+	private String cardNo, atmID;
 	
-	public CardDeactivation (String cardNo)
+	public CardDeactivation (String cardNo, String atmID)
 	{
 		this.cardNo = cardNo;
+		this.atmID = atmID;
+	}
+
+	public String getAtmID ()
+	{
+		return atmID;
+	}
+
+	public void setAtmID (String atmID)
+	{
+		this.atmID = atmID;
 	}
 
 	public String getCardNo ()

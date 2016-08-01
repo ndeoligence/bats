@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -21,6 +22,8 @@ public class ATM_ServerComm
 	private Object serverObject = null;
 	private AccountHolder accountHolder;
 	private final String ATM_ID, ATM_Password;
+	private ArrayList statement;
+	private Account account;
 	
 	//method takes in cardRetrieval object & sends to server
 	//method receives object from server & casts it to card be a object
@@ -117,6 +120,42 @@ public class ATM_ServerComm
 		}
 	}
 	
+	public Account sendAccountCreation(AccountCreation accountCreation)
+	{
+		try 
+		{
+			oos.writeObject(accountCreation);
+			oos.flush();
+			account = (Account)this.getServerObject();
+			return account;
+			
+		}
+		catch (IOException e)
+		{
+			accountHolder = null;
+			e.printStackTrace();
+			return account;
+		}
+	}
+	
+	public boolean sendAccountClosure (AccountClosure accountClosure)
+	{
+		try
+		{
+			oos.writeObject(accountClosure);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+	}
+	
 	public boolean sendWithdrawal (Withdrawal withdrawal)
 	{
 		try
@@ -133,6 +172,80 @@ public class ATM_ServerComm
 			boolean tf = false;
 			return tf;
 		}		
+	}
+	
+	public boolean sendDeposit(Deposit deposit)
+	{
+		try
+		{
+			oos.writeObject(deposit);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+		
+	}
+	
+	public boolean sendTransfer(Transfer transfer)
+	{
+		try
+		{
+			oos.writeObject(transfer);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+		
+	}
+	
+	public boolean sendPINChange(PINChange pinChange)
+	{
+		try
+		{
+			oos.writeObject(pinChange);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+		
+	}
+	
+	public ArrayList sendStatementRetrieval(StatementRetrieval statementRetrieval)
+	{
+		try
+		{
+			oos.writeObject(statementRetrieval);
+			oos.flush();
+			statement = (ArrayList)this.getServerObject();
+			return statement;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			statement = null;
+			return statement;
+		}
 	}
 	
 	public boolean sendCardDeactivation (CardDeactivation cardDeactivation)
@@ -153,13 +266,14 @@ public class ATM_ServerComm
 		}		
 	}
 	
-	public boolean sendCardReactivation(CardReactivation cardReactivation)
+	public boolean sendCardReactivation (CardReactivation cardReactivation)
 	{
 		try
 		{
 			oos.writeObject(cardReactivation);
 			oos.flush();
-			boolean tf = (Boolean)this.getServerObject();
+			boolean tf  = (Boolean)this.getServerObject();
+			
 			return tf;
 		} 
 		catch (IOException e)
@@ -167,7 +281,25 @@ public class ATM_ServerComm
 			e.printStackTrace();
 			boolean tf = false;
 			return tf;
-		}
+		}		
+	}
+	
+	public boolean sendBalanceSheetRequest (BalanceSheetRequest balanceSheetRequest)
+	{
+		try
+		{
+			oos.writeObject(balanceSheetRequest);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
 	}
 	
 	public void sendSessionTermination (SessionTermination sessionTermination)

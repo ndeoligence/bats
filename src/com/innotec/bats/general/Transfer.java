@@ -2,28 +2,49 @@ package com.innotec.bats.general;
 
 public class Transfer extends Transaction
 {
-	private String SecondaryAccountNumber;
+	private String SecondaryAccountNo;
     private final double MIN_AMOUNT = 100.00;
     private double transferAmount = 0.00;
     
-    public Transfer(String secondaryAccountNumber,double transferAmount, String primaryAccountNo)
+    public Transfer(String primaryAccountNo, String secondaryAccountNo, double transferAmount)
     {
     	super(primaryAccountNo, transferAmount);
-    	this.SecondaryAccountNumber = secondaryAccountNumber;
+    	this.SecondaryAccountNo = secondaryAccountNo;
     	this.transferAmount = transferAmount;
     	this.transferIsNotLessThanMinAmount();
     }
 	
     public String getSecondaryAccountNumber()
 	{
-		return SecondaryAccountNumber;
-	}
-	public void setSecondaryAccountNumber(String secondaryAccountNumber)
-	{
-		SecondaryAccountNumber = secondaryAccountNumber;
+		return SecondaryAccountNo;
 	}
     
-    public boolean transferIsNotLessThanMinAmount()
+	public void setSecondaryAccountNumber(String secondaryAccountNumber)
+	{
+		SecondaryAccountNo = secondaryAccountNumber;
+	}
+    
+    public String getSecondaryAccountNo ()
+	{
+		return SecondaryAccountNo;
+	}
+
+	public void setSecondaryAccountNo (String secondaryAccountNo)
+	{
+		SecondaryAccountNo = secondaryAccountNo;
+	}
+
+	public double getTransferAmount ()
+	{
+		return transferAmount;
+	}
+
+	public void setTransferAmount (double transferAmount)
+	{
+		this.transferAmount = transferAmount;
+	}
+
+	public boolean transferIsNotLessThanMinAmount()
     {
     	if(MIN_AMOUNT > transferAmount)
     	{
@@ -37,7 +58,7 @@ public class Transfer extends Transaction
 
 	public String toString()
 	{
-		return "Transfer [SecondaryAccountNumber=" + SecondaryAccountNumber
+		return "Transfer [SecondaryAccountNumber=" + SecondaryAccountNo
 				+ ", MIN_AMOUNT=" + MIN_AMOUNT + ", transferAmount="
 				+ transferAmount + "]";
 	}

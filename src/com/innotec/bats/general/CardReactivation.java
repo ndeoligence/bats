@@ -7,18 +7,18 @@ public class CardReactivation extends TellerAction
 {
 	private String cardNo;
 
-	public CardReactivation(String cardNo, String employeeNo)
+	public CardReactivation (String employeeNo, String cardNo)
 	{
 		super(employeeNo);
 		this.cardNo = cardNo;
 	}
 
-	public String getCardNo()
+	public String getCardNo ()
 	{
 		return cardNo;
 	}
 
-	public String toString()
+	public String toString ()
 	{
 		return "Card Reactivation request for card: " + cardNo;
 	}

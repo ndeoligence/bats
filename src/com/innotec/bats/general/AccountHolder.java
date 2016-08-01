@@ -27,6 +27,11 @@ public class AccountHolder extends Person
         accounts = new ArrayList<Account>();
     }
 
+    public String getAccountHolderID()
+    {
+    	return super.getIdNo();
+    }
+    
     public boolean addAccount (Account newAccount)
     {
     	accounts.add(newAccount);
@@ -43,6 +48,11 @@ public class AccountHolder extends Person
     {
     	this.card = card;
     	return true;
+    }
+    
+    public Card getCard()
+    {
+    	return card;
     }
     
 	public String getAddress ()
@@ -75,11 +85,6 @@ public class AccountHolder extends Person
 		this.accounts = accounts;
 	}
     
-    public Card getCard()
-    {
-		return card;
-    }
-	
 	public String toString ()
 	{
 		return "AccountHolder Details= \t" + super.toString() + address + "\t" + contactNo;

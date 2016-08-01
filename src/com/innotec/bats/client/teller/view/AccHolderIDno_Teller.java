@@ -24,6 +24,11 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 
+import com.innotec.bats.client.teller.control.BankTellerApplication;
+import com.innotec.bats.general.Account;
+import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.AccountHolderRetrievalByIdNo;
+
 
 public class AccHolderIDno_Teller extends JDialog implements ActionListener
 {
@@ -33,7 +38,8 @@ public class AccHolderIDno_Teller extends JDialog implements ActionListener
 	private JLabel lblAccountNo;
 	private JTextField textField;
 	private JButton btnOk, button_1;
-	private String AccHolderIDno;
+	private AccountHolder accountHolder;
+	private String accHolderIDno;
 
 	/**
 	 * Launch the application.
@@ -114,11 +120,12 @@ public class AccHolderIDno_Teller extends JDialog implements ActionListener
 		Object source = acEvent.getSource();
 		if(source == btnOk)
 		{
-			AccHolderIDno = textField.getText();
-			//if(this.isAnAccHolder() == true)
-			//{
+			accHolderIDno = textField.getText();
+			accountHolder = BankTellerApplication.serverComm.sendAccountHolderRetrievalByIdNo(new AccountHolderRetrievalByIdNo(accHolderIDno));
+			if(!(accountHolder.equals(null)))
+			{
 				this.dispose();
-			//}
+			}
 		}
 		if(source == button_1)
 		{
@@ -126,16 +133,9 @@ public class AccHolderIDno_Teller extends JDialog implements ActionListener
 		}
 	}
 	
-//	public boolean isAnAccHolder()
-//	{
-//		if()
-//		{
-//			return true;
-//		}
-//		else
-//		{
-//			return false;
-//		}
-//	}
+	public AccountHolder getAccHolderDetails()
+	{
+		return accountHolder;
+	}
 	
 }

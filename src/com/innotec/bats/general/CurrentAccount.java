@@ -5,7 +5,7 @@ package com.innotec.bats.general;
  */
 public class CurrentAccount extends Account
 {
-	public static final double DEF_MIN_BALANCE = 100.00;
+	public static final double DEF_MIN_BALANCE = 100.0;
 	public static final double DEF_MAX_WITHDRAWAL_PER_DAY = 1000.0;
 	public static final double DEF_MAX_TRANSFER_PER_DAY = 1000.0;
 	private double minBalance;
@@ -15,7 +15,7 @@ public class CurrentAccount extends Account
 	{
 		super(accountNo, balance, active, maxWithdrawalPerDay,
 				maxTransferPerDay);
-		this.minBalance = minBalance;
+		//this.minBalance = minBalance;
 	}
 
 	public CurrentAccount(String accountNo, double balance, boolean active,

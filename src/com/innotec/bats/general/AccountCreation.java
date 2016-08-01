@@ -1,12 +1,14 @@
 package com.innotec.bats.general;
 
-public class AccountCreation extends TellerAction// will this need an obj of accountHolder for when a new acc is created for an existing acc holder
+public class AccountCreation extends TellerAction
 {
 	private Account newAccount;
+	private String accountHolderId;
 	
-	public AccountCreation (String tellerID, Account newAccount)
+	public AccountCreation (String tellerID, Account newAccount, String accountHolderId)
 	{
 		super (tellerID);
+		this.accountHolderId = accountHolderId;
 		this.newAccount = newAccount;	
 	}
 
