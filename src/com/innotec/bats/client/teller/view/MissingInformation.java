@@ -31,6 +31,7 @@ public class MissingInformation extends JDialog implements ActionListener
 	private JPanel framePanel;
 	private JButton btnOk;
 
+
 	/**
 	 * Launch the application.
 	 */

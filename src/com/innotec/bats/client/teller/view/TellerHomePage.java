@@ -124,6 +124,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 		sl_panel_1.putConstraint(SpringLayout.EAST, btnExit, 771, SpringLayout.WEST, panel_1);
 		
 		panel_1.setLayout(sl_panel_1);
+
 		panel_1.add(lblNewLabel_1);
 		panel_1.add(btnNewAcc);
 		panel_1.add(lblNewLabel_2);

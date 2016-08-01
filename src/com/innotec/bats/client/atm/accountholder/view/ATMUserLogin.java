@@ -5,17 +5,19 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
+import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
 import com.innotec.bats.client.atm.accountholder.model.CardValidation;
 import com.innotec.bats.client.atm.control.ATM_ServerComm;
 import com.innotec.bats.general.*;
 
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
-public class ATMUserLogin extends JPanel implements KeyListener
+public class ATMUserLogin extends JPanel implements KeyListener, ActionListener
 {
 	private JTextField textField;
 	private JPasswordField passwordField;
@@ -25,6 +27,8 @@ public class ATMUserLogin extends JPanel implements KeyListener
 	private JPanel framePanel;
 	private String pinEntered;
 	private String accountHolderCardNo;
+	private JButton btnCancel;
+	private int incorrectPINCounter;
 
 /**
  * Create the panel.
@@ -35,6 +39,7 @@ public ATMUserLogin (JPanel framePanel)
 	this.framePanel = framePanel;
 	
 	pinEntered = "";
+	incorrectPINCounter = 0;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -72,14 +77,14 @@ public ATMUserLogin (JPanel framePanel)
 	panel_1.setLayout(sl_panel_1);
 	
 	JLabel label_1 = new JLabel("Enter card no:");
-	sl_panel_1.putConstraint(SpringLayout.NORTH, label_1, 52, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, label_1, 537, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.NORTH, label_1, 32, SpringLayout.NORTH, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, label_1, 535, SpringLayout.WEST, panel_1);
 	label_1.setFont(new Font("Cambria", Font.BOLD, 40));
 	panel_1.add(label_1);
 	
 	textField = new JTextField();
-	sl_panel_1.putConstraint(SpringLayout.NORTH, textField, 20, SpringLayout.SOUTH, label_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, textField, 524, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.NORTH, textField, 6, SpringLayout.SOUTH, label_1);
+	sl_panel_1.putConstraint(SpringLayout.EAST, textField, -522, SpringLayout.EAST, panel_1);
 	textField.setFont(new Font("Cambria", Font.PLAIN, 34));
 	textField.setColumns(10);
 	textField.setBorder(BorderFactory.createLoweredSoftBevelBorder());
@@ -90,20 +95,29 @@ public ATMUserLogin (JPanel framePanel)
 	textField.requestFocusInWindow();
 	
 	JLabel label_2 = new JLabel("Enter PIN:");
-	sl_panel_1.putConstraint(SpringLayout.NORTH, label_2, 52, SpringLayout.SOUTH, textField);
-	sl_panel_1.putConstraint(SpringLayout.WEST, label_2, 573, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.NORTH, label_2, 49, SpringLayout.SOUTH, textField);
+	sl_panel_1.putConstraint(SpringLayout.WEST, label_2, 571, SpringLayout.WEST, panel_1);
 	label_2.setFont(new Font("Cambria", Font.BOLD, 40));
 	panel_1.add(label_2);
 	
 	passwordField = new JPasswordField();
+	sl_panel_1.putConstraint(SpringLayout.NORTH, passwordField, 6, SpringLayout.SOUTH, label_2);
+	sl_panel_1.putConstraint(SpringLayout.WEST, passwordField, 522, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.EAST, passwordField, -522, SpringLayout.EAST, panel_1);
 	passwordField.addKeyListener(this);
-	sl_panel_1.putConstraint(SpringLayout.NORTH, passwordField, 18, SpringLayout.SOUTH, label_2);
-	sl_panel_1.putConstraint(SpringLayout.WEST, passwordField, 0, SpringLayout.WEST, textField);
-	sl_panel_1.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, textField);
 	passwordField.setFont(new Font("Cambria", Font.PLAIN, 34));
 	passwordField.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 	panel_1.add(passwordField);
 	
+	btnCancel = new JButton("Cancel");
+	sl_panel_1.putConstraint(SpringLayout.NORTH, btnCancel, 73, SpringLayout.SOUTH, passwordField);
+	sl_panel_1.putConstraint(SpringLayout.WEST, btnCancel, 549, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.SOUTH, btnCancel, -48, SpringLayout.SOUTH, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.EAST, btnCancel, -14, SpringLayout.EAST, label_1);
+	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
+	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
+	panel_1.add(btnCancel);
+	btnCancel.addActionListener(this);
 	
 	
 	framePanel.add(this);
@@ -138,18 +152,39 @@ public void keyReleased (KeyEvent ke)
 			
 			if (cardValidation.validate())
 			{
+				System.out.println("Validate returned true");
+				
+				if (!(retrievedCard.isActive()))
+				{
+					JOptionPane.showMessageDialog(null, "Your card has been deactivated due to incorrect PIN entries. Please visit your nearest branch to rectify.", "Card Blocked", JOptionPane.INFORMATION_MESSAGE);
+					new ATMUserLogin(framePanel);
+				}
+				
 				AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(accountHolderCardNo);
 				AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
-				System.out.println("Validate returned true");
+				System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
 				framePanel.removeAll();
 				framePanel.revalidate();
 				new ATMAccountHolderMainMenu(framePanel, accountHolder);
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(null, "The PIN you entered is incorrect. Please try again.", "Incorrect PIN", JOptionPane.INFORMATION_MESSAGE);
+				incorrectPINCounter++;
+				if (incorrectPINCounter < 3)
+				{
+					JOptionPane.showMessageDialog(null, "The PIN you entered is incorrect. You have " + (3 - incorrectPINCounter) + " tries left. Please try again.", "Incorrect PIN", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+				if (incorrectPINCounter == 3)
+				{
+					if (ATMApplication.serverComm.sendCardDeactivation(new CardDeactivation(insertedCard.getCardNo(), ATMApplication.serverComm.getAtmId())))
+					{
+						JOptionPane.showMessageDialog(null, "You have entered your PIN incorrectly 3 times. Your card has been blocked. Please visit your nearest branch to unblock.", "Card Blocked", JOptionPane.INFORMATION_MESSAGE);
+						new ATMWelcomeScreen(framePanel);
+					}
+				}
 				System.out.println("Validate returned false");
-				textField.setText("");
+				//textField.setText("");
 				passwordField.setText("");
 			}
 		}
@@ -163,5 +198,19 @@ public void keyTyped (KeyEvent ke)
 	
 }
 
+@Override
+public void actionPerformed (ActionEvent ke)
+{
+	Object source = ke.getSource();
+	
+	if (source == btnCancel)
+	{
+		SessionTermination sessionTermination = new SessionTermination();
+		new ATMUserLogout(sessionTermination);
+		framePanel.removeAll();
+		new ATMWelcomeScreen(framePanel);
+		
+	}
+}
 
 }

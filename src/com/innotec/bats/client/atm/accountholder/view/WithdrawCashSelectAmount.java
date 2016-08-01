@@ -2,17 +2,37 @@ package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.border.*;
 
-public class WithdrawCashSelectAmount extends JPanel
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
+import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
+import com.innotec.bats.general.Action;
+import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.AccountHolderRetrievalByAccountNo;
+import com.innotec.bats.general.SessionTermination;
+import com.innotec.bats.general.Withdrawal;
+
+public class WithdrawCashSelectAmount extends JPanel implements ActionListener
 {
 	private JPanel framePanel;
+	private AccountHolder accountHolder;
+	private String accountNo;
+	private JButton btnR100, btnR200, btnR300, btnR500, btnR1000, btnCancel, btnHelp, btnOtherAmount;
+	private Action action;
+	private boolean waitingPeriod;
 
-public WithdrawCashSelectAmount (JPanel framePanel)
+public WithdrawCashSelectAmount (JPanel framePanel, AccountHolder accountholder, Action action, boolean waitingPeriod)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
+	
+	this.accountHolder = accountholder;
+	this.action = action;
+//	this.accountNo = accountNo;
+	this.waitingPeriod = waitingPeriod;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -61,21 +81,23 @@ public WithdrawCashSelectAmount (JPanel framePanel)
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnTransferMoney = new JButton("R200");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 20, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -306, SpringLayout.SOUTH, panel_2);
-	btnTransferMoney.setIcon(null);
-	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnTransferMoney);
+	btnR200 = new JButton("R200");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnR200, 20, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR200, -306, SpringLayout.SOUTH, panel_2);
+	btnR200.setIcon(null);
+	btnR200.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnR200);
+	btnR200.addActionListener(this);
 	
-	JButton btnHelp = new JButton("Help");
+	btnHelp = new JButton("Help");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnTransferMoney);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnR200);
 	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
+	btnHelp.addActionListener(this);
 	
-	JButton btnCancel = new JButton("Cancel");
+	btnCancel = new JButton("Cancel");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 21, SpringLayout.EAST, btnHelp);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
@@ -85,48 +107,55 @@ public WithdrawCashSelectAmount (JPanel framePanel)
 	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
+
+	btnCancel.addActionListener(this);
 	
-	JButton btnR = new JButton("R100");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 6, SpringLayout.SOUTH, btnR);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR, 10, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR, -400, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, 0, SpringLayout.EAST, btnR);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnR, 20, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnR, -452, SpringLayout.EAST, panel_2);
-	btnR.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnR);
+	btnR100 = new JButton("R100");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR200, 6, SpringLayout.SOUTH, btnR100);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR100, 10, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR100, -400, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnR200, 0, SpringLayout.EAST, btnR100);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnR100, 20, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnR100, -452, SpringLayout.EAST, panel_2);
+	btnR100.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnR100);
+	btnR100.addActionListener(this);
 	
-	JButton btnR_1 = new JButton("R300");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR_1, 6, SpringLayout.SOUTH, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnR_1, 0, SpringLayout.WEST, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR_1, -212, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnR_1, -452, SpringLayout.EAST, panel_2);
-	btnR_1.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnR_1);
+	btnR300 = new JButton("R300");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR300, 6, SpringLayout.SOUTH, btnR200);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnR300, 0, SpringLayout.WEST, btnR200);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR300, -212, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnR300, -452, SpringLayout.EAST, panel_2);
+	btnR300.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnR300);
+	btnR300.addActionListener(this);
 	
-	JButton btnR_2 = new JButton("R500");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR_2, -1, SpringLayout.NORTH, btnR);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnR_2, 23, SpringLayout.EAST, btnR);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR_2, -399, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnR_2, -32, SpringLayout.EAST, panel_2);
-	btnR_2.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnR_2);
+	btnR500 = new JButton("R500");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR500, -1, SpringLayout.NORTH, btnR100);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnR500, 23, SpringLayout.EAST, btnR100);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR500, -399, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnR500, -32, SpringLayout.EAST, panel_2);
+	btnR500.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnR500);
+	btnR500.addActionListener(this);
 	
-	JButton btnOtherAmount = new JButton("Other amount");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnOtherAmount, 23, SpringLayout.EAST, btnR_1);
+	btnOtherAmount = new JButton("Other amount");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnOtherAmount, 23, SpringLayout.EAST, btnR300);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnOtherAmount, -212, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnOtherAmount, 188, SpringLayout.NORTH, btnR);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnOtherAmount, 188, SpringLayout.NORTH, btnR100);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnOtherAmount, -32, SpringLayout.EAST, panel_2);
 	btnOtherAmount.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnOtherAmount);
+	btnOtherAmount.addActionListener(this);
 	
-	JButton button = new JButton("R1000");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, button, 0, SpringLayout.NORTH, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.WEST, button, 23, SpringLayout.EAST, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, button, 0, SpringLayout.SOUTH, btnTransferMoney);
-	sl_panel_2.putConstraint(SpringLayout.EAST, button, -32, SpringLayout.EAST, panel_2);
-	button.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(button);
+	btnR1000 = new JButton("R1000");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnR1000, 0, SpringLayout.NORTH, btnR200);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnR1000, 23, SpringLayout.EAST, btnR200);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnR1000, 0, SpringLayout.SOUTH, btnR200);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnR1000, -32, SpringLayout.EAST, panel_2);
+	btnR1000.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnR1000);
+	btnR1000.addActionListener(this);
 
 	
 	JLabel lblWhatWouldYou = new JLabel("Select the amount you would like to withdraw:");
@@ -139,4 +168,75 @@ public WithdrawCashSelectAmount (JPanel framePanel)
 	framePanel.revalidate();
 }
 
+@Override
+public void actionPerformed (ActionEvent ae)
+{
+	Object source = ae.getSource();
+	
+	if (source == btnR100)
+	{
+		((Withdrawal)action).setAmount(100.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
+	}
+	
+	if (source == btnR200)
+	{
+		((Withdrawal)action).setAmount(200.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
+	}
+	
+	if (source == btnR300)
+	{
+		((Withdrawal)action).setAmount(300.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
+	}
+	
+	if (source == btnR500)
+	{
+		((Withdrawal)action).setAmount(500.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
+	}
+	
+	if (source == btnR1000)
+	{
+		((Withdrawal)action).setAmount(1000.00);
+		System.out.println("Withdrawal object edited amount: " + ((Withdrawal)action).toString());
+		this.executeWithdrawal((Withdrawal)action);
+	}
+	
+	if (source == btnOtherAmount)
+	{
+		new EnterAmount(framePanel, accountHolder, action, waitingPeriod);
+	}
+	
+}
+
+public void executeWithdrawal (Withdrawal withdrawal)
+{
+	boolean withdrawalSuccesful = ATMApplication.serverComm.sendWithdrawal(withdrawal);
+	
+	if (withdrawalSuccesful)
+	{
+		System.out.println("Withdrawal successfully processed: " + withdrawal.toString());
+		JOptionPane.showMessageDialog(null, "Thank you - please collect your cash", "Transaction Complete", JOptionPane.INFORMATION_MESSAGE);
+		//Call DNR_Manager methods
+		
+		if (JOptionPane.showInternalConfirmDialog(null, "Would you like to do another transaction?", "Transaction complete", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+		{
+			accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByAccountNo(new AccountHolderRetrievalByAccountNo(withdrawal.getPrimAccountNo()));
+			new ATMAccountHolderMainMenu(framePanel, accountHolder);
+		}
+		else
+		{
+			SessionTermination sessionTermination = new SessionTermination();
+			new ATMUserLogout(sessionTermination);
+			framePanel.removeAll();
+			new ATMWelcomeScreen(framePanel);
+		}
+	}
+}
 }

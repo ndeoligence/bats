@@ -6,14 +6,19 @@ import java.util.Date;
 
 import javax.swing.border.*;
 
+import com.innotec.bats.general.AccountHolder;
+
 public class ViewShowAccountBalance extends JPanel
 {
 	private JPanel framePanel;
+	private double accountBalance;
 
-public ViewShowAccountBalance (JPanel framePanel)
+public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, double accountBalance)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
+	
+	this.accountBalance = accountBalance;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -78,7 +83,7 @@ public ViewShowAccountBalance (JPanel framePanel)
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblR = new JLabel("R XX XXX.XX");
+	JLabel lblR = new JLabel("R " + accountBalance);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 94, SpringLayout.SOUTH, lblR);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, 9, SpringLayout.EAST, lblR);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, lblR, 88, SpringLayout.NORTH, panel_2);
@@ -86,11 +91,11 @@ public ViewShowAccountBalance (JPanel framePanel)
 	lblR.setFont(new Font("Cambria", Font.PLAIN, 70));
 	panel_2.add(lblR);
 	
-	//Date date = System.currentTimeMillis();
+	Date date = new Date();
 	
-	JLabel lblWhatWouldYou = new JLabel("Account balance as at xx-xx-xxxx");
+	JLabel lblWhatWouldYou = new JLabel("Account balance as at " + date);
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 315, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 110, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
 	

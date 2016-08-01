@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -20,17 +21,60 @@ public class ATM_ServerComm
 	private Card card = null;
 	private Object serverObject = null;
 	private AccountHolder accountHolder;
-	private final String ATM_ID, ATM_Password;
+	private final String ATM_ID = "13701";
+	private final String ATM_Password = "chiroptera13701";;
+	private ArrayList statement;
+	private Account account;
 	
 	//method takes in cardRetrieval object & sends to server
 	//method receives object from server & casts it to card be a object
 	//open/close connection methods
 	public ATM_ServerComm()
 	{
-		ATM_ID = "13701";
-		ATM_Password = "chiroptera13701";
+		
+
 	}
 	
+	public Socket getSocket ()
+	{
+		return socket;
+	}
+
+	public ObjectInputStream getOis ()
+	{
+		return ois;
+	}
+
+	public ObjectOutputStream getOos ()
+	{
+		return oos;
+	}
+
+	public Card getCard ()
+	{
+		return card;
+	}
+
+	public AccountHolder getAccountHolder ()
+	{
+		return accountHolder;
+	}
+
+	public String getAtmId ()
+	{
+		return ATM_ID;
+	}
+
+	public ArrayList getStatement ()
+	{
+		return statement;
+	}
+
+	public Account getAccount ()
+	{
+		return account;
+	}
+
 	public Card sendCardRetrieval(CardRetrieval cardRetrieval)
 	{
 			try
@@ -117,6 +161,42 @@ public class ATM_ServerComm
 		}
 	}
 	
+	public Account sendAccountCreation(AccountCreation accountCreation)
+	{
+		try 
+		{
+			oos.writeObject(accountCreation);
+			oos.flush();
+			account = (Account)this.getServerObject();
+			return account;
+			
+		}
+		catch (IOException e)
+		{
+			accountHolder = null;
+			e.printStackTrace();
+			return account;
+		}
+	}
+	
+	public boolean sendAccountClosure (AccountClosure accountClosure)
+	{
+		try
+		{
+			oos.writeObject(accountClosure);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+	}
+	
 	public boolean sendWithdrawal (Withdrawal withdrawal)
 	{
 		try
@@ -133,6 +213,80 @@ public class ATM_ServerComm
 			boolean tf = false;
 			return tf;
 		}		
+	}
+	
+	public boolean sendDeposit(Deposit deposit)
+	{
+		try
+		{
+			oos.writeObject(deposit);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+		
+	}
+	
+	public boolean sendTransfer(Transfer transfer)
+	{
+		try
+		{
+			oos.writeObject(transfer);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+		
+	}
+	
+	public boolean sendPINChange(PINChange pinChange)
+	{
+		try
+		{
+			oos.writeObject(pinChange);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
+		
+	}
+	
+	public ArrayList sendStatementRetrieval(StatementRetrieval statementRetrieval)
+	{
+		try
+		{
+			oos.writeObject(statementRetrieval);
+			oos.flush();
+			statement = (ArrayList)this.getServerObject();
+			return statement;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			statement = null;
+			return statement;
+		}
 	}
 	
 	public boolean sendCardDeactivation (CardDeactivation cardDeactivation)
@@ -153,13 +307,14 @@ public class ATM_ServerComm
 		}		
 	}
 	
-	public boolean sendCardReactivation(CardReactivation cardReactivation)
+	public boolean sendCardReactivation (CardReactivation cardReactivation)
 	{
 		try
 		{
 			oos.writeObject(cardReactivation);
 			oos.flush();
-			boolean tf = (Boolean)this.getServerObject();
+			boolean tf  = (Boolean)this.getServerObject();
+			
 			return tf;
 		} 
 		catch (IOException e)
@@ -167,7 +322,25 @@ public class ATM_ServerComm
 			e.printStackTrace();
 			boolean tf = false;
 			return tf;
-		}
+		}		
+	}
+	
+	public boolean sendBalanceSheetRequest (BalanceSheetRequest balanceSheetRequest)
+	{
+		try
+		{
+			oos.writeObject(balanceSheetRequest);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
+		}		
 	}
 	
 	public void sendSessionTermination (SessionTermination sessionTermination)

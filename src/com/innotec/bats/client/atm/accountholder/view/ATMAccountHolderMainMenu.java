@@ -10,6 +10,7 @@ import javax.swing.border.*;
 import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
 import com.innotec.bats.general.AccountHolder;
 import com.innotec.bats.general.SessionTermination;
+import com.innotec.bats.general.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -174,32 +175,43 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnWithdrawCash)
 	{
-		new WithdrawCashSelectAccount(framePanel, accountHolder.getAccounts());
+		Transaction withdrawal = new Withdrawal("", 0.00, false);
+		new SelectAccount(framePanel, accountHolder, withdrawal, "withdrawal");
 	}
 	
 	if (source == btnDepositCash)
 	{
-		new DepositSelectAccount(framePanel);
+		Action deposit = new Deposit("", 0.00);
+		new SelectAccount(framePanel, accountHolder, deposit, "deposit");
 	}
 	
 	if (source == btnTransferMoney)
 	{
-		
+		Action transfer = new Transfer("", "", 0.00);
+		new SelectAccount(framePanel, accountHolder, transfer, "transfer FROM");
 	}
 	
 	if (source == btnViewBalance)
 	{
-		
+		Action viewBalance = new ViewBalance("");
+		new SelectAccount(framePanel, accountHolder, viewBalance, "viewing");
 	}
 	
 	if (source == btnViewStatement)
 	{
-		
+		Action viewStatement = new ViewStatement(null, "");
+		new SelectAccount(framePanel, accountHolder, viewStatement, "viewing");
+	}
+	
+	if (source == btnChangePin)
+	{
+		PINChange pinChange = new PINChange(accountHolder.getCard().getCardNo(), "");
+		new ChangePINOldPIN(framePanel, accountHolder, pinChange);
 	}
 	
 	if (source == btnHelp)
 	{
-		new HelpChooseTopic(framePanel);
+		new HelpChooseTopic(framePanel, accountHolder);
 	}
 	
 	if (source == btnCancel)

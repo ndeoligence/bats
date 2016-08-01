@@ -45,6 +45,11 @@ public class AccountHolder extends Person
     	return true;
     }
     
+    public Card getCard()
+    {
+    	return card;
+    }
+    
 	public String getAddress ()
 	{
 		return address;
@@ -75,11 +80,6 @@ public class AccountHolder extends Person
 		this.accounts = accounts;
 	}
     
-    public Card getCard()
-    {
-		return card;
-    }
-	
 	public String toString ()
 	{
 		return "AccountHolder Details= \t" + super.toString() + address + "\t" + contactNo;
