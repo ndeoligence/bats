@@ -12,6 +12,8 @@ public class BankTellerApplication
 	{
 		serverComm = new ATM_ServerComm();
 		
+		serverComm.openConnection();
+		
 		TellerMainFrame tellerMainFrame = new TellerMainFrame();
 		TellerHomePage tellerHomePage = new TellerHomePage(tellerMainFrame.getFramePanel());
 		tellerMainFrame.setVisible(true);

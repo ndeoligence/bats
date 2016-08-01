@@ -48,6 +48,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 	private ConfirmExitDialog confirmExitDialog;
 	private OpenNewAccountForExistingAccountHolder newAccountForExistingAccountHolder;
 	public static final String tellerID = "chiroptera13801";
+	private AccountNoNotRegistered accountNoNotRegistered;
 	
 	public TellerHomePage(JPanel framePanel)
 	{
@@ -188,13 +189,17 @@ public class TellerHomePage extends JPanel implements ActionListener
 		if(source == btnUnblockAcc)
 		{
 			accNoDialog2 = new AccountNumber_Teller();
-//			if(accNoDialog.getAccountHolder() != null)
-//			{
+			if(accNoDialog.getAccountHolder() != null)
+			{
 				framePanel.removeAll();
 				framePanel.validate();
 				
-				unblockCardPanel = new UnblockCard(framePanel);
-//			}
+				unblockCardPanel = new UnblockCard(framePanel, accNoDialog2.getAccountHolder());
+			}
+			else
+			{
+				accountNoNotRegistered = new AccountNoNotRegistered();
+			}
 		}
 		if(source == btnExit)
 		{

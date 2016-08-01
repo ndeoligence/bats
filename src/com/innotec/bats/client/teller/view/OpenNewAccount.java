@@ -380,17 +380,10 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		if(source == btnOpenAccount)
 		{
 			accountHolder = new AccountHolder(name, surname, idNo, address, contactNo);
-			if(rdbtnNewRadioButton.isSelected())
-			{
-				maxWithdrawalPerDay = 1000.00;
-			}
+			
 			if(rdbtnWithdrawalMax.isSelected())
 			{
 				maxWithdrawalPerDay = Double.parseDouble(textField_4.getText());
-			}
-			if(rdbtnDefaultTransferAmount.isSelected())
-			{
-				maxTransferPerDay = 1000.00;
 			}
 			if(rdbtnTransferMaxR.isSelected())
 			{
@@ -446,12 +439,19 @@ public class OpenNewAccount extends JPanel implements ActionListener
 			}
 			if(this.areAllCriteriaMet() == true)
 			{
+				if((!(chckbxCurrentAccount.isSelected())) && chckbxSavingsAccount.isSelected())
+				{
+					accountHolder.addAccount(savingsAccount);
+				}
 				accHolderPIN_Entry = new AccHolderPIN_Entry(framePanel, accountHolder);	
 				framePanel.removeAll();
 				framePanel.add(this);
 				framePanel.revalidate();
 				framePanel.repaint();
-				accHolderPIN_Entry.setAccount(savingsAccount);
+				if(chckbxCurrentAccount.isSelected() && chckbxSavingsAccount.isSelected())
+				{
+					accHolderPIN_Entry.setAccount(savingsAccount);
+				}
 			}
 			else
 			{
@@ -476,10 +476,12 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		if(rdbtnDefaultTransferAmount.isSelected())
 		{
 			textField_5.setEnabled(false);
+			rdbtnNewRadioButton.setSelected(true);
 		}
 		if(rdbtnTransferMaxR.isSelected())
 		{
 			textField_5.setEnabled(true);
+			rdbtnWithdrawalMax.setSelected(true);
 		}
 		if(source == btnBackBtn)
 		{

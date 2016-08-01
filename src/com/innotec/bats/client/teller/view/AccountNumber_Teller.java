@@ -35,13 +35,14 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 {
 
 	private final JPanel contentPanel = new JPanel();
+	private JPanel framePanel = new JPanel();
 	private JLabel lblEnterClientsAccount;
 	private JLabel lblAccountNo;
 	private JTextField textField;
 	private JButton btnOk, button_1;
     private String accountNo;
     private AccountHolder accountHolder;
-    private UnblockCard unblockAccount;
+    private UnblockCard unblockCard;
     private AccountHolderRetrievalByAccountNo accountHolderRetrievalByAccountNo;
     
 
@@ -130,8 +131,9 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 			accountHolder = BankTellerApplication.serverComm.sendAccountHolderRetrievalByAccountNo(accountHolderRetrievalByAccountNo);
 			if(accountHolder != null)
 			{
-				unblockAccount = new UnblockCard(accountHolder);
+				unblockCard = new UnblockCard(framePanel, accountHolder);
 			}
+			
 			JOptionPane.showMessageDialog(null, "Account Holder error! /nIs account number correct?", "Account Holder does not exist", JOptionPane.INFORMATION_MESSAGE);
 			this.dispose();
 		}

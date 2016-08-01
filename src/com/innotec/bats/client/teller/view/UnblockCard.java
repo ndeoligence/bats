@@ -48,8 +48,9 @@ public class UnblockCard extends JPanel implements ActionListener
 	private AccountHolder accountHolder;
 	private CardReactivation cardReactivation;
 
-	public UnblockCard(JPanel framePanel)
+	public UnblockCard(JPanel framePanel, AccountHolder accountHolder)
 	{
+		this.accountHolder = accountHolder;
 		framePanel.removeAll();
 		this.framePanel = framePanel;
 		setBackground(SystemColor.inactiveCaption);
@@ -59,7 +60,7 @@ public class UnblockCard extends JPanel implements ActionListener
 		JPanel panel = new JPanel();
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		panel.setBackground(SystemColor.inactiveCaption);
-		panel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 2), "Account Administrator", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(70, 130, 180)));
+		panel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 2), "Teller/ Administrator", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(70, 130, 180)));
 		add(panel, BorderLayout.NORTH);
 		panel.setLayout(new GridLayout(2, 1, 0, 0));
 		
@@ -71,7 +72,7 @@ public class UnblockCard extends JPanel implements ActionListener
 		label.setBackground(SystemColor.inactiveCaption);
 		panel.add(label);
 		
-		JLabel lblUnblockAccount = new JLabel("Unblock Account:");
+		JLabel lblUnblockAccount = new JLabel("Unblock Card:");
 		lblUnblockAccount.setForeground(SystemColor.textHighlight);
 		lblUnblockAccount.setFont(new Font("Cambria", Font.BOLD, 30));
 		panel.add(lblUnblockAccount);
@@ -85,39 +86,29 @@ public class UnblockCard extends JPanel implements ActionListener
 		lblAccountHolder.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAccountHolder.setFont(new Font("Cambria", Font.BOLD, 38));
 		
-		JLabel lblAccountType = new JLabel("Account Type:");
-		lblAccountType.setHorizontalAlignment(SwingConstants.LEFT);
-		lblAccountType.setFont(new Font("Cambria", Font.BOLD, 38));
-		
 		textField = new JTextField();
 		textField.setFont(new Font("Cambria", Font.PLAIN, 22));
 		textField.setColumns(10);
+		textField.setText(accountHolder.getName() + " " + accountHolder.getSurname());
 		
-		JCheckBox checkBox = new JCheckBox("Current Account");
-		checkBox.setFont(new Font("Cambria", Font.PLAIN, 30));
-		checkBox.setBackground(SystemColor.inactiveCaption);
-		
-		JCheckBox checkBox_1 = new JCheckBox("Savings Account");
-		checkBox_1.setFont(new Font("Cambria", Font.PLAIN, 30));
-		checkBox_1.setBackground(SystemColor.inactiveCaption);
-		
-		JLabel lblAccountNumber = new JLabel("Account Number:");
+		JLabel lblAccountNumber = new JLabel("Card Number:");
 		lblAccountNumber.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAccountNumber.setFont(new Font("Cambria", Font.BOLD, 38));
 		
 		textField_1 = new JTextField();
 		textField_1.setFont(new Font("Cambria", Font.PLAIN, 22));
 		textField_1.setColumns(10);
+		textField_1.setText(accountHolder.getCard().getCardNo());
 		
-		JLabel lblAccountStatus = new JLabel("Account Status:");
+		JLabel lblAccountStatus = new JLabel("Card Status:");
 		lblAccountStatus.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAccountStatus.setFont(new Font("Cambria", Font.BOLD, 38));
 		
-		lblBlocked = new JLabel("Blocked");
+		lblBlocked = new JLabel("");
 		lblBlocked.setHorizontalAlignment(SwingConstants.LEFT);
 		lblBlocked.setFont(new Font("Cambria", Font.ITALIC, 30));
 		
-		btnUnblock = new JButton("Unblock Acc");
+		btnUnblock = new JButton("Unblock Card");
 		btnUnblock.setFont(new Font("Cambria", Font.BOLD, 24));
 		btnUnblock.addActionListener(this);
 		
@@ -126,52 +117,36 @@ public class UnblockCard extends JPanel implements ActionListener
 		btnCancel.addActionListener(this);
 		
 		SpringLayout sl_panel_1 = new SpringLayout();
-		sl_panel_1.putConstraint(SpringLayout.NORTH, btnCancel, 379, SpringLayout.SOUTH, checkBox_1);
-		sl_panel_1.putConstraint(SpringLayout.WEST, btnCancel, 282, SpringLayout.EAST, btnUnblock);
-		sl_panel_1.putConstraint(SpringLayout.SOUTH, btnCancel, -28, SpringLayout.SOUTH, panel_1);
+		sl_panel_1.putConstraint(SpringLayout.WEST, btnCancel, 262, SpringLayout.EAST, btnUnblock);
 		sl_panel_1.putConstraint(SpringLayout.EAST, btnCancel, -356, SpringLayout.EAST, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.EAST, btnUnblock, -811, SpringLayout.EAST, panel_1);
+		sl_panel_1.putConstraint(SpringLayout.EAST, btnUnblock, -797, SpringLayout.EAST, panel_1);
+		sl_panel_1.putConstraint(SpringLayout.WEST, lblBlocked, 0, SpringLayout.WEST, textField_1);
+		sl_panel_1.putConstraint(SpringLayout.WEST, textField_1, 0, SpringLayout.WEST, textField);
+		sl_panel_1.putConstraint(SpringLayout.EAST, textField_1, -629, SpringLayout.EAST, panel_1);
+		sl_panel_1.putConstraint(SpringLayout.NORTH, btnCancel, 517, SpringLayout.NORTH, panel_1);
+		sl_panel_1.putConstraint(SpringLayout.SOUTH, btnCancel, -28, SpringLayout.SOUTH, panel_1);
+		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountNumber, 145, SpringLayout.SOUTH, lblAccountHolder);
 		sl_panel_1.putConstraint(SpringLayout.WEST, btnUnblock, 356, SpringLayout.WEST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, btnUnblock, -28, SpringLayout.SOUTH, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.WEST, lblBlocked, 60, SpringLayout.EAST, lblAccountStatus);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, lblBlocked, 0, SpringLayout.SOUTH, lblAccountStatus);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountStatus, 79, SpringLayout.SOUTH, lblAccountNumber);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, textField_1, 0, SpringLayout.SOUTH, lblAccountNumber);
-		sl_panel_1.putConstraint(SpringLayout.WEST, checkBox, 81, SpringLayout.EAST, lblAccountType);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, textField, 0, SpringLayout.SOUTH, lblAccountHolder);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountNumber, 79, SpringLayout.SOUTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, checkBox_1, 1, SpringLayout.NORTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, checkBox, 1, SpringLayout.NORTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.WEST, checkBox_1, 17, SpringLayout.EAST, checkBox);
-		sl_panel_1.putConstraint(SpringLayout.WEST, textField_1, 25, SpringLayout.EAST, lblAccountNumber);
-		sl_panel_1.putConstraint(SpringLayout.EAST, textField_1, -629, SpringLayout.EAST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, lblAccountStatus, 16, SpringLayout.WEST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, lblAccountNumber, 16, SpringLayout.WEST, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.WEST, lblAccountType, 16, SpringLayout.WEST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, textField, 46, SpringLayout.EAST, lblAccountHolder);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textField, -629, SpringLayout.EAST, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountType, 92, SpringLayout.NORTH, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountHolder, 26, SpringLayout.NORTH, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, lblAccountHolder, 16, SpringLayout.WEST, panel_1);
 		panel_1.setLayout(sl_panel_1);
 		panel_1.add(lblAccountHolder);
 		panel_1.add(textField);
-		panel_1.add(lblAccountType);
-		panel_1.add(checkBox);
-		panel_1.add(checkBox_1);
 		panel_1.add(lblAccountNumber);
 		panel_1.add(textField_1);
 		panel_1.add(lblAccountStatus);
 		panel_1.add(lblBlocked);
 		panel_1.add(btnUnblock);
 		panel_1.add(btnCancel);
-		
-		JCheckBox chckbxCreditCard = new JCheckBox("Credit Card");
-		sl_panel_1.putConstraint(SpringLayout.NORTH, chckbxCreditCard, 1, SpringLayout.NORTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.WEST, chckbxCreditCard, 16, SpringLayout.EAST, checkBox_1);
-		chckbxCreditCard.setFont(new Font("Cambria", Font.PLAIN, 30));
-		chckbxCreditCard.setBackground(SystemColor.inactiveCaption);
-		panel_1.add(chckbxCreditCard);
 		
 	    backButton = new JButton("");
 		backButton.setIcon(new ImageIcon("resources/ReturnIconWithoutBackground.png"));
@@ -180,15 +155,21 @@ public class UnblockCard extends JPanel implements ActionListener
 		backButton.addActionListener(this);
 		panel_1.add(backButton);
 		
+		if(accountHolder.getCard().isActive())
+		{
+			lblBlocked.setText("Card Active");
+		}
+		else
+		{
+			lblBlocked.setText("Card Inactive");
+		}
+		
 		framePanel.add(this);
 		framePanel.validate();
 		framePanel.repaint();
 	}
-
-	public UnblockCard(AccountHolder accountHolder)
-	{
-		this.accountHolder = accountHolder;
-	}
+	
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent acEvent)
@@ -205,14 +186,17 @@ public class UnblockCard extends JPanel implements ActionListener
 		if(source == btnUnblock)
 		{
 			unblockAccConfirmation = new UnblockAccConfirmation();
-//			if()
-//			{
+
+			if(unblockAccConfirmation.okBtnPressed())
+			{
 				cardReactivation = new CardReactivation(accountHolder.getCard().getCardNo(), TellerHomePage.tellerID);
-				if(BankTellerApplication.serverComm.sendCardReactivation(cardReactivation) == true)
+				BankTellerApplication.serverComm.sendCardReactivation(cardReactivation);
+				if(accountHolder.getCard().isActive())
 				{
-					lblBlocked.setText("Acc Open!");		
+					lblBlocked.setText("Card Active");		
 				}
-//			}
+			}
+
 		}
 	}
 

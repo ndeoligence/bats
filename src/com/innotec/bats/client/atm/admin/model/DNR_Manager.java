@@ -1,6 +1,8 @@
 package com.innotec.bats.client.atm.admin.model;
 
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
 import com.innotec.bats.client.atm.control.ATM_ServerComm;
+import com.innotec.bats.client.teller.control.BankTellerApplication;
 import com.innotec.bats.general.Deposit;
 import com.innotec.bats.general.Transaction;
 import com.innotec.bats.general.Withdrawal;
@@ -23,6 +25,7 @@ public class DNR_Manager
 		{
 			dispenserBalance = dispenserBalance - transaction.getAmount();
 			dnrEntry = new DNREntry(withdrawal.getAmount(), withdrawal.getPrimAccountNo());
+			dnRecord.readFromDAOfile();
 			dnRecord.add(dnrEntry);
 			dnr_DAO.writeToDNR(dnRecord);
 		}
@@ -30,6 +33,7 @@ public class DNR_Manager
 		{
 			dispenserBalance = dispenserBalance + transaction.getAmount();
 			dnrEntry = new DNREntry(deposit.getAmount(), deposit.getPrimAccountNo());
+			dnRecord.readFromDAOfile();
 			dnRecord.add(dnrEntry);
 			dnr_DAO.writeToDNR(dnRecord);
 		}
@@ -51,7 +55,7 @@ public class DNR_Manager
 	public void createNextDateDNR()
 	{
 		dnr_DAO = new DNR_DAO();
-		dnRecord = new DNRecord(ATM_ServerComm.getATM_ID());
+		dnRecord = new DNRecord(ATMApplication.serverComm.getATM_ID());
 		
 	}
 }

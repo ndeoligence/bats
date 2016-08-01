@@ -159,13 +159,13 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 				accountHolder.addCard(card);
 				accountHolderCreation = new AccountHolderCreation(accountHolder, TellerHomePage.tellerID);
 				BankTellerApplication.serverComm.sendAccountHolderCreation(accountHolderCreation);
-				tellerHomePage = new TellerHomePage(framePanel);
 				
 				if(!(account.equals(null)))
 				{
 					accountCreation = new AccountCreation(TellerHomePage.tellerID, account, accountHolder.getAccountHolderID());
 					BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
 				}
+				tellerHomePage = new TellerHomePage(framePanel);
 			}
 			else
 			{

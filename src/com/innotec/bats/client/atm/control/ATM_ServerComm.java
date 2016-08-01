@@ -34,6 +34,11 @@ public class ATM_ServerComm
 		ATM_Password = "chiroptera13701";
 	}
 	
+	public String getATM_ID()
+	{
+		return ATM_ID;
+	}
+	
 	public Card sendCardRetrieval(CardRetrieval cardRetrieval)
 	{
 			try
