@@ -9,7 +9,7 @@ public class Dispenser {
     /**
      * The number of each note initially. {@code reset()} uses this value to figure out how many of each note to reset to.
      */
-    private static int DEF_SLOT_SIZE = 5;
+    private static int DEF_SLOT_SIZE = 500;
 
     /**Note constants*/
     public static final int R10=10, R20=20, R50=50, R100=100, R200=200;
