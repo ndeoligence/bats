@@ -1,17 +1,22 @@
 package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
+
 import java.awt.*;
+
 import javax.swing.border.*;
+
+import com.innotec.bats.general.AccountHolder;
 
 
 public class DepositSelectAccount extends JPanel
 {
+	private JPanel framePanel;
 
-/**
- * Create the panel.
- */
-public DepositSelectAccount ()
+public DepositSelectAccount (JPanel framePanel, AccountHolder accountHolder)
 {
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -34,7 +39,7 @@ public DepositSelectAccount ()
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -89,7 +94,7 @@ public DepositSelectAccount ()
 	JButton btnHelp = new JButton("Help");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnWithdrawCash_1);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnWithdrawCash_1);
-	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
+	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
@@ -100,7 +105,7 @@ public DepositSelectAccount ()
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\CancelIcon.jpg"));
+	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
@@ -109,6 +114,9 @@ public DepositSelectAccount ()
 	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 166, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
+	framePanel.revalidate();
 }
 
 }

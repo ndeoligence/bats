@@ -15,4 +15,9 @@ public class Withdrawal extends Transaction
 	{
 		return waitingPeriod;
 	}
+	
+	public String toString()
+	{
+		return "Withdrawal " + super.toString();
+	}
 }

@@ -14,7 +14,9 @@ public class CardValidation
 	
 	public boolean validate ()
 	{
-			if ((insertedCard.getCardNo().equals(retrievedCard.getCardNo())) && (insertedCard.getPin().equals(retrievedCard.getPin())))
+		System.out.println("Inserted Card No: " +insertedCard.getCardNo() + "PIN: " + insertedCard.getPinNo());
+		System.out.println("Retrieved Card No: " +retrievedCard.getCardNo() + "PIN: " + retrievedCard.getPinNo());
+			if ((insertedCard.getCardNo().equals(retrievedCard.getCardNo())) && (insertedCard.getPinNo().equals(retrievedCard.getPinNo())))
 			{
 				return true;
 			}

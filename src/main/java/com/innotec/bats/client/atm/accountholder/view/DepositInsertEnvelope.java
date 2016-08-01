@@ -1,17 +1,27 @@
 package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.border.*;
 
+import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.Action;
 
-public class DepositInsertEnvelope extends JPanel
+public class DepositInsertEnvelope extends JPanel implements ActionListener
 {
+	private JPanel framePanel;
+	AccountHolder accountHolder;
 
-/**
- * Create the panel.
- */
-public DepositInsertEnvelope ()
+public DepositInsertEnvelope (JPanel framePanel, AccountHolder accountHolder, Action action)
 {
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
+	this.accountHolder = accountHolder;
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -34,7 +44,7 @@ public DepositInsertEnvelope ()
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -59,21 +69,22 @@ public DepositInsertEnvelope ()
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnTransferMoney = new JButton("");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 20, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 282, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -282, SpringLayout.EAST, panel_2);
-	btnTransferMoney.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\InsertEnvelopeIcon.jpg"));
-	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
-	btnTransferMoney.setBorder(BorderFactory.createRaisedBevelBorder());
-	panel_2.add(btnTransferMoney);
+	JButton btnInsertEnvelope = new JButton("");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnInsertEnvelope, 20, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnInsertEnvelope, 282, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnInsertEnvelope, -282, SpringLayout.EAST, panel_2);
+	btnInsertEnvelope.setIcon(new ImageIcon("resources/InsertEnvelopeIcon.jpg"));
+	btnInsertEnvelope.setFont(new Font("Cambria", Font.PLAIN, 38));
+	btnInsertEnvelope.setBorder(BorderFactory.createRaisedBevelBorder());
+	panel_2.add(btnInsertEnvelope);
+	btnInsertEnvelope.addActionListener(this);
 	
 	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -42, SpringLayout.NORTH, btnHelp);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnInsertEnvelope, -42, SpringLayout.NORTH, btnHelp);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 388, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
-	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
+	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
@@ -83,7 +94,7 @@ public DepositInsertEnvelope ()
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\CancelIcon.jpg"));
+	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
@@ -92,6 +103,14 @@ public DepositInsertEnvelope ()
 	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 463, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
+	framePanel.revalidate();
+}
+
+@Override
+public void actionPerformed (ActionEvent arg0)
+{
 }
 
 }

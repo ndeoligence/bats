@@ -59,7 +59,7 @@ public ATMWelcomeScreen (JPanel framePanel)
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
 	sl_panel.putConstraint(SpringLayout.EAST, label, -10, SpringLayout.EAST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogo.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogo.jpg"));
 	label.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	panel.add(label);
 	
@@ -79,7 +79,7 @@ public ATMWelcomeScreen (JPanel framePanel)
 	sl_panel_1.putConstraint(SpringLayout.SOUTH, button, -67, SpringLayout.SOUTH, panel_1);
 	sl_panel_1.putConstraint(SpringLayout.EAST, button, -554, SpringLayout.EAST, panel_1);
 	button.addActionListener(this);
-	button.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\BATSButton.jpg"));
+	button.setIcon(new ImageIcon("resources/BATSButton.jpg"));
 	button.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 	button.setBackground(Color.WHITE);
 	panel_1.add(button);
@@ -92,13 +92,9 @@ public ATMWelcomeScreen (JPanel framePanel)
 	panel_1.add(label_1);
 	
 	framePanel.add(this);
-
+	framePanel.revalidate();
 }
 
-//public JPanel passPanel (JPanel framePanel)
-//{
-//		
-//}
 @Override
 public void actionPerformed (ActionEvent e)
 {
@@ -106,15 +102,8 @@ public void actionPerformed (ActionEvent e)
 	
 	if (source == button)
 	{
-		
-		framePanel.removeAll();
-		framePanel.validate();
 		ATMUserLogin atmUserLogin = new ATMUserLogin(framePanel);
-		//MainGUI mainGUI = new MainGUI();
-		//mainGUI.setVisible(true);
-		
-		
-		
+
 	}
 }
 }

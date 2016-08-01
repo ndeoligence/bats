@@ -1,17 +1,20 @@
 package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
+
 import java.awt.*;
+
 import javax.swing.border.*;
 
 
 public class ViewSelectAccount extends JPanel
 {
+	private JPanel framePanel;
 
-/**
- * Create the panel.
- */
-public ViewSelectAccount ()
+public ViewSelectAccount (JPanel framePanel)
 {
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -34,7 +37,7 @@ public ViewSelectAccount ()
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -59,7 +62,7 @@ public ViewSelectAccount ()
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnWithdrawCash = new JButton("Savings Account");
+	JButton btnWithdrawCash = new JButton("Savings account");
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash, -32, SpringLayout.EAST, panel_2);
 	btnWithdrawCash.setIcon(null);
 	btnWithdrawCash.setFont(new Font("Cambria", Font.PLAIN, 38));
@@ -91,7 +94,7 @@ public ViewSelectAccount ()
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnWithdrawCash_1);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -447, SpringLayout.EAST, panel_2);
-	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
+	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
@@ -100,7 +103,7 @@ public ViewSelectAccount ()
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\CancelIcon.jpg"));
+	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
@@ -109,6 +112,9 @@ public ViewSelectAccount ()
 	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 222, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
+	framePanel.revalidate();
 }
 
 }

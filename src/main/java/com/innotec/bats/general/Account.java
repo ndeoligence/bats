@@ -1,6 +1,6 @@
 package com.innotec.bats.general;
 
-public class Account 
+public class Account
 {
 	private String accountNo;
 	private double balance;
@@ -8,18 +8,17 @@ public class Account
 	private double maxWithdrawalPerDay;
 	private double maxTransferPerDay;
 	private int startDate;
-	private String accountHolderId;
-	private final double defaultMaxWithdrawalPerDay = 1000.00;
-	private final double defaultMaxTransferPerDay = 1000.00;
-	
-	public Account(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay,String accountHolderId)
+	private String accountHolderIdNo;
+	public final double DEFAULT_MAX_WITHDRAWAL_PER_DAY = 1000.00;
+	public final double DEFAULT_MAX_TRANSFER_PER_DAY = 1000.00;
+	public Account(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay,String accountHolderIdNo)
 	{
 		this.accountNo = accountNo;
 		this.balance = balance;
 		this.active = active;
 		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
 		this.maxTransferPerDay = maxTransferPerDay;
-		this.setAccountHolderId(accountHolderId);
+		this.setAccountHolderId(accountHolderIdNo);
 	}
 	
 	@Override
@@ -28,66 +27,72 @@ public class Account
 				+ ", active=" + active + ", maxWithdrawalPerDay="
 				+ maxWithdrawalPerDay + ", maxTransferPerDay="
 				+ maxTransferPerDay + ",\nstartDate=" + startDate
-				+ ", accountHolderId=" + accountHolderId
-				+ ", defaultMaxWithdrawalPerDay=" + defaultMaxWithdrawalPerDay
-				+ ", defaultMaxTransferPerDay=" + defaultMaxTransferPerDay
+				+ ", accountHolderIdNo=" + accountHolderIdNo
 				+ "]";
 	}
-
-	public Account(String accountNo, double balance, boolean active)
+	public Account (String accountNo, double balance, boolean active)
 	{
 		this.accountNo = accountNo;
 		this.balance = balance;
 		this.active = active;
-		this.maxWithdrawalPerDay = defaultMaxWithdrawalPerDay;
-		this.maxTransferPerDay = defaultMaxTransferPerDay;
+		this.maxWithdrawalPerDay = DEFAULT_MAX_WITHDRAWAL_PER_DAY;
+		this.maxTransferPerDay = DEFAULT_MAX_TRANSFER_PER_DAY;
 	}
 	
-	public String getAccountNo() {
+	public String getAccountNo ()
+	{
 		return accountNo;
 	}
 
-	public void setAccountNo(String accountNo) {
+	public void setAccountNo (String accountNo)
+	{
 		this.accountNo = accountNo;
 	}
 
-	public double getBalance() {
+	public double getBalance ()
+	{
 		return balance;
 	}
 
-	public void setBalance(double balance) {
+	public void setBalance (double balance)
+	{
 		this.balance = balance;
 	}
 
-	public boolean isActive() {
+	public boolean isActive ()
+	{
 		return active;
 	}
 
-	public void setActive(boolean isActive) {
-		this.active = isActive;
+	public void setActive (boolean active)
+	{
+		this.active = active;
 	}
 
-	public double getMaxWithdrawalPerDay() {
+	public double getMaxWithdrawalPerDay ()
+	{
 		return maxWithdrawalPerDay;
 	}
 
-	public void setMaxWithdrawalPerDay(double maxWithdrawalPerDay) {
+	public void setMaxWithdrawalPerDay (double maxWithdrawalPerDay)
+	{
 		this.maxWithdrawalPerDay = maxWithdrawalPerDay;
 	}
 
-	public double getMaxTransferPerDay() {
+	public double getMaxTransferPerDay ()
+	{
 		return maxTransferPerDay;
 	}
 
-	public void setMaxTransferPerDay(double maxTransferPerDay) {
+	public void setMaxTransferPerDay (double maxTransferPerDay)
+	{
 		this.maxTransferPerDay = maxTransferPerDay;
 	}
-
-	public String getAccountHolderId() {
-		return accountHolderId;
+		public String getAccountHolderId() {
+		return accountHolderIdNo;
 	}
 
-	public void setAccountHolderId(String accountHolderId) {
-		this.accountHolderId = accountHolderId;
+	public void setAccountHolderId(String accountHolderIdNo) {
+		this.accountHolderIdNo = accountHolderIdNo;
 	}
 }

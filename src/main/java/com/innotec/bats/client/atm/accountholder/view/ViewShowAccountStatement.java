@@ -1,17 +1,23 @@
 package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
+
 import java.awt.*;
+import java.util.ArrayList;
+
 import javax.swing.border.*;
+
+import com.innotec.bats.general.AccountHolder;
 
 
 public class ViewShowAccountStatement extends JPanel
 {
+	private JPanel framePanel;
 
-/**
- * Create the panel.
- */
-public ViewShowAccountStatement ()
+public ViewShowAccountStatement (JPanel framePanel, AccountHolder accountHolder, ArrayList statement)
 {
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -34,7 +40,7 @@ public ViewShowAccountStatement ()
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -63,7 +69,7 @@ public ViewShowAccountStatement ()
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 238, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -8, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -234, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
+	btnCancel.setIcon(new ImageIcon("resources/YesIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
@@ -80,6 +86,9 @@ public ViewShowAccountStatement ()
 	panel_2.add(textArea);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 56));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
+	framePanel.revalidate();
 }
 
 }

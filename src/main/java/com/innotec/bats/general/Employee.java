@@ -12,6 +12,6 @@ public class Employee extends Person
 	
 	public String getEmployeeNo()
 	{
-		return this.employeeNo;
+		return employeeNo;
 	}
 }

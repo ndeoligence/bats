@@ -1,20 +1,54 @@
 package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.border.*;
 
-public class WithdrawCashSelectAccount extends JPanel
-{
+import com.innotec.bats.general.Account;
+import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.CurrentAccount;
+import com.innotec.bats.general.SavingsAccount;
 
-/**
- * Create the panel.
- */
-public WithdrawCashSelectAccount (JPanel framePanel)
+public class WithdrawCashSelectAccount extends JPanel implements ActionListener
 {
+	private JPanel framePanel;
+	private AccountHolder accountHolder;
+	private boolean currentAccountActive, savingsAccountActive; 
+	private ArrayList accounts;
+	private JButton btnSavingsAccount, btnCurrentAccount, btnHelp, btnCancel;
+	private Account currentAccount, savingsAccount;
+
+public WithdrawCashSelectAccount (JPanel framePanel, ArrayList<Account> accounts)
+{
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
+	this.accounts = accounts;
+	
+	currentAccountActive = false;
+	savingsAccountActive = false;
+	
+	for (int i=0; i < accounts.size(); i++)
+	{
+		if (accounts.get(i) instanceof CurrentAccount)
+		{
+			currentAccountActive = true;
+			currentAccount = (CurrentAccount)accounts.get(i).clone();
+		}
+		if (accounts.get(i) instanceof SavingsAccount)
+		{
+			savingsAccountActive = true;
+		}
+	}
+	
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
-	
 	
 	JPanel panel = new JPanel();
 	springLayout.putConstraint(SpringLayout.NORTH, panel, 10, SpringLayout.NORTH, this);
@@ -33,7 +67,7 @@ public WithdrawCashSelectAccount (JPanel framePanel)
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -58,50 +92,63 @@ public WithdrawCashSelectAccount (JPanel framePanel)
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnWithdrawCash = new JButton("Savings Account");
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash, -32, SpringLayout.EAST, panel_2);
-	btnWithdrawCash.setIcon(null);
-	btnWithdrawCash.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnWithdrawCash);
+	btnSavingsAccount = new JButton("Savings Account");
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnSavingsAccount, -32, SpringLayout.EAST, panel_2);
+	btnSavingsAccount.setIcon(null);
+	btnSavingsAccount.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnSavingsAccount);
+	if (!savingsAccountActive)
+	{
+		btnSavingsAccount.setEnabled(false);
+	}
+	btnSavingsAccount.addActionListener(this);
 	
-	JButton btnWithdrawCash_1 = new JButton("Current account");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash, 0, SpringLayout.NORTH, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnWithdrawCash, 18, SpringLayout.EAST, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash, 0, SpringLayout.SOUTH, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnWithdrawCash_1, 22, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnWithdrawCash_1, -376, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnWithdrawCash_1, -447, SpringLayout.EAST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnWithdrawCash_1, 25, SpringLayout.WEST, panel_2);
-	btnWithdrawCash_1.setIcon(null);
-	btnWithdrawCash_1.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnWithdrawCash_1);
+	btnCurrentAccount = new JButton("Current account");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnSavingsAccount, 0, SpringLayout.NORTH, btnCurrentAccount);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnSavingsAccount, 18, SpringLayout.EAST, btnCurrentAccount);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnSavingsAccount, 0, SpringLayout.SOUTH, btnCurrentAccount);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCurrentAccount, 22, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCurrentAccount, -376, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnCurrentAccount, -447, SpringLayout.EAST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnCurrentAccount, 25, SpringLayout.WEST, panel_2);
+	btnCurrentAccount.setIcon(null);
+	btnCurrentAccount.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnCurrentAccount);
+	if (!currentAccountActive)
+	{
+		btnCurrentAccount.setEnabled(false);
+	}
+	btnCurrentAccount.addActionListener(this);
 	
-	JButton btnTransferMoney = new JButton("Credit card account");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 6, SpringLayout.SOUTH, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 0, SpringLayout.WEST, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -278, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -447, SpringLayout.EAST, panel_2);
-	btnTransferMoney.setIcon(null);
-	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnTransferMoney);
+	JButton btnCreditAccount = new JButton("Credit card account");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCreditAccount, 6, SpringLayout.SOUTH, btnCurrentAccount);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnCreditAccount, 0, SpringLayout.WEST, btnCurrentAccount);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCreditAccount, -278, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnCreditAccount, -447, SpringLayout.EAST, panel_2);
+	btnCreditAccount.setIcon(null);
+	btnCreditAccount.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnCreditAccount);
+	btnCreditAccount.setEnabled(false);
 	
-	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnWithdrawCash_1);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnWithdrawCash_1);
-	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
+	btnHelp = new JButton("Help");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 0, SpringLayout.WEST, btnCurrentAccount);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, 0, SpringLayout.EAST, btnCurrentAccount);
+	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
+	btnHelp.addActionListener(this);
 	
-	JButton btnCancel = new JButton("Cancel");
+	btnCancel = new JButton("Cancel");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 0, SpringLayout.NORTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 391, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 440, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -12, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -32, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\CancelIcon.jpg"));
+	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
+	btnCancel.addActionListener(this);
 	
 	JLabel lblWhatWouldYou = new JLabel("Select the account you would like to withdraw from:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
@@ -110,6 +157,23 @@ public WithdrawCashSelectAccount (JPanel framePanel)
 	panel_1.add(lblWhatWouldYou);
 	
 	framePanel.add(this);
+	framePanel.revalidate();
+}
+
+@Override
+public void actionPerformed (ActionEvent ae)
+{
+	Object source = ae.getSource();
+	
+	if (source == btnHelp)
+	{
+		new HelpShowFile(framePanel, new ImageIcon("resources/Help File Withdrawal.jpg"));
+	}
+	
+	if (source == btnCancel)
+	{
+		new ATMAccountHolderMainMenu(framePanel, accountHolder);
+	}
 }
 
 }

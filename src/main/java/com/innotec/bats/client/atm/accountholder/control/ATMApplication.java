@@ -20,9 +20,9 @@ public class ATMApplication
 		ATMWelcomeScreen atmWelcomeScreen = new ATMWelcomeScreen(mainGUI.getFramePanel());
 		mainGUI.setVisible(true);
 		
-
-
+		//Create static object of DNR_Manager class
 	}
 
+	
 
 }

@@ -1,17 +1,28 @@
 package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.border.*;
 
+import com.innotec.bats.general.AccountHolder;
 
-public class HelpShowFile extends JPanel
-{
 
-/**
- * Create the panel.
- */
-public HelpShowFile ()
+public class HelpShowFile extends JPanel implements ActionListener
 {
+	private JPanel framePanel;
+	private JButton button;
+	private AccountHolder accountHolder;
+
+public HelpShowFile (JPanel framePanel, ImageIcon imageIcon, AccountHolder accountHolder)
+{
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
+	this.accountHolder = accountHolder;
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -34,7 +45,7 @@ public HelpShowFile ()
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -49,36 +60,47 @@ public HelpShowFile ()
 	panel_1.setLayout(sl_panel_1);
 	
 	JPanel panel_2 = new JPanel();
-	sl_panel_1.putConstraint(SpringLayout.WEST, panel_2, 232, SpringLayout.WEST, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.SOUTH, panel_2, -30, SpringLayout.SOUTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.EAST, panel_2, -233, SpringLayout.EAST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.NORTH, panel_2, 8, SpringLayout.NORTH, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, panel_2, 369, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.EAST, panel_2, -370, SpringLayout.EAST, panel_1);
 	panel_2.setBackground(SystemColor.inactiveCaption);
 	panel_2.setBorder(BorderFactory.createEtchedBorder());
 	panel_1.add(panel_2);
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnCancel = new JButton("OK");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 404, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 238, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -8, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, -234, SpringLayout.EAST, panel_2);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
-	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnCancel);
-	
-	JLabel lblWhatWouldYou = new JLabel("(Help topic)");
-	sl_panel_1.putConstraint(SpringLayout.NORTH, panel_2, 14, SpringLayout.SOUTH, lblWhatWouldYou);
-	
-	JTextArea textArea = new JTextArea();
-	sl_panel_2.putConstraint(SpringLayout.NORTH, textArea, 26, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, textArea, 26, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, textArea, -23, SpringLayout.NORTH, btnCancel);
-	sl_panel_2.putConstraint(SpringLayout.EAST, textArea, -27, SpringLayout.EAST, panel_2);
-	panel_2.add(textArea);
-	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 526, SpringLayout.WEST, panel_1);
+	JLabel lblWhatWouldYou = new JLabel("");
+	sl_panel_1.putConstraint(SpringLayout.SOUTH, lblWhatWouldYou, 121, SpringLayout.SOUTH, panel_2);
+	sl_panel_1.putConstraint(SpringLayout.EAST, lblWhatWouldYou, 0, SpringLayout.EAST, panel_2);
+	lblWhatWouldYou.setIcon(imageIcon);
+	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 27, SpringLayout.NORTH, panel_2);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 71, SpringLayout.WEST, panel_2);
+	panel_2.add(lblWhatWouldYou);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 56));
-	panel_1.add(lblWhatWouldYou);
+	
+	button = new JButton("OK");
+	sl_panel_1.putConstraint(SpringLayout.SOUTH, panel_2, -12, SpringLayout.NORTH, button);
+	sl_panel_1.putConstraint(SpringLayout.NORTH, button, -89, SpringLayout.SOUTH, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.SOUTH, button, -23, SpringLayout.SOUTH, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, button, 494, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.EAST, button, -492, SpringLayout.EAST, panel_1);
+	button.setIcon(new ImageIcon("resources/YesIcon.jpg"));
+	button.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_1.add(button);
+	button.addActionListener(this);
+	
+	framePanel.add(this);
+	framePanel.revalidate();
+}
+
+@Override
+public void actionPerformed (ActionEvent ae)
+{
+	Object source = ae.getSource();
+	
+	if (source == button)
+	{
+		new HelpChooseTopic(framePanel, accountHolder);
+	}
 }
 }

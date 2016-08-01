@@ -6,14 +6,20 @@ import java.util.Date;
 
 import javax.swing.border.*;
 
+import com.innotec.bats.general.AccountHolder;
+
 public class ViewShowAccountBalance extends JPanel
 {
+	private JPanel framePanel;
+	private double accountBalance;
 
-/**
- * Create the panel.
- */
-public ViewShowAccountBalance ()
+public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, double accountBalance)
 {
+	this.framePanel = framePanel;
+	framePanel.removeAll();
+	
+	this.accountBalance = accountBalance;
+	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
 	setLayout(springLayout);
@@ -36,7 +42,7 @@ public ViewShowAccountBalance ()
 	label.setBorder(BorderFactory.createEtchedBorder());
 	sl_panel.putConstraint(SpringLayout.NORTH, label, 10, SpringLayout.NORTH, panel);
 	sl_panel.putConstraint(SpringLayout.WEST, label, 10, SpringLayout.WEST, panel);
-	label.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\NewCityBankLogoSmall.jpg"));
+	label.setIcon(new ImageIcon("resources/NewCityBankLogoSmall.jpg"));
 	panel.add(label);
 	
 	JPanel panel_1 = new JPanel();
@@ -66,18 +72,18 @@ public ViewShowAccountBalance ()
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 22, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -10, SpringLayout.SOUTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -450, SpringLayout.EAST, panel_2);
-	btnHelp.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\HelpIcon.jpg"));
+	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
 	
 	JButton btnCancel = new JButton("OK");
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 242, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -41, SpringLayout.NORTH, btnHelp);
-	btnCancel.setIcon(new ImageIcon("C:\\Users\\ilana\\workspace\\BatsGUIs\\resources\\YesIcon.jpg"));
+	btnCancel.setIcon(new ImageIcon("resources/YesIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
 	
-	JLabel lblR = new JLabel("R XX XXX.XX");
+	JLabel lblR = new JLabel("R " + accountBalance);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 94, SpringLayout.SOUTH, lblR);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, 9, SpringLayout.EAST, lblR);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, lblR, 88, SpringLayout.NORTH, panel_2);
@@ -85,13 +91,16 @@ public ViewShowAccountBalance ()
 	lblR.setFont(new Font("Cambria", Font.PLAIN, 70));
 	panel_2.add(lblR);
 	
-	//Date date = System.currentTimeMillis();
+	Date date = new Date();
 	
-	JLabel lblWhatWouldYou = new JLabel("Account balance as at xx-xx-xxxx");
+	JLabel lblWhatWouldYou = new JLabel("Account balance as at " + date);
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
-	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 315, SpringLayout.WEST, panel_1);
+	sl_panel_1.putConstraint(SpringLayout.WEST, lblWhatWouldYou, 110, SpringLayout.WEST, panel_1);
 	lblWhatWouldYou.setFont(new Font("Cambria", Font.PLAIN, 50));
 	panel_1.add(lblWhatWouldYou);
+	
+	framePanel.add(this);
+	framePanel.revalidate();
 }
 
 
