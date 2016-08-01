@@ -43,7 +43,7 @@ import com.innotec.bats.general.CurrentAccount;
 import com.innotec.bats.general.SavingsAccount;
 
 
-public class OpenNewAccount extends JPanel implements ActionListener
+public class OpenNewAccountForExistingAccountHolder extends JPanel implements ActionListener
 {
 	private JTextField textField;
 	private JTextField textField_1;
@@ -71,9 +71,18 @@ public class OpenNewAccount extends JPanel implements ActionListener
 	private final double balanceCurrent = 100, balanceSavings = 1000;
 	private MissingInformation missingInformation;
 	private boolean tf;
+	private AccHolderIDno_Teller accHolderIDno_Teller;
+	private NewAccConfirmation newAccConfirmation;
 
-	public OpenNewAccount(JPanel framePanel)
+	public OpenNewAccountForExistingAccountHolder(JPanel framePanel)
 	{
+		accountHolder = accHolderIDno_Teller.getAccHolderDetails();
+		name = accountHolder.getName();
+		surname = accountHolder.getSurname();
+		idNo = accountHolder.getIdNo();
+		address = accountHolder.getAddress();
+		contactNo = accountHolder.getContactNo();
+		
 		framePanel.removeAll();
 		this.framePanel = framePanel;
 		setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new EtchedBorder(EtchedBorder.LOWERED, new Color(244, 247, 252), new Color(153, 180, 209))));
@@ -112,7 +121,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField = new JTextField();
 		textField.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField.setColumns(10);
-		name = textField.getText();
+		textField.setText(name);
 		
 		JLabel lblSurname = new JLabel("Surname:");
 		lblSurname.setHorizontalAlignment(SwingConstants.LEFT);
@@ -121,7 +130,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField_1 = new JTextField();
 		textField_1.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_1.setColumns(10);
-		surname = textField_1.getText();
+		textField_1.setText(surname);
 		
 		JLabel lblIdNo = new JLabel("ID No:");
 		lblIdNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -130,7 +139,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField_2 = new JTextField();
 		textField_2.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_2.setColumns(10);
-		idNo = textField_2.getText();
+		textField_2.setText(idNo);
 		
 		JLabel lblCellNo = new JLabel("Cell No:");
 		lblCellNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -139,7 +148,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField_3 = new JTextField();
 		textField_3.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_3.setColumns(10);
-		contactNo = textField_3.getText();
+		textField_3.setText(contactNo);
 		
 		JLabel lblAddress = new JLabel("Address:");
 		lblAddress.setHorizontalAlignment(SwingConstants.LEFT);
@@ -154,7 +163,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setFont(new Font("Cambria", Font.PLAIN, 20));
-		address = textArea.getText();
+		textArea.setText(address);
 		
 		rdbtnWithdrawalMax = new JRadioButton("Withdrawal Max  R:");
 		rdbtnWithdrawalMax.setFont(new Font("Cambria", Font.BOLD, 24));
@@ -379,7 +388,6 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		}
 		if(source == btnOpenAccount)
 		{
-			accountHolder = new AccountHolder(name, surname, idNo, address, contactNo);
 			if(rdbtnNewRadioButton.isSelected())
 			{
 				maxWithdrawalPerDay = 1000.00;
@@ -395,6 +403,23 @@ public class OpenNewAccount extends JPanel implements ActionListener
 			if(rdbtnTransferMaxR.isSelected())
 			{
 				maxTransferPerDay = Double.parseDouble(textField_5.getText());
+			}
+			if(this.areAllCriteriaMet() == true)
+			{	
+				newAccConfirmation = new NewAccConfirmation(framePanel, accountHolder);
+				framePanel.removeAll();
+				framePanel.add(this);
+				framePanel.revalidate();
+				framePanel.repaint();
+			}
+			else
+			{
+				missingInformation = new MissingInformation(framePanel);
+				framePanel.removeAll();
+				framePanel.add(this);
+				framePanel.revalidate();
+				framePanel.repaint();
+				this.areAllCriteriaMet();
 			}
 			if(chckbxCurrentAccount.isSelected() && (!(chckbxSavingsAccount.isSelected())))
 			{
@@ -438,29 +463,12 @@ public class OpenNewAccount extends JPanel implements ActionListener
 				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
 					Account savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active);
+					newAccConfirmation.setAccount(savingsAccount);
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
 					Account savingsAccount = new SavingsAccount(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay);
 				}
-			}
-			if(this.areAllCriteriaMet() == true)
-			{
-				accHolderPIN_Entry = new AccHolderPIN_Entry(framePanel, accountHolder);	
-				framePanel.removeAll();
-				framePanel.add(this);
-				framePanel.revalidate();
-				framePanel.repaint();
-				accHolderPIN_Entry.setAccount(savingsAccount);
-			}
-			else
-			{
-				missingInformation = new MissingInformation(framePanel);
-				framePanel.removeAll();
-				framePanel.add(this);
-				framePanel.revalidate();
-				framePanel.repaint();
-				this.areAllCriteriaMet();
 			}
 		}
 		if(rdbtnNewRadioButton.isSelected())

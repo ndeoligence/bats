@@ -26,6 +26,8 @@ import javax.swing.JPasswordField;
 
 import com.innotec.bats.client.atm.control.ATM_ServerComm;
 import com.innotec.bats.client.teller.control.BankTellerApplication;
+import com.innotec.bats.general.Account;
+import com.innotec.bats.general.AccountCreation;
 import com.innotec.bats.general.AccountHolder;
 import com.innotec.bats.general.AccountHolderCreation;
 import com.innotec.bats.general.Card;
@@ -46,6 +48,9 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 	private Card card;
 	private TellerHomePage tellerHomePage;
 	private AccountHolderCreation accountHolderCreation;
+	private AccountCreation accountCreation;
+	private Account account;
+	private boolean tf;
 
 //	public static void main(String[] args)
 //	{
@@ -127,6 +132,21 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 		this.setVisible(true);
 	}
 
+	public boolean setAccount(Account account)
+	{
+		this.account = account;
+		if(!(account.equals(null)))
+		{
+			tf = true;
+		}
+
+		if(account.equals(null))
+		{
+			tf =false;
+		}
+		return tf;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent acEvent)
 	{
@@ -140,6 +160,12 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 				accountHolderCreation = new AccountHolderCreation(accountHolder, TellerHomePage.tellerID);
 				BankTellerApplication.serverComm.sendAccountHolderCreation(accountHolderCreation);
 				tellerHomePage = new TellerHomePage(framePanel);
+				
+				if(!(account.equals(null)))
+				{
+					accountCreation = new AccountCreation(TellerHomePage.tellerID, account, accountHolder.getAccountHolderID());
+					BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
+				}
 			}
 			else
 			{

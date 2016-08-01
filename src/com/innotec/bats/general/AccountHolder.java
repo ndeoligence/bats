@@ -27,6 +27,11 @@ public class AccountHolder extends Person
         accounts = new ArrayList<Account>();
     }
 
+    public String getAccountHolderID()
+    {
+    	return super.getIdNo();
+    }
+    
     public boolean addAccount (Account newAccount)
     {
     	accounts.add(newAccount);

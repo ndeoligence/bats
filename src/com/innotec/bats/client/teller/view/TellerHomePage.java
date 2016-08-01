@@ -46,6 +46,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 	private CloseAccount_Teller closeAccountPanel;
 	private UnblockCard unblockCardPanel;
 	private ConfirmExitDialog confirmExitDialog;
+	private OpenNewAccountForExistingAccountHolder newAccountForExistingAccountHolder;
 	public static final String tellerID = "chiroptera13801";
 	
 	public TellerHomePage(JPanel framePanel)
@@ -171,7 +172,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 				framePanel.removeAll();
 				framePanel.validate();
 
-				openNewAccountPanel = new OpenNewAccount(framePanel);
+				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel);
 			//}
 		}
 		if(source == btnCloseAcc)
