@@ -11,6 +11,7 @@ import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
 import com.innotec.bats.general.AccountHolder;
 import com.innotec.bats.general.SessionTermination;
 import com.innotec.bats.general.*;
+import com.innotec.bats.general.Action;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

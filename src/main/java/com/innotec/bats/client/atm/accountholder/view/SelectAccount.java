@@ -199,7 +199,7 @@ public void actionPerformed (ActionEvent ae)
 			}
 			else
 			{
-				((Transfer)action).setSecondaryAccountNumber(account.getAccountNo());
+				((Transfer)action).setSecondaryAccountNo(account.getAccountNo());
 				this.executeTransferSecondary((Transfer)action);
 			}
 		}
@@ -271,7 +271,7 @@ public void actionPerformed (ActionEvent ae)
 			}
 			else
 			{
-				((Transfer)action).setSecondaryAccountNumber(currentAccount.getAccountNo());
+				((Transfer)action).setSecondaryAccountNo(currentAccount.getAccountNo());
 				this.executeTransferSecondary((Transfer)action);
 			}
 		}
