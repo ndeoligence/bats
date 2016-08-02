@@ -66,8 +66,7 @@ public class DAO_Class implements DAO_Interface
 		conn = new MySQL_connection();
 	}
 
-	@Override
-	public AccountHolder getAccountHolderByidNo(String idNo)
+	public AccountHolder getAccountHolderByIdNo(String idNo)
 	{
 
 		AccountHolder temp = null;

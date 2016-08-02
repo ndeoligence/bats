@@ -1,7 +1,5 @@
 package com.innotec.bats.server.dao;
 
-import java.sql.SQLException;
-
 import com.innotec.bats.general.*;
 
 public class test {
@@ -19,7 +17,7 @@ public class test {
 		//dao.addTeller(tell);
 		
 		//	dao.addAdmin(cardAdmin);
-			holder = dao.getAccountHolderByidNo("9701015029089");
+			holder = dao.getAccountHolderByIdNo("9701015029089");
 			//holder = dao.getAccountHolderByCardNo("5039567843094568");
 			CurrentAccount account = dao.getCurrentAccount("9701015029089");
 			card = dao.getAccountHolderCardByCardNo("503956778694658");

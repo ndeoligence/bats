@@ -190,11 +190,9 @@ public class Server {
             System.out.println("ClientHandler::processCardRetrieval (card#: " + cardNo + ")");
 
             if (cardNo.length() == AdminCard.CARD_NO_LEN) { // admin card
-//                card = dao.getAdminCardByCardNo(cardNo);
+                card = dao.getAdminCardByCardNo(cardNo);
             } else if (cardNo.length() == AccountHolderCard.CARD_NO_LEN) {
-                try {
-                    card = dao.getAccountHolderCardByCardNo(cardNo);
-                } catch (SQLException e) {System.out.println("Exception from dao!!\n\t"+e);}
+                card = dao.getAccountHolderCardByCardNo(cardNo);
             } else {
                 System.err.println("Error: Received a card with an invalid card# length: "
                         + cardNo.length() + ".\nWill send write back: 'null'.");

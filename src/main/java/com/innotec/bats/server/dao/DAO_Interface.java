@@ -26,7 +26,7 @@ public interface DAO_Interface
 	public Employee getEmployee(String employeeID);
 	public Transaction getTransactionForAccount(String accountID);
 	public AdminCard getAdminCardByCardNo(String cardNo);
-	public AccountHolder getAccountHolderByidNo(String idNo);
+	public AccountHolder getAccountHolderByIdNo(String idNo);
 	public AccountHolderCard getAccountHolderCardByCardNo(String cardNo);
 	public CreditCardAccount getCreditCardAccount(String accountHolderIdNo);
 	public CurrentAccount getCurrentAccount(String accountHolderIdNo);
