@@ -2,12 +2,16 @@ package com.innotec.bats.client.teller.view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.GroupLayout.Alignment;
 
+import com.innotec.bats.general.Account;
 import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.CurrentAccount;
+import com.innotec.bats.general.SavingsAccount;
 
 public class CloseAccount_Teller extends JPanel implements ActionListener
 {
@@ -20,6 +24,7 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 	private ConfirmExitDialog confirmExitDialog;
 	private AccountHolder accountHolder;
 	private JLabel lblAccStatus;
+	private ArrayList<Account> accountArray;
 	
 	public CloseAccount_Teller(JPanel framePanel, AccountHolder accountHolder)
 	{
@@ -78,6 +83,20 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 		JCheckBox chckbxSavings = new JCheckBox("Savings Account");
 		chckbxSavings.setFont(new Font("Cambria", Font.PLAIN, 30));
 		chckbxSavings.setBackground(SystemColor.inactiveCaption);
+		
+		accountArray = accountHolder.getAccounts();
+		
+		for(int pos = 0;pos < accountArray.size(); pos++)
+		{
+			if(accountArray.get(pos) instanceof SavingsAccount)
+			{
+				chckbxSavings.setEnabled(true);
+			}
+			if(accountArray.get(pos) instanceof CurrentAccount)
+			{
+				chckbxCurrent.setEnabled(true);
+			}
+		}
 		
 		JLabel lblAccountNumber = new JLabel("Account Number:");
 		lblAccountNumber.setHorizontalAlignment(SwingConstants.LEFT);
