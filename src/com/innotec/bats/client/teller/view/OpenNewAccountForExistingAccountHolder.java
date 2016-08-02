@@ -37,7 +37,9 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 
+import com.innotec.bats.client.teller.control.BankTellerApplication;
 import com.innotec.bats.general.Account;
+import com.innotec.bats.general.AccountCreation;
 import com.innotec.bats.general.AccountHolder;
 import com.innotec.bats.general.CurrentAccount;
 import com.innotec.bats.general.SavingsAccount;
@@ -60,7 +62,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 	private JRadioButton rdbtnNewRadioButton, rdbtnWithdrawalMax, rdbtnDefaultTransferAmount, rdbtnTransferMaxR;
 	private TellerHomePage tellerHomePage;
 	private AccountHolder accountHolder;
-	private Account account;
+//	private Account account;
 	private SavingsAccount savingsAccount;
 	private CurrentAccount currentAccount;
 	private String name, surname, idNo, address, contactNo;
@@ -71,18 +73,11 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 	private final double balanceCurrent = 100, balanceSavings = 1000;
 	private MissingInformation missingInformation;
 	private boolean tf;
-	private AccHolderIDno_Teller accHolderIDno_Teller;
-	private NewAccConfirmation newAccConfirmation;
+	private AccountCreation accountCreation;
 
-	public OpenNewAccountForExistingAccountHolder(JPanel framePanel)
+	public OpenNewAccountForExistingAccountHolder(JPanel framePanel, AccountHolder accountHolder)
 	{
-		accountHolder = accHolderIDno_Teller.getAccHolderDetails();
-		name = accountHolder.getName();
-		surname = accountHolder.getSurname();
-		idNo = accountHolder.getIdNo();
-		address = accountHolder.getAddress();
-		contactNo = accountHolder.getContactNo();
-		
+		this.accountHolder = accountHolder;
 		framePanel.removeAll();
 		this.framePanel = framePanel;
 		setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new EtchedBorder(EtchedBorder.LOWERED, new Color(244, 247, 252), new Color(153, 180, 209))));
@@ -121,7 +116,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField = new JTextField();
 		textField.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField.setColumns(10);
-		textField.setText(name);
+		name = textField.getText();
 		
 		JLabel lblSurname = new JLabel("Surname:");
 		lblSurname.setHorizontalAlignment(SwingConstants.LEFT);
@@ -130,7 +125,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField_1 = new JTextField();
 		textField_1.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_1.setColumns(10);
-		textField_1.setText(surname);
+		surname = textField_1.getText();
 		
 		JLabel lblIdNo = new JLabel("ID No:");
 		lblIdNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -139,7 +134,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField_2 = new JTextField();
 		textField_2.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_2.setColumns(10);
-		textField_2.setText(idNo);
+		idNo = textField_2.getText();
 		
 		JLabel lblCellNo = new JLabel("Cell No:");
 		lblCellNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -148,7 +143,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField_3 = new JTextField();
 		textField_3.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_3.setColumns(10);
-		textField_3.setText(contactNo);
+		contactNo = textField_3.getText();
 		
 		JLabel lblAddress = new JLabel("Address:");
 		lblAddress.setHorizontalAlignment(SwingConstants.LEFT);
@@ -163,7 +158,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setFont(new Font("Cambria", Font.PLAIN, 20));
-		textArea.setText(address);
+		address = textArea.getText();
 		
 		rdbtnWithdrawalMax = new JRadioButton("Withdrawal Max  R:");
 		rdbtnWithdrawalMax.setFont(new Font("Cambria", Font.BOLD, 24));
@@ -387,39 +382,14 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 			confirmExitDialog = new ConfirmExitDialog();
 		}
 		if(source == btnOpenAccount)
-		{
-			if(rdbtnNewRadioButton.isSelected())
-			{
-				maxWithdrawalPerDay = 1000.00;
-			}
+		{	
 			if(rdbtnWithdrawalMax.isSelected())
 			{
 				maxWithdrawalPerDay = Double.parseDouble(textField_4.getText());
 			}
-			if(rdbtnDefaultTransferAmount.isSelected())
-			{
-				maxTransferPerDay = 1000.00;
-			}
 			if(rdbtnTransferMaxR.isSelected())
 			{
 				maxTransferPerDay = Double.parseDouble(textField_5.getText());
-			}
-			if(this.areAllCriteriaMet() == true)
-			{	
-				newAccConfirmation = new NewAccConfirmation(framePanel, accountHolder);
-				framePanel.removeAll();
-				framePanel.add(this);
-				framePanel.revalidate();
-				framePanel.repaint();
-			}
-			else
-			{
-				missingInformation = new MissingInformation(framePanel);
-				framePanel.removeAll();
-				framePanel.add(this);
-				framePanel.revalidate();
-				framePanel.repaint();
-				this.areAllCriteriaMet();
 			}
 			if(chckbxCurrentAccount.isSelected() && (!(chckbxSavingsAccount.isSelected())))
 			{
@@ -448,27 +418,47 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 				}
 				accHolderPIN_Entry.setAccount(savingsAccount);
 			}
-			if(chckbxCurrentAccount.isSelected() && chckbxSavingsAccount.isSelected())
+			if(chckbxCurrentAccount.isSelected())
 			{
 				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
 					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active);
-					accountHolder.addAccount(currentAccount);
+					this.setAccount(currentAccount);
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
 					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay);
-					accountHolder.addAccount(currentAccount);
+					this.setAccount(currentAccount);
 				}
+			}
+			if(chckbxSavingsAccount.isSelected())
+			{
 				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
 					Account savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active);
-					newAccConfirmation.setAccount(savingsAccount);
+					this.setAccount(savingsAccount);
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
 					Account savingsAccount = new SavingsAccount(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay);
+					this.setAccount(savingsAccount);
 				}
+			}
+			if(this.areAllCriteriaMet() == true)
+			{
+				framePanel.removeAll();
+				framePanel.add(this);
+				framePanel.revalidate();
+				framePanel.repaint();
+			}
+			else
+			{
+				missingInformation = new MissingInformation(framePanel);
+				framePanel.removeAll();
+				framePanel.add(this);
+				framePanel.revalidate();
+				framePanel.repaint();
+				this.areAllCriteriaMet();
 			}
 		}
 		if(rdbtnNewRadioButton.isSelected())
@@ -484,14 +474,22 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		if(rdbtnDefaultTransferAmount.isSelected())
 		{
 			textField_5.setEnabled(false);
+			rdbtnNewRadioButton.setSelected(true);
 		}
 		if(rdbtnTransferMaxR.isSelected())
 		{
 			textField_5.setEnabled(true);
+			rdbtnWithdrawalMax.setSelected(true);
 		}
 		if(source == btnBackBtn)
 		{
 			tellerHomePage = new TellerHomePage(framePanel);
 		}
+	}
+	
+	public void setAccount(Account account)
+	{
+		accountCreation = new AccountCreation(TellerHomePage.tellerID, account, accountHolder.getAccountHolderID());
+		BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
 	}
 }

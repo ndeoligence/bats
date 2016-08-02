@@ -167,13 +167,13 @@ public class TellerHomePage extends JPanel implements ActionListener
 		if(source == btnAddNewAcc)
 		{
 			idDialog = new AccHolderIDno_Teller();
-			//if(idDialog.isAnAccHolder() == true)
-			//{
+			if(!(idDialog.getAccHolderDetails().equals(null)))
+			{
 				framePanel.removeAll();
 				framePanel.validate();
 
-				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel);
-			//}
+				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel, idDialog.getAccHolderDetails());
+			}
 		}
 		if(source == btnCloseAcc)
 		{
