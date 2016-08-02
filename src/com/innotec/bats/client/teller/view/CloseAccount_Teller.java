@@ -7,20 +7,28 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.GroupLayout.Alignment;
 
+import com.innotec.bats.general.AccountHolder;
+
 public class CloseAccount_Teller extends JPanel implements ActionListener
 {
 	private JTextField textField;
 	private JTextField textField_1;
-	private JPanel framePanel, panelFrame;
+	private JPanel framePanel;
 	private ConfirmAccClosure_WithPIN closeAccDialog;
 	private JButton btnCloseAcc, btnCancel, backButton;
 	private TellerHomePage tellerHomePage;
 	private ConfirmExitDialog confirmExitDialog;
+	private AccountHolder accountHolder;
+	private JLabel lblAccStatus;
 	
-	public CloseAccount_Teller(JPanel framePanel)
+	public CloseAccount_Teller(JPanel framePanel, AccountHolder accountHolder)
 	{
 		framePanel.removeAll();
+		
 		this.framePanel = framePanel;
+		
+		this.accountHolder = accountHolder;
+		
 		setBackground(SystemColor.inactiveCaption);
 		setBorder(new CompoundBorder(new EmptyBorder(5, 5, 5, 5), new EtchedBorder(EtchedBorder.LOWERED, new Color(244, 247, 252), new Color(153, 180, 209))));
 		setLayout(new BorderLayout(0, 0));
@@ -61,14 +69,15 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 		textField = new JTextField();
 		textField.setFont(new Font("Cambria", Font.PLAIN, 22));
 		textField.setColumns(10);
+		textField.setText(accountHolder.getName() + " " + accountHolder.getSurname());
 		
-		JCheckBox checkBox = new JCheckBox("Current Account");
-		checkBox.setFont(new Font("Cambria", Font.PLAIN, 30));
-		checkBox.setBackground(SystemColor.inactiveCaption);
+		JCheckBox chckbxCurrent = new JCheckBox("Current Account");
+		chckbxCurrent.setFont(new Font("Cambria", Font.PLAIN, 30));
+		chckbxCurrent.setBackground(SystemColor.inactiveCaption);
 		
-		JCheckBox checkBox_1 = new JCheckBox("Savings Account");
-		checkBox_1.setFont(new Font("Cambria", Font.PLAIN, 30));
-		checkBox_1.setBackground(SystemColor.inactiveCaption);
+		JCheckBox chckbxSavings = new JCheckBox("Savings Account");
+		chckbxSavings.setFont(new Font("Cambria", Font.PLAIN, 30));
+		chckbxSavings.setBackground(SystemColor.inactiveCaption);
 		
 		JLabel lblAccountNumber = new JLabel("Account Number:");
 		lblAccountNumber.setHorizontalAlignment(SwingConstants.LEFT);
@@ -77,14 +86,15 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 		textField_1 = new JTextField();
 		textField_1.setFont(new Font("Cambria", Font.PLAIN, 22));
 		textField_1.setColumns(10);
+		textField_1.setText(AccountNumber_Teller.ACCOUNTNO);
 		
 		JLabel lblAccountStatus = new JLabel("Account Status:");
 		lblAccountStatus.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAccountStatus.setFont(new Font("Cambria", Font.BOLD, 38));
 		
-		JLabel lblBlocked = new JLabel("Open");
-		lblBlocked.setHorizontalAlignment(SwingConstants.LEFT);
-		lblBlocked.setFont(new Font("Cambria", Font.ITALIC, 30));
+		lblAccStatus = new JLabel("Open");
+		lblAccStatus.setHorizontalAlignment(SwingConstants.LEFT);
+		lblAccStatus.setFont(new Font("Cambria", Font.ITALIC, 30));
 		
 		btnCloseAcc = new JButton("Close Acc");
 		btnCloseAcc.setFont(new Font("Cambria", Font.BOLD, 24));
@@ -101,16 +111,16 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, btnCancel, -28, SpringLayout.SOUTH, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, btnCloseAcc, 356, SpringLayout.WEST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, btnCloseAcc, -28, SpringLayout.SOUTH, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.WEST, lblBlocked, 60, SpringLayout.EAST, lblAccountStatus);
-		sl_panel_1.putConstraint(SpringLayout.SOUTH, lblBlocked, 0, SpringLayout.SOUTH, lblAccountStatus);
+		sl_panel_1.putConstraint(SpringLayout.WEST, lblAccStatus, 60, SpringLayout.EAST, lblAccountStatus);
+		sl_panel_1.putConstraint(SpringLayout.SOUTH, lblAccStatus, 0, SpringLayout.SOUTH, lblAccountStatus);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountStatus, 79, SpringLayout.SOUTH, lblAccountNumber);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, textField_1, 0, SpringLayout.SOUTH, lblAccountNumber);
-		sl_panel_1.putConstraint(SpringLayout.WEST, checkBox, 81, SpringLayout.EAST, lblAccountType);
+		sl_panel_1.putConstraint(SpringLayout.WEST, chckbxCurrent, 81, SpringLayout.EAST, lblAccountType);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, textField, 0, SpringLayout.SOUTH, lblAccountHolder);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountNumber, 79, SpringLayout.SOUTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, checkBox_1, 1, SpringLayout.NORTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, checkBox, 1, SpringLayout.NORTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.WEST, checkBox_1, 17, SpringLayout.EAST, checkBox);
+		sl_panel_1.putConstraint(SpringLayout.NORTH, chckbxSavings, 1, SpringLayout.NORTH, lblAccountType);
+		sl_panel_1.putConstraint(SpringLayout.NORTH, chckbxCurrent, 1, SpringLayout.NORTH, lblAccountType);
+		sl_panel_1.putConstraint(SpringLayout.WEST, chckbxSavings, 17, SpringLayout.EAST, chckbxCurrent);
 		sl_panel_1.putConstraint(SpringLayout.WEST, textField_1, 25, SpringLayout.EAST, lblAccountNumber);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textField_1, -629, SpringLayout.EAST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, lblAccountStatus, 16, SpringLayout.WEST, panel_1);
@@ -125,18 +135,19 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 		panel_1.add(lblAccountHolder);
 		panel_1.add(textField);
 		panel_1.add(lblAccountType);
-		panel_1.add(checkBox);
-		panel_1.add(checkBox_1);
+		panel_1.add(chckbxCurrent);
+		panel_1.add(chckbxSavings);
 		panel_1.add(lblAccountNumber);
 		panel_1.add(textField_1);
 		panel_1.add(lblAccountStatus);
-		panel_1.add(lblBlocked);
+		panel_1.add(lblAccStatus);
 		panel_1.add(btnCloseAcc);
 		panel_1.add(btnCancel);
 		
 		JCheckBox chckbxCreditCard = new JCheckBox("Credit Card");
+		chckbxCreditCard.setEnabled(false);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, chckbxCreditCard, 1, SpringLayout.NORTH, lblAccountType);
-		sl_panel_1.putConstraint(SpringLayout.WEST, chckbxCreditCard, 16, SpringLayout.EAST, checkBox_1);
+		sl_panel_1.putConstraint(SpringLayout.WEST, chckbxCreditCard, 16, SpringLayout.EAST, chckbxSavings);
 		chckbxCreditCard.setFont(new Font("Cambria", Font.PLAIN, 30));
 		chckbxCreditCard.setBackground(SystemColor.inactiveCaption);
 		panel_1.add(chckbxCreditCard);
@@ -159,7 +170,11 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 		Object source = acEvent.getSource();
 		if(source == btnCloseAcc)
 		{
-			closeAccDialog = new ConfirmAccClosure_WithPIN();
+			closeAccDialog = new ConfirmAccClosure_WithPIN(accountHolder);
+			if(closeAccDialog.accountClosed())
+			{
+				lblAccStatus.setText("Closed");
+			}
 		}
 		if(source == backButton)
 		{
@@ -170,5 +185,4 @@ public class CloseAccount_Teller extends JPanel implements ActionListener
 			confirmExitDialog = new ConfirmExitDialog();
 		}
 	}
-
 }

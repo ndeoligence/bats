@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.SwingConstants;
@@ -58,22 +59,21 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 	private JPanel framePanel;
 	private JButton btnOpenAccount, btnCancel, btnBackBtn;
 	private ConfirmExitDialog confirmExitDialog;
-	private AccHolderPIN_Entry accHolderPIN_Entry;
 	private JRadioButton rdbtnNewRadioButton, rdbtnWithdrawalMax, rdbtnDefaultTransferAmount, rdbtnTransferMaxR;
 	private TellerHomePage tellerHomePage;
 	private AccountHolder accountHolder;
-//	private Account account;
+	private Account account;
 	private SavingsAccount savingsAccount;
 	private CurrentAccount currentAccount;
-	private String name, surname, idNo, address, contactNo;
 	private JCheckBox chckbxCurrentAccount, chckbxSavingsAccount, chckbxCreditCard;
 	private String accountNo = "";
 	private boolean active = true; 
 	private double maxWithdrawalPerDay, maxTransferPerDay;
 	private final double balanceCurrent = 100, balanceSavings = 1000;
-	private MissingInformation missingInformation;
-	private boolean tf;
 	private AccountCreation accountCreation;
+	private ArrayList<Account> accountArray;
+	private ConfirmOpenAcc confirmOpenAccDialog;
+	
 
 	public OpenNewAccountForExistingAccountHolder(JPanel framePanel, AccountHolder accountHolder)
 	{
@@ -116,7 +116,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField = new JTextField();
 		textField.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField.setColumns(10);
-		name = textField.getText();
+		textField.setText(accountHolder.getName());
 		
 		JLabel lblSurname = new JLabel("Surname:");
 		lblSurname.setHorizontalAlignment(SwingConstants.LEFT);
@@ -125,7 +125,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField_1 = new JTextField();
 		textField_1.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_1.setColumns(10);
-		surname = textField_1.getText();
+		textField_1.setText(accountHolder.getSurname());
 		
 		JLabel lblIdNo = new JLabel("ID No:");
 		lblIdNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -134,7 +134,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField_2 = new JTextField();
 		textField_2.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_2.setColumns(10);
-		idNo = textField_2.getText();
+		textField_2.setText(accountHolder.getIdNo());
 		
 		JLabel lblCellNo = new JLabel("Cell No:");
 		lblCellNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -143,7 +143,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textField_3 = new JTextField();
 		textField_3.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_3.setColumns(10);
-		contactNo = textField_3.getText();
+		textField_3.setText(accountHolder.getContactNo());
 		
 		JLabel lblAddress = new JLabel("Address:");
 		lblAddress.setHorizontalAlignment(SwingConstants.LEFT);
@@ -158,7 +158,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setFont(new Font("Cambria", Font.PLAIN, 20));
-		address = textArea.getText();
+		textArea.setText(accountHolder.getAddress());
 		
 		rdbtnWithdrawalMax = new JRadioButton("Withdrawal Max  R:");
 		rdbtnWithdrawalMax.setFont(new Font("Cambria", Font.BOLD, 24));
@@ -208,7 +208,20 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		chckbxCreditCard.setFont(new Font("Cambria", Font.BOLD, 24));
 		chckbxCreditCard.setBackground(SystemColor.inactiveCaption);
 		chckbxCreditCard.setEnabled(false);
-//		chckbxCreditCard.addActionListener(this);
+		
+		accountArray = accountHolder.getAccounts();
+		
+		for(int pos = 0;pos < accountArray.size(); pos++)
+		{
+			if(accountArray.get(pos) instanceof SavingsAccount)
+			{
+				chckbxSavingsAccount.setEnabled(false);
+			}
+			if(accountArray.get(pos) instanceof CurrentAccount)
+			{
+				chckbxCurrentAccount.setEnabled(false);
+			}
+		}
 		
 		JLabel lblAccountType = new JLabel("Account Type:");
 		lblAccountType.setHorizontalAlignment(SwingConstants.LEFT);
@@ -315,63 +328,6 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 		framePanel.repaint();
 	}
 
-	public boolean areAllCriteriaMet()
-	{
-		if(textField.getText().equals(""))
-		{
-			textField.setBackground(new Color(255, 77, 77));
-			tf = false;			
-		}
-		if(textField_1.getText().equals(""))
-		{
-			textField_1.setBackground(new Color(255, 77, 77));
-			tf = false;
-		}
-		if(textField_2.getText().equals(""))
-		{
-			textField_2.setBackground(new Color(255, 77, 77));
-			tf = false;
-		}
-		if(textField_3.getText().equals(""))
-		{
-			textField_3.setBackground(new Color(255, 77, 77));
-			tf = false;
-		}
-		if((textArea.getText().equals("")))
-		{
-			textArea.setBackground(new Color(255, 77, 77));
-			tf = false;
-		}
-
-		if(!(textField.getText().equals("")))
-		{
-			textField.setBackground(Color.WHITE);
-		}
-		if(!(textField_1.getText().equals("")))
-		{
-			textField_1.setBackground(Color.WHITE);
-		}
-		if(!(textField_2.getText().equals("")))
-		{
-			textField_2.setBackground(Color.WHITE);
-		}
-		if(!(textField_3.getText().equals("")))
-		{
-			textField_3.setBackground(Color.WHITE);
-		}
-		if(!((textArea.getText().equals(""))))
-		{
-			textArea.setBackground(Color.WHITE);
-		}
-
-		if((!(textField.getText().equals(""))) && (!(textField_1.getText().equals("")))
-				&& (!(textField_2.getText().equals(""))) && (!(textField_3.getText().equals(""))) && 
-				(!((textArea.getText().equals("")))))
-		{
-			tf = true;
-		}
-		return tf;
-	}
 	
 	@Override
 	public void actionPerformed(ActionEvent acEvent)
@@ -390,33 +346,6 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 			if(rdbtnTransferMaxR.isSelected())
 			{
 				maxTransferPerDay = Double.parseDouble(textField_5.getText());
-			}
-			if(chckbxCurrentAccount.isSelected() && (!(chckbxSavingsAccount.isSelected())))
-			{
-				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
-				{
-					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active);
-					accountHolder.addAccount(currentAccount);
-				}
-				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
-				{
-					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay);
-					accountHolder.addAccount(currentAccount);
-				}
-			}
-			if(chckbxSavingsAccount.isSelected() && (!(chckbxCurrentAccount.isSelected())))
-			{
-				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
-				{
-					Account savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active);
-					accountHolder.addAccount(savingsAccount);
-				}
-				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
-				{
-					Account savingsAccount = new Account(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay);
-					accountHolder.addAccount(savingsAccount);
-				}
-				accHolderPIN_Entry.setAccount(savingsAccount);
 			}
 			if(chckbxCurrentAccount.isSelected())
 			{
@@ -443,22 +372,6 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 					Account savingsAccount = new SavingsAccount(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay);
 					this.setAccount(savingsAccount);
 				}
-			}
-			if(this.areAllCriteriaMet() == true)
-			{
-				framePanel.removeAll();
-				framePanel.add(this);
-				framePanel.revalidate();
-				framePanel.repaint();
-			}
-			else
-			{
-				missingInformation = new MissingInformation(framePanel);
-				framePanel.removeAll();
-				framePanel.add(this);
-				framePanel.revalidate();
-				framePanel.repaint();
-				this.areAllCriteriaMet();
 			}
 		}
 		if(rdbtnNewRadioButton.isSelected())
@@ -490,6 +403,7 @@ public class OpenNewAccountForExistingAccountHolder extends JPanel implements Ac
 	public void setAccount(Account account)
 	{
 		accountCreation = new AccountCreation(TellerHomePage.tellerID, account, accountHolder.getAccountHolderID());
-		BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
+		account = BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
+		confirmOpenAccDialog = new ConfirmOpenAcc(framePanel, account);
 	}
 }

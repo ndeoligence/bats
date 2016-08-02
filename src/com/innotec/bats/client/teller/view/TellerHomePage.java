@@ -33,6 +33,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import com.innotec.bats.general.AccountHolder;
+
 import java.awt.Component;
 
 
@@ -49,6 +51,7 @@ public class TellerHomePage extends JPanel implements ActionListener
 	private OpenNewAccountForExistingAccountHolder newAccountForExistingAccountHolder;
 	public static final String tellerID = "chiroptera13801";
 	private AccountNoNotRegistered accountNoNotRegistered;
+	private AccountHolder accountHolder;
 	
 	public TellerHomePage(JPanel framePanel)
 	{
@@ -167,34 +170,37 @@ public class TellerHomePage extends JPanel implements ActionListener
 		if(source == btnAddNewAcc)
 		{
 			idDialog = new AccHolderIDno_Teller();
-			if(!(idDialog.getAccHolderDetails().equals(null)))
+			accountHolder = idDialog.getAccHolderDetails();
+			if(accountHolder != null)
 			{
 				framePanel.removeAll();
 				framePanel.validate();
 
-				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel, idDialog.getAccHolderDetails());
+				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel, accountHolder);
 			}
 		}
 		if(source == btnCloseAcc)
 		{
 			accNoDialog = new AccountNumber_Teller();
-//			if()
-//			{
+			accountHolder = accNoDialog.getAccountHolder();
+			if(accountHolder != null)
+			{
 				framePanel.removeAll();
 				framePanel.validate();
 
-				closeAccountPanel = new CloseAccount_Teller(framePanel);
-//			}
+				closeAccountPanel = new CloseAccount_Teller(framePanel, accountHolder);
+			}
 		}
 		if(source == btnUnblockAcc)
 		{
 			accNoDialog2 = new AccountNumber_Teller();
-			if(accNoDialog.getAccountHolder() != null)
+			accountHolder = accNoDialog.getAccountHolder();
+			if(accountHolder != null)
 			{
 				framePanel.removeAll();
 				framePanel.validate();
 				
-				unblockCardPanel = new UnblockCard(framePanel, accNoDialog2.getAccountHolder());
+				unblockCardPanel = new UnblockCard(framePanel, accountHolder);
 			}
 			else
 			{
