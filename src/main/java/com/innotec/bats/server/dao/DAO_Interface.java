@@ -10,8 +10,8 @@ public interface DAO_Interface
 {
 
 	public boolean addAccountHolder(AccountHolder newHolder, String tellerId);	
-	public boolean addCurrentAccount(String accountHolderId, CurrentAccount account);
-	public boolean addSavingsAccount(String accountHolderId, SavingsAccount account);
+	public boolean addCurrentAccount(CurrentAccount account, String tellerId);
+	public boolean addSavingsAccount(SavingsAccount account, String tellerId);
 	public boolean addAccountHolderCard(AccountHolderCard newCard);
 	
 	public boolean processWithdrawal(Withdrawal newWithdrawal);
