@@ -1,7 +1,5 @@
 package com.innotec.bats.server.dao;
 
-import java.sql.SQLException;
-
 import com.innotec.bats.general.*;
 
 public class test {
