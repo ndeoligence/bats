@@ -215,8 +215,14 @@ public class Server
 			else
 				if (action instanceof AccountHolderRetrievalByCardNo)
 				{
-					 accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo)
-					 action).getCardNo());
+					 try
+					{
+						accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo)action).getCardNo());
+					}
+					catch (SQLException e)
+					{
+						e.printStackTrace();
+					}
 				}
 				else
 					if (action instanceof AccountHolderRetrievalByAccountNo)

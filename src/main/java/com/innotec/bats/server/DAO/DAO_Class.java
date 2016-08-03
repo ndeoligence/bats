@@ -105,21 +105,23 @@ public class DAO_Class implements DAO_Interface
 	@Override
 	public AdminCard getAdminCard (String cardNo)
 	{
-		AdminCard temp;
+		AdminCard card;
 		try
 		{
 			pStmt = conn.getConnection().prepareStatement(GET_ADMINCARDBYCARDNO);
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
-			temp = new AdminCard(rs.getString("cardNo"), rs.getString("pinNo"),
-					rs.getBoolean("active"), rs.getString("employeeID"));
+			rs.next();
+			card = new AdminCard(rs.getString(1), rs.getString(3),
+					rs.getBoolean(2), rs.getString(4));
 			rs.close();
 		}
 		catch (Exception e)
 		{
+			System.out.println("Problem retrieving data from database - SQL Exception");
 			return null;
 		}
-		return temp;
+		return card;
 	}
 
 	@Override

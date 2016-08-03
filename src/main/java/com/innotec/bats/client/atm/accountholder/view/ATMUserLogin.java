@@ -186,7 +186,7 @@ public void keyReleased (KeyEvent ke)
 				}
 				else
 				{
-					new ATM_AdminHome();
+					new ATM_AdminHome(framePanel);
 				}
 			}
 			else

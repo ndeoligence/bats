@@ -27,12 +27,16 @@ import java.awt.event.ActionEvent;
 
 public class ATM_AdminHome extends JPanel
 {
-
+	private JPanel framePanel;
+	
 	/**
 	 * Create the panel.
 	 */
-	public ATM_AdminHome()
+	public ATM_AdminHome(JPanel framePanel)
 	{
+		this.framePanel = framePanel;
+		framePanel.removeAll();
+		
 		setBackground(SystemColor.inactiveCaption);
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, SystemColor.inactiveCaptionBorder, SystemColor.activeCaption));
 		setLayout(new BorderLayout(0, 0));
@@ -92,6 +96,8 @@ public class ATM_AdminHome extends JPanel
 		panel.add(btnViewDnr);
 		panel.add(btnLeave);
 
+		framePanel.add(this);
+		framePanel.revalidate();
 	}
 
 }
