@@ -35,6 +35,30 @@ public class ATM_ServerComm
 
 	}
 	
+	public boolean openConnection()
+	{
+		try
+		{
+			socket = new Socket("localhost", 13700);
+			
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+				
+			return true;
+		}
+		catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+			return false;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+	
 	public Socket getSocket ()
 	{
 		return socket;
@@ -379,29 +403,7 @@ public class ATM_ServerComm
 		return serverObject;
 	}
 	
-	public boolean openConnection()
-	{
-		try
-		{
-			socket = new Socket("192.168.43.67", 13700);
-			
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			ois = new ObjectInputStream(socket.getInputStream());
-				
-			return true;
-		}
-		catch (UnknownHostException e)
-		{
-			e.printStackTrace();
-			return false;
-		} 
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
+	
 	
 	public boolean closeConnection()
 	{

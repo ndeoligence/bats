@@ -48,28 +48,23 @@ public class Server
 		serverSocket = new ServerSocket(SERVER_PORT_NR);
 
 		/* DB Test Code */
-		System.out.println("Testing the database...");
-		System.out.println("Getting a card...");
+//		System.out.println("Testing the database...");
+//		System.out.println("Getting a card...");
 
-		try
-		{
-			String cardNo = "1234567890123450";
-			System.out.println("Asking for card from database (card # = "
-					+ cardNo + ")");
-			AccountHolderCard card = dao.getAccountHolderCard(cardNo);
-			System.out.println("Server >>\n\tReceived card:" + card);
-			System.out
-					.println("Asking for account holder from database (id # = "
-							+ card.getAccountHolderIdNo() + ")");
-			AccountHolder accountHolder = dao.getAccountHolderByIdNo(card
-					.getAccountHolderIdNo());
-			System.out.println("Server >>\n\tReceived account holder:"
-					+ accountHolder);
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+		
+//			String cardNo = "1234567890123450";
+//			System.out.println("Asking for card from database (card # = "
+//					+ cardNo + ")");
+//			AccountHolderCard card = dao.getAccountHolderCard(cardNo);
+//			System.out.println("Server >>\n\tReceived card:" + card);
+//			System.out
+//					.println("Asking for account holder from database (id # = "
+//							+ card.getAccountHolderIdNo() + ")");
+//			AccountHolder accountHolder = dao.getAccountHolderByIdNo(card
+//					.getAccountHolderIdNo());
+//			System.out.println("Server >>\n\tReceived account holder:"
+//					+ accountHolder);
+		
 	}
 
 	/* Methods */
@@ -192,9 +187,9 @@ public class Server
 				processCardRetrieval((CardRetrieval) action);
 			}
 			else
-				if (action instanceof AccountRetrieval)
+				if (action instanceof AccountHolderRetrieval)
 				{
-					processAccountRetrieval((AccountRetrieval) action);
+					processAccountHolderRetrieval((AccountHolderRetrieval) action);
 				}
 				else
 					if (action instanceof TellerAction)
@@ -215,16 +210,13 @@ public class Server
 
 			if (action instanceof AccountHolderRetrievalByIdNo)
 			{
-				// accountHolder =
-				// dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo)
-				// action).getIdNo());
+				 accountHolder = dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo)action).getIdNo());
 			}
 			else
 				if (action instanceof AccountHolderRetrievalByCardNo)
 				{
-					// accountHolder =
-					// dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo)
-					// action).getCardNo());
+					 accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo)
+					 action).getCardNo());
 				}
 				else
 					if (action instanceof AccountHolderRetrievalByAccountNo)
@@ -302,14 +294,9 @@ public class Server
 			else
 				if (cardNo.length() == AccountHolderCard.CARD_NO_LEN)
 				{
-					try
-					{
+					
 						card = dao.getAccountHolderCard(cardNo);
-					}
-					catch (SQLException e)
-					{
-						System.out.println("Exception from dao!!\n\t" + e);
-					}
+					
 				}
 				else
 				{
@@ -364,11 +351,11 @@ public class Server
 		{
 			Server server = new Server();
 			System.out.println("Server started.");
-			/*
-			 * while (true) { System.out.println("Waiting for connection...");
-			 * (server.newClientHandler()).start();
-			 * System.out.println("New client found!"); }
-			 */
+			
+			  while (true) { System.out.println("Waiting for connection...");
+			  (server.newClientHandler()).start();
+			  System.out.println("New client found!"); }
+			 
 
 		}
 		catch (IOException e)

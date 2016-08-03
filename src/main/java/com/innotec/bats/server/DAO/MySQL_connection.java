@@ -23,8 +23,7 @@ public class MySQL_connection
 	{
 		try
 		{
-			is = new FileInputStream(
-					"src/main/resources/dbConnection.properties");
+			is = new FileInputStream("resources/dbConnection.properties");
 			prop = new Properties();
 			prop.load(is);
 			String dbDriverName = prop.getProperty("dbDriverName");

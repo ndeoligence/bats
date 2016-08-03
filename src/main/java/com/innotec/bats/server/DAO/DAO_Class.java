@@ -90,15 +90,43 @@ public class DAO_Class implements DAO_Interface
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
 			rs.next();
-			card = new AccountHolderCard(rs.getString(1), rs.getString(3),
-					rs.getBoolean(2), rs.getString(4));
+			card = new AccountHolderCard(rs.getString(1), rs.getString(2),
+					rs.getBoolean(3), rs.getString(4));
 			rs.close();
 		}
 		catch (SQLException e)
 		{
+			System.out.println("Problem retrieving data from database - SQL Exception");
 			return null;
 		}
 		return card;
+	}
+	
+	@Override
+	public AdminCard getAdminCard (String cardNo)
+	{
+		AdminCard temp;
+		try
+		{
+			pStmt = conn.getConnection().prepareStatement(GET_ADMINCARDBYCARDNO);
+			pStmt.setString(1, cardNo);
+			rs = pStmt.executeQuery();
+			temp = new AdminCard(rs.getString("cardNo"), rs.getString("pinNo"),
+					rs.getBoolean("active"), rs.getString("employeeID"));
+			rs.close();
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return temp;
+	}
+
+	@Override
+	public AccountHolder getAccountHolderByCardNo (String cardNo)
+			throws SQLException
+	{
+		return null;
 	}
 
 	@Override
@@ -135,6 +163,82 @@ public class DAO_Class implements DAO_Interface
 		return temp;
 	}
 
+	
+	@Override
+	public AccountHolder getAccountHolderByAccountNo (String accNo)
+	{
+		return null;
+	}
+
+
+	@Override
+	public boolean processWithdrawal (Withdrawal newWithdrawal)
+	{
+		try
+		{
+			pStmt = conn.getConnection().prepareStatement(ADD_TRANSACTION);
+			pStmt.setDouble(3, newWithdrawal.getAmount());
+			pStmt.setString(5, newWithdrawal.getPrimAccountNo());
+			pStmt.executeUpdate();
+			return true;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
+
+	@Override
+	public boolean processDeposit (Deposit newDeposit)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean processTransfer (Transfer newTransfer)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean changePIN (String newPIN, String cardNo)
+	{
+		return false;
+	}
+
+
+
+	@Override
+	public ArrayList<Transaction> getStatement (String accountNo)
+	{
+		Transaction temp = null;
+		ArrayList<Transaction> statement = new ArrayList();
+		try
+		{
+			pStmt = conn.getConnection().prepareStatement(
+					GET_TRANSACTIONSFORACCOUNT);
+			pStmt.setString(1, accountNo);
+			rs = pStmt.executeQuery();
+			rs.next();
+//			temp = new Transaction(rs.getInt("transactionID"),
+//					rs.getDate("transactionTimeStamp"),
+//					rs.getDouble("transactionAmount"),
+//					rs.getString("accounts_accountNo"), rs.getString("type"));
+//			rs.close();
+			statement.add(temp);
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return statement;
+	}
+
+	
+
 	@Override
 	public boolean addAccountHolder (AccountHolder newHolder, String tellerId)
 	{
@@ -156,6 +260,30 @@ public class DAO_Class implements DAO_Interface
 			return false;
 		}
 	}
+	
+
+//	@Override
+//	public boolean addAccountHolder (AccountHolder newHolder, String tellerId)
+//	{
+//		return false;
+//	}
+//
+//	@Override
+//	public boolean addCurrentAccount (String accountHolderId,
+//			CurrentAccount account)
+//	{
+//		return false;
+//	}
+//
+//	@Override
+//	public boolean addSavingsAccount (String accountHolderId,
+//			SavingsAccount account)
+//	{
+//		return false;
+//	}
+
+
+
 
 	@Override
 	public boolean addAccountHolderCard (AccountHolderCard newCard)
@@ -233,127 +361,6 @@ public class DAO_Class implements DAO_Interface
 	}
 
 
-
-
-	@Override
-	public boolean processWithdrawal (Withdrawal newWithdrawal)
-	{
-		try
-		{
-			pStmt = conn.getConnection().prepareStatement(ADD_TRANSACTION);
-			pStmt.setDouble(3, newWithdrawal.getAmount());
-			pStmt.setString(5, newWithdrawal.getPrimAccountNo());
-			pStmt.executeUpdate();
-			return true;
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-
-
-	@Override
-	public ArrayList<Transaction> getStatement (String accountNo)
-	{
-		Transaction temp = null;
-		ArrayList<Transaction> statement = new ArrayList();
-		try
-		{
-			pStmt = conn.getConnection().prepareStatement(
-					GET_TRANSACTIONSFORACCOUNT);
-			pStmt.setString(1, accountNo);
-			rs = pStmt.executeQuery();
-			rs.next();
-//			temp = new Transaction(rs.getInt("transactionID"),
-//					rs.getDate("transactionTimeStamp"),
-//					rs.getDouble("transactionAmount"),
-//					rs.getString("accounts_accountNo"), rs.getString("type"));
-//			rs.close();
-			statement.add(temp);
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-		return statement;
-	}
-
-	@Override
-	public AdminCard getAdminCard (String cardNo)
-	{
-		AdminCard temp;
-		try
-		{
-			pStmt = conn.getConnection().prepareStatement(GET_ADMINCARDBYCARDNO);
-			pStmt.setString(1, cardNo);
-			rs = pStmt.executeQuery();
-			temp = new AdminCard(rs.getString("cardNo"), rs.getString("pinNo"),
-					rs.getBoolean("active"), rs.getString("employeeID"));
-			rs.close();
-		}
-		catch (Exception e)
-		{
-			return null;
-		}
-		return temp;
-	}
-
-//	@Override
-//	public boolean addAccountHolder (AccountHolder newHolder, String tellerId)
-//	{
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean addCurrentAccount (String accountHolderId,
-//			CurrentAccount account)
-//	{
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean addSavingsAccount (String accountHolderId,
-//			SavingsAccount account)
-//	{
-//		return false;
-//	}
-
-
-
-	@Override
-	public boolean processDeposit (Deposit newDeposit)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean processTransfer (Transfer newTransfer)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean changePIN (String newPIN, String cardNo)
-	{
-		return false;
-	}
-
-	@Override
-	public AccountHolder getAccountHolderByCardNo (String cardNo)
-			throws SQLException
-	{
-		return null;
-	}
-
-	@Override
-	public AccountHolder getAccountHolderByAccountNo (String accNo)
-	{
-		return null;
-	}
-
 	@Override
 	public boolean closeAccount (String accNo)
 	{
@@ -363,6 +370,7 @@ public class DAO_Class implements DAO_Interface
 	@Override
 	public boolean deactivateCard (String cardNo)
 	{
+		
 		return false;
 	}
 
