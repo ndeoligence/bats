@@ -163,8 +163,7 @@ public class DAO_Class implements DAO_Interface
 
 	@SuppressWarnings("null")
 	@Override
-	public boolean addCurrentAccount (String accountHolderId,
-			CurrentAccount account)
+	public boolean addCurrentAccount (CurrentAccount account, String tellerId)
 	{
 		try
 		{
@@ -189,8 +188,7 @@ public class DAO_Class implements DAO_Interface
 	}
 
 	@Override
-	public boolean addSavingsAccount (String accountHolderId,
-			SavingsAccount account)
+	public boolean addSavingsAccount (SavingsAccount account,String tellerId)
 	{
 		try
 		{
