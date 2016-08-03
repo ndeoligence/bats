@@ -40,28 +40,38 @@ public class DAO_Class implements DAO_Interface
 	private static final String ADD_TRANSACTION = "insert into transactiontbl values (?,?,?,?);";
 
 	private static final String GET_ACCOUNTHOLDERCARDBYCARDNO = "select * from accountholdercardtbl where CardNo = ?;";
-	
+
 	private static final String GET_ACCOUNTHOLDERBYCARDNO = "select * from accountholdertbl where AccountHolderCardNo = ?;";
 	private static final String GET_ACCOUNTHOLDERBYIDNO = "select * from accountholdertbl where ID = ?;";
 	private static final String GET_CARDNOBYACCOUNTNO = "select * from accounttbl where AccountNo = ?;";
-	
+
 	private static final String GET_ADMINCARDBYCARDNO = "select * from admincardtbl where CardNo = ?;";
 	private static final String GET_TRANSACTIONSFORACCOUNT = "select * from transactiontbl where AccountNo = ?;";
-	
+
 	private static final String SET_CARDISACTIVE = "update cardtbl set Active = ? where CardNo = ?;";
 	private static final String CHANGE_PIN = "update accountholdercardtbl set PIN = ? where CardNo = ?;";
 	private static final String SET_ACCOUNTISOPEN = "update accounttbl set Active = ? where AccountNo = ?;";
 
-//	private static final String GET_CURRENTACCOUNTBYIDNO = "select * from accounts where accountHolderID=? and type =?;";
-//	private static final String GET_SAVINGSACCOUNTBYID = "select * from accounts where accountHolderID = ? and type =?;";
-//	private static final String GET_CREDITCARDACCOUNTBYID = "select * from accounts where accountHolderID =? and type =?;";
-//	private static final String GET_ACCOUNTSBYCARDNO = "select * from accounttbl where CardNo = ?;";
+	 private static final String GET_ACCOUNTSBYCARDNO = "select * from accounttbl where CardNo = ?;";
 	
-	//private static final String ADD_EMPLOYEE = "insert into employeetbl values (?,?);";
-	//private static final String ADD_ADMINCARD = "insert into adminCardtbl values (?,?,?,?);";
-	//private static final String GET_ACCOUNTHOLDERCARDBYID = "select * from accountHolderCardtbl where accountHolderID = ?;";
-	//private static final String GET_EMPLOYEE = "select * from employeetbl where employeeID = ?;";
-	//private static final String GET_ADMINCARDBYID = "select * from adminCardtbl where employeeID = ?;";
+	// private static final String GET_CURRENTACCOUNTBYIDNO =
+	// "select * from accounts where accountHolderID=? and type =?;";
+	// private static final String GET_SAVINGSACCOUNTBYID =
+	// "select * from accounts where accountHolderID = ? and type =?;";
+	// private static final String GET_CREDITCARDACCOUNTBYID =
+	// "select * from accounts where accountHolderID =? and type =?;";
+	
+
+	// private static final String ADD_EMPLOYEE =
+	// "insert into employeetbl values (?,?);";
+	// private static final String ADD_ADMINCARD =
+	// "insert into adminCardtbl values (?,?,?,?);";
+	// private static final String GET_ACCOUNTHOLDERCARDBYID =
+	// "select * from accountHolderCardtbl where accountHolderID = ?;";
+	// private static final String GET_EMPLOYEE =
+	// "select * from employeetbl where employeeID = ?;";
+	// private static final String GET_ADMINCARDBYID =
+	// "select * from adminCardtbl where employeeID = ?;";
 
 	// private static final String GET_ATM =
 	// "select * from atmtbl where ATMID = ?;";
@@ -78,15 +88,15 @@ public class DAO_Class implements DAO_Interface
 		conn = new MySQL_connection();
 	}
 
-	
 	@Override
-	public AccountHolderCard getAccountHolderCard (String cardNo)
+	public AccountHolderCard getAccountHolderCard (String cardNo) // working
 	{
 		AccountHolderCard card = null;
 
 		try
 		{
-			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTHOLDERCARDBYCARDNO);
+			pStmt = conn.getConnection().prepareStatement(
+					GET_ACCOUNTHOLDERCARDBYCARDNO);
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
 			rs.next();
@@ -96,14 +106,15 @@ public class DAO_Class implements DAO_Interface
 		}
 		catch (SQLException e)
 		{
-			System.out.println("Problem retrieving data from database - SQL Exception");
+			System.out
+					.println("Problem retrieving data from database - SQL Exception");
 			return null;
 		}
 		return card;
 	}
-	
+
 	@Override
-	public AdminCard getAdminCard (String cardNo)
+	public AdminCard getAdminCard (String cardNo) // working
 	{
 		AdminCard card;
 		try
@@ -118,7 +129,8 @@ public class DAO_Class implements DAO_Interface
 		}
 		catch (Exception e)
 		{
-			System.out.println("Problem retrieving data from database - SQL Exception");
+			System.out
+					.println("Problem retrieving data from database - SQL Exception");
 			return null;
 		}
 		return card;
@@ -126,52 +138,112 @@ public class DAO_Class implements DAO_Interface
 
 	@Override
 	public AccountHolder getAccountHolderByCardNo (String cardNo)
-			throws SQLException
 	{
-		return null;
+		AccountHolder accountHolder;
+		try
+		{
+			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTHOLDERBYCARDNO);
+			System.out.println("cardno: " + cardNo);
+			pStmt.setString(1, cardNo);
+			rs = pStmt.executeQuery();
+			rs.next();
+
+			accountHolder = new AccountHolder(rs.getString(2), rs.getString(3), rs.getString(1),
+					rs.getString(4), rs.getString(5));
+			rs.close();
+			System.out.println(accountHolder.toString());
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Problem returning accountholder data from database");
+			return null;
+		}
+		return accountHolder;
 	}
 
 	@Override
 	public AccountHolder getAccountHolderByIdNo (String idNo)
 	{
 
-		AccountHolder temp = null;
+		AccountHolder accountHolder = null;
 
 		try
 		{
-			pStmt = conn.getConnection()
-					.prepareStatement(GET_ACCOUNTHOLDERBYIDNO);
+			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTHOLDERBYIDNO);
 			pStmt.setString(1, idNo);
 			rs = pStmt.executeQuery();
-			String name = null, surname = null;
 			rs.next();
-			for (int pos = 0; pos < rs.getString("accountHolderName").length(); pos++)
-			{
-				if (rs.getString("accountHolderName").charAt(pos) == ' ')
-				{
-					name = rs.getString(2).substring(0, pos);
-					surname = rs.getString(2).substring(pos,
-							rs.getString(2).length());
-				}
-			}
-			temp = new AccountHolder(rs.getString(1), name, surname,
-					rs.getString(3), rs.getString(4));
+
+			accountHolder = new AccountHolder(rs.getString(2), rs.getString(3), rs.getString(1),
+					rs.getString(4), rs.getString(5));
 			rs.close();
 		}
 		catch (SQLException e)
 		{
+			System.out.println("Problem returning accountholder data from database");
 			return null;
 		}
-		return temp;
+		return accountHolder;
 	}
 
-	
 	@Override
 	public AccountHolder getAccountHolderByAccountNo (String accNo)
 	{
-		return null;
+		AccountHolder accountHolder;
+		String cardNo;
+		try
+		{
+			pStmt = conn.getConnection().prepareStatement(GET_CARDNOBYACCOUNTNO);
+			pStmt.setString(1, accNo);
+			rs = pStmt.executeQuery();
+			rs.next();
+
+			cardNo = rs.getString(8);
+			rs.close();
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Problem returning accountholder data from database");
+			return null;
+		}
+		accountHolder = this.getAccountHolderByCardNo(cardNo);
+		return accountHolder;
 	}
 
+	@Override
+	public ArrayList<Account> getAccounts (String cardNo)
+	{
+		ArrayList<Account> accounts = new ArrayList<>();;
+		try
+		{
+			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTSBYCARDNO);
+			pStmt.setString(1, cardNo);
+			rs = pStmt.executeQuery();
+
+			while (rs.next())
+			{
+				if (rs.getInt(2) == 1)
+				{
+				Account account = new CurrentAccount(rs.getString(1),
+						rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
+				accounts.add(account);
+				}
+				if (rs.getInt(2) == 2)
+				{
+				Account account = new SavingsAccount(rs.getString(1),
+						rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
+				accounts.add(account);
+				}
+			}
+			rs.close();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Problem retrieving accounts from db.");
+			return null;
+		}
+		return accounts;
+	}
 
 	@Override
 	public boolean processWithdrawal (Withdrawal newWithdrawal)
@@ -191,8 +263,6 @@ public class DAO_Class implements DAO_Interface
 		}
 	}
 
-
-
 	@Override
 	public boolean processDeposit (Deposit newDeposit)
 	{
@@ -211,8 +281,6 @@ public class DAO_Class implements DAO_Interface
 		return false;
 	}
 
-
-
 	@Override
 	public ArrayList<Transaction> getStatement (String accountNo)
 	{
@@ -225,11 +293,11 @@ public class DAO_Class implements DAO_Interface
 			pStmt.setString(1, accountNo);
 			rs = pStmt.executeQuery();
 			rs.next();
-//			temp = new Transaction(rs.getInt("transactionID"),
-//					rs.getDate("transactionTimeStamp"),
-//					rs.getDouble("transactionAmount"),
-//					rs.getString("accounts_accountNo"), rs.getString("type"));
-//			rs.close();
+			// temp = new Transaction(rs.getInt("transactionID"),
+			// rs.getDate("transactionTimeStamp"),
+			// rs.getDouble("transactionAmount"),
+			// rs.getString("accounts_accountNo"), rs.getString("type"));
+			// rs.close();
 			statement.add(temp);
 		}
 		catch (Exception e)
@@ -238,8 +306,6 @@ public class DAO_Class implements DAO_Interface
 		}
 		return statement;
 	}
-
-	
 
 	@Override
 	public boolean addAccountHolder (AccountHolder newHolder, String tellerId)
@@ -262,30 +328,27 @@ public class DAO_Class implements DAO_Interface
 			return false;
 		}
 	}
-	
 
-//	@Override
-//	public boolean addAccountHolder (AccountHolder newHolder, String tellerId)
-//	{
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean addCurrentAccount (String accountHolderId,
-//			CurrentAccount account)
-//	{
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean addSavingsAccount (String accountHolderId,
-//			SavingsAccount account)
-//	{
-//		return false;
-//	}
-
-
-
+	// @Override
+	// public boolean addAccountHolder (AccountHolder newHolder, String
+	// tellerId)
+	// {
+	// return false;
+	// }
+	//
+	// @Override
+	// public boolean addCurrentAccount (String accountHolderId,
+	// CurrentAccount account)
+	// {
+	// return false;
+	// }
+	//
+	// @Override
+	// public boolean addSavingsAccount (String accountHolderId,
+	// SavingsAccount account)
+	// {
+	// return false;
+	// }
 
 	@Override
 	public boolean addAccountHolderCard (AccountHolderCard newCard)
@@ -349,7 +412,8 @@ public class DAO_Class implements DAO_Interface
 			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
 			pStmt.setDouble(5, account.getMaxTransferPerDay());
 			pStmt.setBoolean(6, account.isActive());
-			//pStmt.setDate(7, (Date) account.getDateFromStartOfNoticePeriod());
+			// pStmt.setDate(7, (Date)
+			// account.getDateFromStartOfNoticePeriod());
 			pStmt.setBoolean(8, account.getWithdrawalPending());
 			pStmt.setString(9, account.getAccountHolderId());
 			pStmt.executeUpdate();
@@ -362,7 +426,6 @@ public class DAO_Class implements DAO_Interface
 		}
 	}
 
-
 	@Override
 	public boolean closeAccount (String accNo)
 	{
@@ -372,7 +435,7 @@ public class DAO_Class implements DAO_Interface
 	@Override
 	public boolean deactivateCard (String cardNo)
 	{
-		
+
 		return false;
 	}
 
@@ -382,41 +445,37 @@ public class DAO_Class implements DAO_Interface
 		return false;
 	}
 
-
 	@Override
 	public boolean createBalanceSheet (String atmId, java.util.Date date)
 	{
 		return false;
 	}
 
-	
-	
-	
-//	@SuppressWarnings("null")
-//	@Override
-//	public boolean addCreditCardAccount (String accountHolderId,
-//			CreditCardAccount account)
-//	{
-//		try
-//		{
-//			pStmt = conn.getConnection()
-//					.prepareStatement(ADD_CREDITCARDACCOUNT);
-//			pStmt.setString(1, account.getAccountNo());
-//			pStmt.setString(2, "Credit Card Account");
-//			pStmt.setDouble(3, account.getBalance());
-//			pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
-//			pStmt.setDouble(5, account.getMaxTransferPerDay());
-//			pStmt.setBoolean(6, account.isActive());
-//			pStmt.setDate(7, null);
-//			pStmt.setBoolean(8, (Boolean) null);
-//			pStmt.setString(9, account.getAccountHolderId());
-//			pStmt.executeUpdate();
-//		}
-//		catch (SQLException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
+	// @SuppressWarnings("null")
+	// @Override
+	// public boolean addCreditCardAccount (String accountHolderId,
+	// CreditCardAccount account)
+	// {
+	// try
+	// {
+	// pStmt = conn.getConnection()
+	// .prepareStatement(ADD_CREDITCARDACCOUNT);
+	// pStmt.setString(1, account.getAccountNo());
+	// pStmt.setString(2, "Credit Card Account");
+	// pStmt.setDouble(3, account.getBalance());
+	// pStmt.setDouble(4, account.getMaxWithdrawalPerDay());
+	// pStmt.setDouble(5, account.getMaxTransferPerDay());
+	// pStmt.setBoolean(6, account.isActive());
+	// pStmt.setDate(7, null);
+	// pStmt.setBoolean(8, (Boolean) null);
+	// pStmt.setString(9, account.getAccountHolderId());
+	// pStmt.executeUpdate();
+	// }
+	// catch (SQLException e)
+	// {
+	// e.printStackTrace();
+	// }
+	// }
 
 	// @Override
 	// public CreditCardAccount getCreditCardAccount(String accountHolderIdNo) {
@@ -437,76 +496,51 @@ public class DAO_Class implements DAO_Interface
 	// }
 	// return temp;
 	// }
-	
-//	@Override
-//	public CurrentAccount getCurrentAccount (String accountHolderIdNo)
-//	{
-//		CurrentAccount temp;
-//		try
-//		{
-//			pStmt = conn.getConnection().prepareStatement(GET_CURRENTACCOUNT);
-//			pStmt.setString(1, accountHolderIdNo);
-//			pStmt.setString(2, "Current Account");
-//			rs = pStmt.executeQuery();
-//			rs.next();
-//			temp = new CurrentAccount(rs.getString("accountNo"),
-//					rs.getDouble("balance"), rs.getBoolean("active"),
-//					rs.getString("accountHolderID"));
-//			rs.close();
-//		}
-//		catch (Exception e)
-//		{
-//			return null;
-//		}
-//		return temp;
-//	}
-//
-//	@Override
-//	public SavingsAccount getSavingsAccount (String accountHolderIdNo)
-//	{
-//		SavingsAccount temp;
-//		try
-//		{
-//			pStmt = conn.getConnection()
-//					.prepareStatement(GET_CREDITCARDACCOUNT);
-//			pStmt.setString(1, accountHolderIdNo);
-//			pStmt.setString(2, "CreditCardAccount");
-//			rs = pStmt.executeQuery();
-//			rs.next();
-//			temp = new SavingsAccount(rs.getString("accountNo"),
-//					rs.getDouble("balance"), rs.getBoolean("active"),
-//					rs.getDouble("maxWithdrawal/day"),
-//					rs.getDouble("maxTransfer/day"),
-//					rs.getString("accountHolderID"));
-//			rs.close();
-//		}
-//		catch (Exception e)
-//		{
-//			return null;
-//		}
-//		return temp;
-//	}
 
 	// @Override
-	// public List<Account> getAccounts(String accountHolderIdNo) {
-	// List<Account> temp = null ;
-	// try {
-	// pStmt = conn.getConnection().prepareStatement(GET_CREDITCARDACCOUNT);
+	// public CurrentAccount getCurrentAccount (String accountHolderIdNo)
+	// {
+	// CurrentAccount temp;
+	// try
+	// {
+	// pStmt = conn.getConnection().prepareStatement(GET_CURRENTACCOUNT);
+	// pStmt.setString(1, accountHolderIdNo);
+	// pStmt.setString(2, "Current Account");
+	// rs = pStmt.executeQuery();
+	// rs.next();
+	// temp = new CurrentAccount(rs.getString("accountNo"),
+	// rs.getDouble("balance"), rs.getBoolean("active"),
+	// rs.getString("accountHolderID"));
+	// rs.close();
+	// }
+	// catch (Exception e)
+	// {
+	// return null;
+	// }
+	// return temp;
+	// }
+	//
+	// @Override
+	// public SavingsAccount getSavingsAccount (String accountHolderIdNo)
+	// {
+	// SavingsAccount temp;
+	// try
+	// {
+	// pStmt = conn.getConnection()
+	// .prepareStatement(GET_CREDITCARDACCOUNT);
 	// pStmt.setString(1, accountHolderIdNo);
 	// pStmt.setString(2, "CreditCardAccount");
 	// rs = pStmt.executeQuery();
-	//
-	// while(rs.next())
-	// {
-	// Account account = new Account(rs.getString("accountNo"),
-	// rs.getDouble("balance"),
-	// rs.getBoolean("active"), rs.getDouble("maxWithdrawal/day"),
-	// rs.getDouble("maxTransfer/day"), rs.getString("accountHolderID"));
-	// temp.add(account);
-	// }
+	// rs.next();
+	// temp = new SavingsAccount(rs.getString("accountNo"),
+	// rs.getDouble("balance"), rs.getBoolean("active"),
+	// rs.getDouble("maxWithdrawal/day"),
+	// rs.getDouble("maxTransfer/day"),
+	// rs.getString("accountHolderID"));
 	// rs.close();
-	// } catch (Exception e) {
-	// e.printStackTrace();
+	// }
+	// catch (Exception e)
+	// {
 	// return null;
 	// }
 	// return temp;
@@ -540,35 +574,35 @@ public class DAO_Class implements DAO_Interface
 	// }
 	// }
 
-//	@Override
-//	public Employee getEmployee (String employeeID)
-//	{
-//		Employee temp = null;
-//
-//		try
-//		{
-//			pStmt = conn.getConnection().prepareStatement(GET_EMPLOYEE);
-//			pStmt.setString(1, employeeID);
-//			rs = pStmt.executeQuery();
-//			String name = null, surname = null;
-//			rs.next();
-//			for (int pos = 0; pos < rs.getString("employeeName").length(); pos++)
-//			{
-//				if (rs.getString("employeeName").charAt(pos) == ' ')
-//				{
-//					name = rs.getString("employeeName").substring(0, pos);
-//					surname = rs.getString("employeeName").substring(pos,
-//							rs.getString("employeeName").length());
-//				}
-//			}
-//			temp = new Employee(name, surname, rs.getString("employeeIDNo"),
-//					rs.getInt("employeeID"));
-//			rs.close();
-//		}
-//		catch (SQLException e)
-//		{
-//			return null;
-//		}
-//		return temp;
-//	}
+	// @Override
+	// public Employee getEmployee (String employeeID)
+	// {
+	// Employee temp = null;
+	//
+	// try
+	// {
+	// pStmt = conn.getConnection().prepareStatement(GET_EMPLOYEE);
+	// pStmt.setString(1, employeeID);
+	// rs = pStmt.executeQuery();
+	// String name = null, surname = null;
+	// rs.next();
+	// for (int pos = 0; pos < rs.getString("employeeName").length(); pos++)
+	// {
+	// if (rs.getString("employeeName").charAt(pos) == ' ')
+	// {
+	// name = rs.getString("employeeName").substring(0, pos);
+	// surname = rs.getString("employeeName").substring(pos,
+	// rs.getString("employeeName").length());
+	// }
+	// }
+	// temp = new Employee(name, surname, rs.getString("employeeIDNo"),
+	// rs.getInt("employeeID"));
+	// rs.close();
+	// }
+	// catch (SQLException e)
+	// {
+	// return null;
+	// }
+	// return temp;
+	// }
 }

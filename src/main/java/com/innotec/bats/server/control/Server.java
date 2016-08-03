@@ -190,6 +190,7 @@ public class Server
 				if (action instanceof AccountHolderRetrieval)
 				{
 					processAccountHolderRetrieval((AccountHolderRetrieval) action);
+					System.out.println("action in processActionRetrieval Server: " + (AccountHolderRetrieval)action);
 				}
 				else
 					if (action instanceof TellerAction)
@@ -203,14 +204,45 @@ public class Server
 					}
 		}
 
-		private boolean processAccountHolderRetrieval (
-				AccountHolderRetrieval action)
+		private boolean processCardRetrieval (CardRetrieval action)
+		{
+			Card card = null;
+			String cardNo = action.getCardNo();
+			System.out.println("ClientHandler::processCardRetrieval (card#: "
+					+ cardNo + ")");
+
+			if (cardNo.length() == AdminCard.CARD_NO_LEN)
+			{ // admin card
+			 card = dao.getAdminCard(cardNo);
+			}
+			else
+				if (cardNo.length() == AccountHolderCard.CARD_NO_LEN)
+				{
+					
+						card = dao.getAccountHolderCard(cardNo);
+					
+				}
+				else
+				{
+					System.err
+							.println("Error: Received a card with an invalid card# length: "
+									+ cardNo.length()
+									+ ".\nWill send write back: 'null'.");
+				}
+
+			return sendToClient(card);
+		}
+		
+		private boolean processAccountHolderRetrieval (AccountHolderRetrieval action)
 		{
 			AccountHolder accountHolder = null;
+			ArrayList<Account>accounts = new ArrayList();
+			AccountHolderCard card;
 
 			if (action instanceof AccountHolderRetrievalByIdNo)
 			{
 				 accountHolder = dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo)action).getIdNo());
+				 
 			}
 			else
 				if (action instanceof AccountHolderRetrievalByCardNo)
@@ -218,6 +250,7 @@ public class Server
 					 try
 					{
 						accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo)action).getCardNo());
+						System.out.println("Accountholder retrieved in server method: " + accountHolder.toString());
 					}
 					catch (SQLException e)
 					{
@@ -227,11 +260,14 @@ public class Server
 				else
 					if (action instanceof AccountHolderRetrievalByAccountNo)
 					{
-						// accountHolder =
-						// dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo)
-						// action).getAccountNo());
+						 accountHolder =dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo)action).getAccountNo());
 					}
-
+					
+					card = dao.getAccountHolderCard(((AccountHolderRetrievalByCardNo)action).getCardNo());
+					accounts = dao.getAccounts(((AccountHolderRetrievalByCardNo)action).getCardNo());
+					accountHolder.addCard(card);
+					accountHolder.addAccountArrayList(accounts);
+			 
 			return sendToClient(accountHolder);
 		}
 
@@ -286,34 +322,7 @@ public class Server
 			return socket.isClosed();
 		}
 
-		void processCardRetrieval (CardRetrieval action)
-		{
-			Card card = null;
-			String cardNo = action.getCardNo();
-			System.out.println("ClientHandler::processCardRetrieval (card#: "
-					+ cardNo + ")");
-
-			if (cardNo.length() == AdminCard.CARD_NO_LEN)
-			{ // admin card
-			 card = dao.getAdminCard(cardNo);
-			}
-			else
-				if (cardNo.length() == AccountHolderCard.CARD_NO_LEN)
-				{
-					
-						card = dao.getAccountHolderCard(cardNo);
-					
-				}
-				else
-				{
-					System.err
-							.println("Error: Received a card with an invalid card# length: "
-									+ cardNo.length()
-									+ ".\nWill send write back: 'null'.");
-				}
-
-			sendToClient(card);
-		}
+		
 
 		void processTellerAction (TellerAction action)
 		{

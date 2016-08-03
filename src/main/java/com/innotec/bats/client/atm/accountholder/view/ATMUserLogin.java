@@ -179,7 +179,7 @@ public void keyReleased (KeyEvent ke)
 				//PIN correct and card active
 				if (insertedCard instanceof AccountHolderCard)
 				{
-					AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(accountHolderCardNo);
+					AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(insertedCard.getCardNo());
 					AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
 					System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
 					new ATMAccountHolderMainMenu(framePanel, accountHolder);

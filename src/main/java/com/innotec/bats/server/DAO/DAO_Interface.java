@@ -28,6 +28,8 @@ public interface DAO_Interface
 	public AccountHolder getAccountHolderByIdNo(String idNo);
 	public AccountHolder getAccountHolderByAccountNo(String accNo);
 	
+	public ArrayList<Account> getAccounts (String cardNo);
+	
 	public boolean closeAccount(String accNo);
 	public boolean deactivateCard(String cardNo);
 	public boolean reactivateCard(String cardNo);
