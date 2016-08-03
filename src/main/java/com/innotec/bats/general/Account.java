@@ -1,6 +1,6 @@
 package com.innotec.bats.general;
 
-public class Account
+public class Account implements java.io.Serializable
 {
 	private String accountNo;
 	private double balance;
@@ -9,9 +9,9 @@ public class Account
 	private double maxTransferPerDay;
 	private int startDate;
 	private String accountHolderIdNo;
-	public final double DEFAULT_MAX_WITHDRAWAL_PER_DAY = 1000.00;
-	public final double DEFAULT_MAX_TRANSFER_PER_DAY = 1000.00;
-
+	public static final double DEFAULT_MAX_WITHDRAWAL_PER_DAY = 1000.00;
+	public static final double DEFAULT_MAX_TRANSFER_PER_DAY = 1000.00;
+	public static final double ACCOUNT_NO_LEN = 13;
 	public Account (String accountNo, double balance, boolean active,
 			double maxWithdrawalPerDay, double maxTransferPerDay,
 			String accountHolderIdNo)
