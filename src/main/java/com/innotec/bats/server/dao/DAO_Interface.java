@@ -1,11 +1,10 @@
-package com.innotec.bats.server.DAO;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+package com.innotec.bats.server.dao;
 
 import com.innotec.bats.general.*;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 public interface DAO_Interface
 {
@@ -24,7 +23,7 @@ public interface DAO_Interface
 	public AdminCard getAdminCard (String cardNo);
 	public AccountHolderCard getAccountHolderCard (String cardNo);
 	
-	public AccountHolder getAccountHolderByCardNo(String cardNo) throws SQLException;
+	public AccountHolder getAccountHolderByCardNo(String cardNo);
 	public AccountHolder getAccountHolderByIdNo(String idNo);
 	public AccountHolder getAccountHolderByAccountNo(String accNo);
 	
@@ -32,7 +31,7 @@ public interface DAO_Interface
 	public boolean deactivateCard(String cardNo);
 	public boolean reactivateCard(String cardNo);
 	
-	public ArrayList<Transaction>getStatement(String accNo);
+	public List<Transaction>getStatement(String accNo);
 	
 	public boolean createBalanceSheet(String atmId, Date date);
 	

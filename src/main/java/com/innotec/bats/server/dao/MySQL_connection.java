@@ -1,4 +1,4 @@
-package com.innotec.bats.server.DAO;
+package com.innotec.bats.server.dao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,8 +23,7 @@ public class MySQL_connection
 	{
 		try
 		{
-			is = new FileInputStream(
-					"src/main/resources/dbConnection.properties");
+			is = new FileInputStream("src/main/resources/dbConnection.properties");
 			prop = new Properties();
 			prop.load(is);
 			String dbDriverName = prop.getProperty("dbDriverName");
