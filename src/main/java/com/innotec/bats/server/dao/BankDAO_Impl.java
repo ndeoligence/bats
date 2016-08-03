@@ -1,4 +1,4 @@
-package com.innotec.bats.server.dao;
+package com.innotec.bats.server.DAO;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -178,7 +178,7 @@ public class BankDAO_Impl implements BankDAO {
             minBalance=resultSet.getDouble("minBalance");
             maxWithdrawalPerDay=resultSet.getDouble("maxWithdrawalPerDay");
             maxTransferPerDay=resultSet.getDouble("maxTransferPerDay");
-            account = new CurrentAccount(accountNo,balance,active,minBalance,maxWithdrawalPerDay,maxTransferPerDay);
+            account = new CurrentAccount(accountNo, balance, active, maxWithdrawalPerDay, maxTransferPerDay,"");
         } catch (SQLException e) {
             System.err.println("BankDAO_Impl::row2currentAccount(resultSet) >> Exception: " + e);
             account = null;
@@ -232,7 +232,7 @@ public class BankDAO_Impl implements BankDAO {
             active = rSet.getBoolean("active");
 //            blocked = rSet.getBoolean("blocked");
 
-            card = new AccountHolderCard(cardNo,pinNo,active);
+            card = new AccountHolderCard(cardNo,pinNo,active,"");
         } else {
             System.out.println("The Account Holder card doesn't seem to exist.\n\tReturning Null");
             return null;
