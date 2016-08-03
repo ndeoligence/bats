@@ -2,3 +2,12 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName = 'com.innotec.bats.server.control.Server'
+
+repositories {
+	mavenCentral()
+}
+dependencies {
+	compile 'mysql:mysql-connector-java:6.0.3'
+	compile 'org.mariadb.jdbc:mariadb-java-client:1.5.0-RC1'
+	testCompile("junit:junit:4.12")
+}
