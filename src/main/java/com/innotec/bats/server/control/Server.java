@@ -131,16 +131,16 @@ public class Server {
          */
         private void processAction(Action action) throws SessionTerminationException {
             if (action == null) { // make sure action isn't null
-                System.err.println("Server::ClientHandler::run >>\n\t"
+                System.err.println("Server::ClientHandler::processAction >>\n\t"
                         + "Null action received.\n\tWriting back Null");
                 sendToClient(null);
                 return;
             }
 			/* First check for session termination */
             if (action instanceof SessionTermination) {
-                System.err.println("Server::ClientHandler::run >>\n"
+                System.err.println("Server::ClientHandler::processAction >>\n"
                         + "\tHonoring session termination request from "
-                        + socket.getLocalAddress());
+                        + getClientAlias());
                 if (terminateSession()) {
                     System.out.println("\tSuccess!");
                     throw new SessionTerminationException("Session end success");
@@ -160,7 +160,8 @@ public class Server {
             } else if (action instanceof TellerAction) {
                 processTellerAction((TellerAction) action);
             } else {
-                System.out.println("Unimplemented action handler: "
+                System.out.println("Server::ClientHandler::processAction >>" +
+                        "\n\tUnimplemented action handler: "
                         + action);
             }
         }
@@ -178,11 +179,13 @@ public class Server {
             } else if (newAccount instanceof SavingsAccount) {
                 flag = dao.addSavingsAccount((SavingsAccount) newAccount,action.getEmployeeNo());
             } else if (newAccount instanceof CreditCardAccount) {
-                System.out.println("An attempt was made by employee " + action.getEmployeeNo() +
-                    " to add credit card account." +
-                    "\n\tRequest won't be processed.");
+                System.out.println("Server::ClientHandler::processAction >>" +
+                        "\n\tEmployee " + action.getEmployeeNo() +
+                        " tried to add [unimplemented] credit card account." +
+                        "\n\tRequest won't be processed.");
             } else {
-                System.err.println("Unrecognized AccountCreation sub-type: " + action);
+                System.err.println("Server::ClientHandler::processAction >>" +
+                        "\n\tUnrecognized AccountCreation sub-type: " + action);
             }
             sendToClient(flag);
         }
@@ -210,8 +213,9 @@ public class Server {
             } else if (action instanceof AccountRetrievalByCardNo) {
 //                accounts = (dao.getAccountsByCardNo(((AccountRetrievalByCardNo) action).getCardNo()));
             } else {
-                System.err.println("ClientHandler::processAccountRetrieval() >> Unrecognized AccountRetrieval sub-action"
-                                + "\n\tWill return empty list");
+                System.err.println("ClientHandler::processAccountRetrieval() >>" +
+                        "\n\tUnrecognized AccountRetrieval sub-action" +
+                        "\n\tWill return empty list");
                 accounts = new ArrayList<>();
             }
 
@@ -219,13 +223,14 @@ public class Server {
         }
 
         public boolean terminateSession() {
-            System.out
-                    .println("ClientHandler::terminateSession() >>\n\tTerminating session...");
+            System.out.println("ClientHandler::terminateSession() >>" +
+                    "\n\tTerminating session...");
             try {
                 if (socket.isConnected())
                     socket.close();
             } catch (IOException e) {
-                System.err.println("ClientHandler::processAccountRetrieval() >>\n\tFailed closing socket");
+                System.err.println("ClientHandler::terminateSession() >>" +
+                        "\n\tFailed closing socket");
             }
             return socket.isClosed();
         }
@@ -233,16 +238,17 @@ public class Server {
         void processCardRetrieval(CardRetrieval action) {
             Card card = null;
             String cardNo = action.getCardNo();
-            System.out.println("ClientHandler::processCardRetrieval (card#: "
-                    + cardNo + ")");
+            System.out.println("ClientHandler::processCardRetrieval >>" +
+                    "\n\t(card#: " + cardNo + ")");
 
             if (cardNo.length() == AdminCard.CARD_NO_LEN) { // admin card
                 card = dao.getAdminCard(cardNo);
             } else if (cardNo.length() == AccountHolderCard.CARD_NO_LEN) {
                 card = dao.getAccountHolderCard(cardNo);
             } else {
-                System.err.println("Error: Received a card with an invalid card# length: "
-                                + cardNo.length());
+                System.err.println("ClientHandler::processCardRetrieval >>" +
+                        "\n\tError: Received card# (" + cardNo + ") has invalid length: (" +
+                        cardNo.length()+")");
             }
             sendToClient(card);
         }
@@ -256,16 +262,24 @@ public class Server {
         }
 
         synchronized private boolean sendToClient(Object obj) {
-            System.out.println("ClientHandler -> Client >> " + obj);
+            System.out.println("ClientHandler -> " + getClientAlias() + " >> " + obj);
             try {
                 outs.writeObject(obj);
                 return true;
             } catch (IOException e) {
-                System.err
-                        .println("Server::ClientHandler::sendToClient >>\n\tFailed writing "
-                                + obj);
+                System.err.println("Server::ClientHandler::sendToClient >>" +
+                        "\n\tFailed writing " + obj);
                 return false;
             }
+        }
+
+        /**
+         * This is how the client is referred to by the program, whenever a term
+         * more descriptive than 'client' is preferred.
+         * @return A descriptive name for the client specific to this handler
+         */
+        private String getClientAlias() {
+            return socket.getLocalAddress().toString();
         }
     }
 
@@ -281,8 +295,7 @@ public class Server {
             }
 
         } catch (IOException e) {
-            System.err
-                    .println("Error starting server up and listening for connections.\nTry restarting the program");
+            System.err.println("Error starting server up and listening for connections.\nTry restarting the program");
             e.printStackTrace();
             System.out.println("Server is stopping.");
             System.exit(1);
