@@ -39,6 +39,9 @@ public SelectAccount (JPanel framePanel, AccountHolder accountHolder, Action act
 	currentAccountActive = false;
 	savingsAccountActive = false;
 	
+	System.out.println("Displaying accountholder from SelectAccount GUI: " + accountHolder.toString() + accountHolder.getCard().toString() +
+			"Current; " + currentAccountActive + "Savings: " + savingsAccountActive + currentAccount.toString() + savingsAccount.toString());
+	
 	for (int i=0; i < accounts.size(); i++)
 	{
 		if (accounts.get(i) instanceof CurrentAccount)

@@ -20,16 +20,23 @@ public class DAO_Class implements DAO_Interface
 	private static final String ADD_SAVINGSACCOUNT = "insert into accounttbl values(?,2,?,1000.00,?,?,true,?);";
 	private static final String ADD_CREDITCARDACCOUNT = "insert into accounttbl values(?,3,?,?,?,?,true,?);";
 	private static final String ADD_TRANSACTION = "insert into transactiontbl values (?,?,?,?);";
+	
+	private static final String ADD_PENDINGWITHDRAWAL = "insert into pendingwithdrawalstbl values (?, ?, ?);";
+	private static final String GET_PENDINGWITHDRAWAL = "select * from pendingwithdrawalstbl where accountNo = ?;";
+	private static final String SET_PENDINGWITHDRAWAL = "update accountstbl set WithdrawalPending = ? where AccountNo = ?;";
 
 	private static final String GET_ACCOUNTHOLDERCARDBYCARDNO = "select * from accountholdercardtbl where CardNo = ?;";
-
+	private static final String GET_ADMINCARDBYCARDNO = "select * from admincardtbl where CardNo = ?;";
+	
 	private static final String GET_ACCOUNTHOLDERBYCARDNO = "select * from accountholdertbl where AccountHolderCardNo = ?;";
 	private static final String GET_ACCOUNTHOLDERBYIDNO = "select * from accountholdertbl where ID = ?;";
+	
 	private static final String GET_CARDNOBYACCOUNTNO = "select * from accounttbl where AccountNo = ?;";
-
-	private static final String GET_ADMINCARDBYCARDNO = "select * from admincardtbl where CardNo = ?;";
+	private static final String GET_ACCOUNTBYACCOUNTNO = "select * from accounttbl where AccountNo = ?;";
 	private static final String GET_TRANSACTIONSFORACCOUNT = "select * from transactiontbl where AccountNo = ?;";
-
+	
+	private static final String ADJUST_FUNDS = "update Accounttbl set balance = ? where AccountNo = ?;";
+	
 	private static final String SET_CARDISACTIVE = "update cardtbl set Active = ? where CardNo = ?;";
 	private static final String CHANGE_PIN = "update accountholdercardtbl set PIN = ? where CardNo = ?;";
 	private static final String SET_ACCOUNTISOPEN = "update accounttbl set Active = ? where AccountNo = ?;";
@@ -83,7 +90,7 @@ public class DAO_Class implements DAO_Interface
 			rs = pStmt.executeQuery();
 			rs.next();
 			card = new AccountHolderCard(rs.getString(1), rs.getString(2),
-					rs.getBoolean(3), rs.getString(4));
+					rs.getBoolean(3), rs.getString(6));
 			rs.close();
 		}
 		catch (SQLException e)
@@ -195,28 +202,40 @@ public class DAO_Class implements DAO_Interface
 	@Override
 	public ArrayList<Account> getAccounts (String cardNo)
 	{
-		ArrayList<Account> accounts = new ArrayList<>();;
+		ArrayList<Account> accounts = new ArrayList<Account>();
 		try
 		{
+			Account account;
 			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTSBYCARDNO);
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
-
-			while (rs.next())
-			{
+			rs.next();
+			//while (rs.next())
+			//{
 				if (rs.getInt(2) == 1)
 				{
-				Account account = new CurrentAccount(rs.getString(1),
-						rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
-				accounts.add(account);
+					account = new CurrentAccount(rs.getString(1),
+							rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
+					System.out.println("DAO currentAcc: " + account.toString());
+					accounts.add(account);
 				}
 				if (rs.getInt(2) == 2)
 				{
-				Account account = new SavingsAccount(rs.getString(1),
-						rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
-				accounts.add(account);
+					account = new SavingsAccount(rs.getString(1),
+							rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
+	//				((SavingsAccount)account).setWithdrawalPending(rs.getBoolean(9));
+	//				System.out.println("DAO savingsAcc: " + account.toString());
+	//				if (rs.getBoolean(9))
+	//				{
+	//					pStmt = conn.getConnection().prepareStatement(GET_PENDINGWITHDRAWAL);
+	//					pStmt.setString(1, account.getAccountNo());
+	//					rs = pStmt.executeQuery();
+	//					((SavingsAccount)account).setFundsAvailableDate(rs.getDate(2));
+	//					((SavingsAccount)account).setPendingWithdrawalAmount(rs.getDouble(3));
+	//				}
+					accounts.add(account);
 				}
-			}
+			//}
 			rs.close();
 		}
 		catch (Exception e)
@@ -226,22 +245,45 @@ public class DAO_Class implements DAO_Interface
 		}
 		return accounts;
 	}
-
+	
 	@Override
 	public boolean processWithdrawal (Withdrawal newWithdrawal)
 	{
-		try
+		double accountBalance;
+		if (!(newWithdrawal.getWaitingPeriodApplicable()))
 		{
-			pStmt = conn.getConnection().prepareStatement(ADD_TRANSACTION);
-			pStmt.setDouble(3, newWithdrawal.getAmount());
-			pStmt.setString(5, newWithdrawal.getPrimAccountNo());
-			pStmt.executeUpdate();
-			return true;
+			try
+			{
+				pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTBYACCOUNTNO);
+				pStmt.setString(1, newWithdrawal.getPrimAccountNo());
+				rs = pStmt.executeQuery();
+				rs.next();
+				accountBalance = rs.getDouble(3);
+				
+				accountBalance = accountBalance-newWithdrawal.getAmount();
+				
+				pStmt = conn.getConnection().prepareStatement(ADJUST_FUNDS);
+				pStmt.setDouble(1, accountBalance);
+				pStmt.setString(2, newWithdrawal.getPrimAccountNo());
+				
+				pStmt = conn.getConnection().prepareStatement(ADD_TRANSACTION);
+				pStmt.setDouble(3, newWithdrawal.getAmount());
+				pStmt.setInt(4, 1);
+				pStmt.setString(5, newWithdrawal.getATM_ID());
+				pStmt.setString(6, newWithdrawal.getPrimAccountNo());
+				pStmt.executeUpdate();
+				return true;
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+				return false;
+			}
 		}
-		catch (SQLException e)
+		else
 		{
-			e.printStackTrace();
-			return false;
+			
+			return false; //still code withdrawal with waiting period
 		}
 	}
 

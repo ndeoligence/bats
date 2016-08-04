@@ -181,7 +181,7 @@ public void keyReleased (KeyEvent ke)
 				{
 					AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(insertedCard.getCardNo());
 					AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
-					System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
+					System.out.println("AccountHolder retrieved.  " + accountHolder.toString() +accountHolder.getCard().toString() + accountHolder.getAccounts().toString());
 					new ATMAccountHolderMainMenu(framePanel, accountHolder);
 				}
 				else
