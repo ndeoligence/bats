@@ -1,4 +1,25 @@
+/*The root config file*/
 apply plugin: 'java'
 apply plugin: 'application'
 
 mainClassName = 'com.innotec.bats.server.control.Server'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse-wtp'
+
+    repositories {
+       mavenCentral()
+    }
+
+    dependencies {
+    	// compile 'mysql:mysql-connector-java:5.1.39'
+        testCompile 'junit:junit:4.12'
+    }
+
+    version = '1.0'
+
+    jar {
+        manifest.attributes provider: 'innotec'
+    }
+}
