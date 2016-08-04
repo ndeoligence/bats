@@ -1,13 +1,31 @@
-apply plugin: 'java'
-apply plugin: 'application'
+subprojects {
+	apply plugin: 'java'
 
-mainClassName = 'com.innotec.bats.server.control.Server'
+	repositories {
+		mavenCentral()
+	}
 
-repositories {
-	mavenCentral()
+	dependencies {
+		testCompile("junit:junit:4.12")
+	}
 }
-dependencies {
-	compile 'mysql:mysql-connector-java:6.0.3'
-	compile 'org.mariadb.jdbc:mariadb-java-client:1.5.0-RC1'
-	testCompile("junit:junit:4.12")
+
+project (':server') {
+	apply plugin: 'application'
+
+	mainClassName = 'com.innotec.bats.server.control.Server'
+
+	dependencies {
+	    compile project(':shared')
+	}
+}
+
+project (':atm') {
+	apply plugin: 'application'
+	mainClassName = 'com.innotec.bats.atm.accountholder.control.ATMApplication'	
+}
+
+project (':teller') {
+	apply plugin: 'application'
+	mainClassName = 'com.innotec.bats.teller.control.BankTellerApplication.java'
 }
