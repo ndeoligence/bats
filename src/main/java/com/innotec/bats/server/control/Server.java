@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.innotec.bats.general.*;
 import com.innotec.bats.server.dao.*;
-import com.innotec.bats.server.model.SessionTerminationException;
+import com.innotec.bats.server.model.*;
 
 public class Server {
     /* Static variables */
@@ -198,6 +198,7 @@ public class Server {
             } else if (action instanceof AccountHolderRetrievalByAccountNo) {
                  accountHolder = dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo)action).getAccountNo());
             }
+
 
             return sendToClient(accountHolder);
         }
