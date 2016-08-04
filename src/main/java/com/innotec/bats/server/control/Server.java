@@ -283,7 +283,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-
         try {
             Server server = new Server();
             System.out.println("Server started.");
@@ -292,7 +291,6 @@ public class Server {
                 (server.newClientHandler()).start();
                 System.out.println("New client found!");
             }
-
         } catch (IOException e) {
             System.err.println("Error starting server up and listening for connections.\nTry restarting the program");
             e.printStackTrace();

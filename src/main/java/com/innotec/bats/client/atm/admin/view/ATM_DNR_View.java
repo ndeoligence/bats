@@ -27,12 +27,16 @@ import javax.swing.GroupLayout.Alignment;
 public class ATM_DNR_View extends JPanel
 {
 	private JTable table;
+	private JPanel framePanel;
 
 	/**
 	 * Create the panel.
 	 */
-	public ATM_DNR_View()
+	public ATM_DNR_View(JPanel framePanel)
 	{
+		this.framePanel = framePanel;
+		framePanel.removeAll();
+		
 		setBackground(SystemColor.inactiveCaption);
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, SystemColor.inactiveCaptionBorder, SystemColor.activeCaption));
 		setLayout(new BorderLayout(0, 0));
@@ -83,5 +87,8 @@ public class ATM_DNR_View extends JPanel
 		table = new JTable();
 		panel.add(table);
 
+		framePanel.add(this);
+		framePanel.revalidate();
+		
 	}
 }

@@ -12,6 +12,10 @@ public class Account implements java.io.Serializable
 	public static final double DEFAULT_MAX_WITHDRAWAL_PER_DAY = 1000.00;
 	public static final double DEFAULT_MAX_TRANSFER_PER_DAY = 1000.00;
 	public static final int ACCOUNT_NO_LEN = 13;
+	public static final int ACCOUNT_TYPE_CURRENT = 1;
+	public static final int ACCOUNT_TYPE_SAVINGS = 2;
+	public static final int ACCOUNT_TYPE_CREDIT_CARD = 3;
+
 	public Account (String accountNo, double balance, boolean active,
 			double maxWithdrawalPerDay, double maxTransferPerDay,
 			String accountHolderIdNo)

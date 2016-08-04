@@ -7,6 +7,7 @@ import javax.swing.border.*;
 import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
 import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
 import com.innotec.bats.client.atm.accountholder.model.CardValidation;
+import com.innotec.bats.client.atm.admin.view.ATM_AdminHome;
 import com.innotec.bats.client.atm.control.ATM_ServerComm;
 import com.innotec.bats.general.*;
 import com.innotec.bats.general.Action;
@@ -142,31 +143,51 @@ public void keyReleased (KeyEvent ke)
 	{
 		if (String.valueOf(passwordField.getPassword()).length() == 4)
 		{
+			ATMApplication.serverComm.openConnection();
+			
 			pinEntered = String.copyValueOf(passwordField.getPassword());
 			System.out.println("pinEntered Variable: " + pinEntered);
 			cardRetrieval = new CardRetrieval(textField.getText());
-			insertedCard = new Card(textField.getText(), pinEntered, true);
-			ATMApplication.serverComm.openConnection();
+			if (cardRetrieval.getCardNo().length() == 16)
+			{
+				insertedCard = new AccountHolderCard(textField.getText(), pinEntered, true, "");
+			}
+			else if (cardRetrieval.getCardNo().length() == 8)
+				{
+				insertedCard = new AdminCard(textField.getText(), pinEntered, true, "");
+				}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "Invalid card number length. Please try again.", "Invalid Card Number", JOptionPane.INFORMATION_MESSAGE);
+	
+					}
+			
 			retrievedCard = ATMApplication.serverComm.sendCardRetrieval(cardRetrieval);
-			System.out.println("Retrieved Card from server: " +retrievedCard.getCardNo());
+			System.out.println("Retrieved card from server: " +retrievedCard.getCardNo());
 			cardValidation = new CardValidation(insertedCard, retrievedCard);
 			
-			if (cardValidation.validate())
+			if (cardValidation.validate()) //Correct PIN
 			{
 				System.out.println("Validate returned true");
 				
-				if (!(retrievedCard.isActive()))
+				if (!(retrievedCard.isActive())) //Card deactivated
 				{
 					JOptionPane.showMessageDialog(null, "Your card has been deactivated due to incorrect PIN entries. Please visit your nearest branch to rectify.", "Card Blocked", JOptionPane.INFORMATION_MESSAGE);
 					new ATMUserLogin(framePanel);
 				}
 				
-				AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(accountHolderCardNo);
-				AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
-				System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
-				framePanel.removeAll();
-				framePanel.revalidate();
-				new ATMAccountHolderMainMenu(framePanel, accountHolder);
+				//PIN correct and card active
+				if (insertedCard instanceof AccountHolderCard)
+				{
+					AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo = new AccountHolderRetrievalByCardNo(insertedCard.getCardNo());
+					AccountHolder accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByCardNo(accountHolderRetrievalByCardNo);
+					System.out.println("AccountHolder retrieved.  " + accountHolder.toString());
+					new ATMAccountHolderMainMenu(framePanel, accountHolder);
+				}
+				else
+				{
+					new ATM_AdminHome(framePanel);
+				}
 			}
 			else
 			{
