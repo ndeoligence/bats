@@ -2,16 +2,20 @@ package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 
 import javax.swing.border.*;
 
 import com.innotec.bats.general.AccountHolder;
 
-public class ViewShowAccountBalance extends JPanel
+public class ViewShowAccountBalance extends JPanel implements ActionListener
 {
 	private JPanel framePanel;
 	private double accountBalance;
+	private JButton btnOK, btnHelp;
+	private AccountHolder accountHolder;
 
 public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, double accountBalance)
 {
@@ -19,6 +23,7 @@ public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, d
 	framePanel.removeAll();
 	
 	this.accountBalance = accountBalance;
+	this.accountHolder = accountHolder;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -67,7 +72,7 @@ public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, d
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnHelp = new JButton("Help");
+	btnHelp = new JButton("Help");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 393, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 22, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -10, SpringLayout.SOUTH, panel_2);
@@ -75,17 +80,19 @@ public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, d
 	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
+	btnHelp.addActionListener(this);
 	
-	JButton btnCancel = new JButton("OK");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnCancel, 242, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnCancel, -41, SpringLayout.NORTH, btnHelp);
-	btnCancel.setIcon(new ImageIcon("resources/YesIcon.jpg"));
-	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnCancel);
+	btnOK = new JButton("OK");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnOK, 242, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnOK, -41, SpringLayout.NORTH, btnHelp);
+	btnOK.setIcon(new ImageIcon("resources/YesIcon.jpg"));
+	btnOK.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnOK);
+	btnOK.addActionListener(this);
 	
 	JLabel lblR = new JLabel("R " + accountBalance);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnCancel, 94, SpringLayout.SOUTH, lblR);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnCancel, 9, SpringLayout.EAST, lblR);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnOK, 94, SpringLayout.SOUTH, lblR);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnOK, 9, SpringLayout.EAST, lblR);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, lblR, 88, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, lblR, 251, SpringLayout.WEST, panel_2);
 	lblR.setFont(new Font("Cambria", Font.PLAIN, 70));
@@ -101,6 +108,22 @@ public ViewShowAccountBalance (JPanel framePanel, AccountHolder accountHolder, d
 	
 	framePanel.add(this);
 	framePanel.revalidate();
+}
+
+@Override
+public void actionPerformed (ActionEvent ae)
+{
+	Object source = ae.getSource();
+	
+	if (source == btnOK)
+	{
+		new ATMAccountHolderMainMenu(framePanel, accountHolder);
+	}
+	
+	if (source == btnHelp)
+	{
+		new HelpShowFile(framePanel, new ImageIcon("resources/Help File View Balance.jpg"), accountHolder);
+	}
 }
 
 

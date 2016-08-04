@@ -17,11 +17,4 @@ public class AccountClosure extends TellerAction {
     public void setAccountNo(String accountNo) {
         this.accountNo = accountNo;
     }
-
-    @Override
-    public String toString() {
-        return "AccountClosure{" +
-                "accountNo='" + accountNo + '\'' +
-                '}';
-    }
 }

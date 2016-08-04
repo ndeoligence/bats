@@ -40,7 +40,7 @@ public SelectAccount (JPanel framePanel, AccountHolder accountHolder, Action act
 	savingsAccountActive = false;
 	
 	System.out.println("Displaying accountholder from SelectAccount GUI: " + accountHolder.toString() + accountHolder.getCard().toString() +
-			"Current; " + currentAccountActive + "Savings: " + savingsAccountActive + currentAccount.toString() + savingsAccount.toString());
+			accountHolder.getAccounts().toString());
 	
 	for (int i=0; i < accounts.size(); i++)
 	{

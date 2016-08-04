@@ -10,12 +10,12 @@ public class AccountHolderCreation extends TellerAction
 		this.accountHolder = accountHolder;
 	}
 
-	public AccountHolder getAccountHolder()
+	public AccountHolder getAccount()
 	{
 		return accountHolder;
 	}
 
-	public void setAccountHolder(AccountHolder accountHolder)
+	public void setAccount(AccountHolder accountHolder)
 	{
 		this.accountHolder = accountHolder;
 	}
