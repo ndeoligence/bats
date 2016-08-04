@@ -1,30 +1,12 @@
-package com.innotec.bats.server.DAO;
+package com.innotec.bats.server.dao;
 
-import com.innotec.bats.general.ATMAdmin;
-import com.innotec.bats.general.Account;
-import com.innotec.bats.general.AccountHolder;
-import com.innotec.bats.general.AccountHolderCard;
-import com.innotec.bats.general.AdminCard;
-import com.innotec.bats.general.Card;
-import com.innotec.bats.general.CreditCardAccount;
-import com.innotec.bats.general.CurrentAccount;
-import com.innotec.bats.general.Deposit;
-import com.innotec.bats.general.Employee;
-import com.innotec.bats.general.SavingsAccount;
-import com.innotec.bats.general.Teller;
-import com.innotec.bats.general.Transaction;
-import com.innotec.bats.general.Transfer;
-import com.innotec.bats.general.Withdrawal;
+import com.innotec.bats.general.*;
 
-import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class DAO_Class implements DAO_Interface
 {
@@ -416,8 +398,7 @@ public class DAO_Class implements DAO_Interface
 
 	@SuppressWarnings("null")
 	@Override
-	public boolean addCurrentAccount (String accountHolderId,
-			CurrentAccount account)
+	public boolean addCurrentAccount (CurrentAccount account, String tellerId)
 	{
 		try
 		{
@@ -442,8 +423,7 @@ public class DAO_Class implements DAO_Interface
 	}
 
 	@Override
-	public boolean addSavingsAccount (String accountHolderId,
-			SavingsAccount account)
+	public boolean addSavingsAccount (SavingsAccount account,String tellerId)
 	{
 		try
 		{

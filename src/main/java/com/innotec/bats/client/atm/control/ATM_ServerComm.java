@@ -1,16 +1,13 @@
 package com.innotec.bats.client.atm.control;
 
+import com.innotec.bats.general.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
-import com.innotec.bats.general.*;
 
 
 public class ATM_ServerComm
@@ -25,13 +22,13 @@ public class ATM_ServerComm
 	private final String ATM_Password = "chiroptera13701";;
 	private ArrayList statement;
 	private Account account;
-	
+
 	//method takes in cardRetrieval object & sends to server
 	//method receives object from server & casts it to card be a object
 	//open/close connection methods
 	public ATM_ServerComm()
 	{
-		
+
 
 	}
 	
@@ -59,6 +56,7 @@ public class ATM_ServerComm
 		
 	}
 	
+	// Are these methods really needed on the ServerCom?
 	public Socket getSocket ()
 	{
 		return socket;
@@ -101,123 +99,98 @@ public class ATM_ServerComm
 
 	public Card sendCardRetrieval(CardRetrieval cardRetrieval)
 	{
-			try
-			{
-				oos.writeObject(cardRetrieval);
-				oos.flush();
-				card = (Card)this.getServerObject();
-				return card;
-			} 
-			catch (IOException e)
-			{
-				e.printStackTrace();
-				card = null;
-				return card;
-			}		
+        try
+        {
+            card = (Card) sendAction(cardRetrieval);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            card = null;
+        }
+        return card;
 	}
 	
 	public AccountHolder sendAccountHolderRetrievalByCardNo (AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo)
 	{
 		try
 		{
-			oos.writeObject(accountHolderRetrievalByCardNo);
-			oos.flush();
-			accountHolder = (AccountHolder)this.getServerObject();
-			return accountHolder;
+            accountHolder = (AccountHolder) sendAction(accountHolderRetrievalByCardNo);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			accountHolder = null;
-			return accountHolder;
-		}		
+		}
+        return accountHolder;
 	}
 	
 	public AccountHolder sendAccountHolderRetrievalByIdNo (AccountHolderRetrievalByIdNo accountHolderRetrievalByIdNo)
 	{
 		try
 		{
-			oos.writeObject(accountHolderRetrievalByIdNo);
-			oos.flush();
-			accountHolder = (AccountHolder)this.getServerObject();
-			return accountHolder;
+            accountHolder = (AccountHolder) sendAction(accountHolderRetrievalByIdNo);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			accountHolder = null;
-			return accountHolder;
-		}		
+		}
+        return accountHolder;
 	}
 	
 	public AccountHolder sendAccountHolderRetrievalByAccountNo (AccountHolderRetrievalByAccountNo accountHolderRetrievalByAccountNo)
 	{
 		try
 		{
-			oos.writeObject(accountHolderRetrievalByAccountNo);
-			oos.flush();
-			accountHolder = (AccountHolder)this.getServerObject();
-			return accountHolder;
+			accountHolder = (AccountHolder) sendAction(accountHolderRetrievalByAccountNo);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			accountHolder = null;
-			return accountHolder;
-		}		
+		}
+        return accountHolder;
 	}
 	
 	public AccountHolder sendAccountHolderCreation(AccountHolderCreation accountHolderCreation)
 	{
 		try 
 		{
-			oos.writeObject(accountHolderCreation);
-			oos.flush();
-			accountHolder = (AccountHolder)this.getServerObject();
-			return accountHolder;
-			
+			accountHolder = (AccountHolder) sendAction(accountHolderCreation);
 		}
 		catch (IOException e)
 		{
-			accountHolder = null;
 			e.printStackTrace();
-			return accountHolder;
+			accountHolder = null;
 		}
+        return accountHolder;
 	}
 	
 	public Account sendAccountCreation(AccountCreation accountCreation)
 	{
 		try 
 		{
-			oos.writeObject(accountCreation);
-			oos.flush();
-			account = (Account)this.getServerObject();
-			return account;
-			
+            account = (Account) sendAction(accountCreation);
 		}
 		catch (IOException e)
 		{
-			accountHolder = null;
 			e.printStackTrace();
-			return account;
+			account = null;
 		}
+        return account;
 	}
 	
 	public boolean sendAccountClosure (AccountClosure accountClosure)
 	{
 		try
 		{
-			oos.writeObject(accountClosure);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
-		} 
+		    return (Boolean) sendAction(accountClosure);
+		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+            return false;
 		}		
 	}
 	
@@ -225,17 +198,12 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			oos.writeObject(withdrawal);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
+            return (Boolean) sendAction(withdrawal);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+			return false;
 		}		
 	}
 	
@@ -243,17 +211,12 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			oos.writeObject(deposit);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
+            return (Boolean) sendAction(deposit);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+			return false;
 		}		
 		
 	}
@@ -262,36 +225,25 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			oos.writeObject(transfer);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
-		} 
+            return (Boolean) sendAction(transfer);
+		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
-		}		
-		
+			return false;
+		}
 	}
 	
 	public boolean sendPINChange(PINChange pinChange)
 	{
 		try
 		{
-			oos.writeObject(pinChange);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
-		} 
+            return (Boolean) sendAction(pinChange);
+		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+			return false;
 		}		
 		
 	}
@@ -300,34 +252,26 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			oos.writeObject(statementRetrieval);
-			oos.flush();
-			statement = (ArrayList)this.getServerObject();
-			return statement;
+			statement = (ArrayList) sendAction(statementRetrieval);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			statement = null;
-			return statement;
 		}
+        return statement;
 	}
 	
 	public boolean sendCardDeactivation (CardDeactivation cardDeactivation)
 	{
 		try
 		{
-			oos.writeObject(cardDeactivation);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
-		} 
+            return (Boolean) sendAction(cardDeactivation);
+		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+            e.printStackTrace();
+			return false;
 		}		
 	}
 	
@@ -335,17 +279,12 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			oos.writeObject(cardReactivation);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
+            return (Boolean) sendAction(cardReactivation);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+			return false;
 		}		
 	}
 	
@@ -353,35 +292,35 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			oos.writeObject(balanceSheetRequest);
-			oos.flush();
-			boolean tf  = (Boolean)this.getServerObject();
-			
-			return tf;
+            return (Boolean) sendAction(balanceSheetRequest);
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			boolean tf = false;
-			return tf;
+			return false;
 		}		
 	}
-	
+
+	private Object sendAction(Action action) throws IOException {
+		oos.writeObject(action);
+		oos.flush();
+		return getServerObject();
+	}
+
 	public void sendSessionTermination (SessionTermination sessionTermination)
 	{
 		try
 		{
 			oos.writeObject(sessionTermination);
 			oos.flush();
-			
-		} 
+		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 
-		}		
+		}
 	}
-	
+
 	public Object getServerObject()
 	{
 		try
@@ -420,5 +359,4 @@ public class ATM_ServerComm
 			return false;
 		}
 	}
-	
 }

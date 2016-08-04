@@ -1,6 +1,6 @@
 package com.innotec.bats.general;
 
-public class CardDeactivation
+public class CardDeactivation extends Action
 {
 	private String cardNo, atmID;
 	

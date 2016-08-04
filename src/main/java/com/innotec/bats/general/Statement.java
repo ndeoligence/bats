@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Statement
+public class Statement implements java.io.Serializable
 {
 	private ArrayList<Transaction> transactions;
 	private Date dateStamp;
@@ -29,6 +29,4 @@ public class Statement
 	{
 		this.transactions = transactions;
 	}
-	
-	
 }

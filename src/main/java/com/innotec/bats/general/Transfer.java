@@ -9,9 +9,10 @@ public class Transfer extends Transaction
     public Transfer(String primaryAccountNo, String secondaryAccountNo, double transferAmount)
     {
     	super(primaryAccountNo, transferAmount);
+		if (transferAmount < MIN_AMOUNT)
+			throw new IllegalArgumentException("Transfer amount is lower than minimum allowable");
     	this.SecondaryAccountNo = secondaryAccountNo;
     	this.transferAmount = transferAmount;
-    	this.transferIsNotLessThanMinAmount();
     }
 	
     public String getSecondaryAccountNo ()
@@ -33,18 +34,6 @@ public class Transfer extends Transaction
 	{
 		this.transferAmount = transferAmount;
 	}
-
-	public boolean transferIsNotLessThanMinAmount()
-    {
-    	if(MIN_AMOUNT > transferAmount)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		return true;
-    	}
-    }
 
 	public String toString()
 	{
