@@ -1,6 +1,5 @@
 package com.innotec.bats.server.model;
 import com.innotec.bats.general.*;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.InternalError;
 
 /**
  * Created by phoenix on 8/3/16.
@@ -43,7 +42,7 @@ public class BankAccountIdGenerator {
             case SAVINGS:
                 return accNo.substring(0,3) + SAV_ACC + accNo.substring(6,accNo.length()-1);
             default:
-                throw new InternalError("Code that should never run just disobeyed!!");
+                throw new Error("Code that should never run just disobeyed!!");
         }
     }
     public static String nextAdminCardNo(String lastUsed) {

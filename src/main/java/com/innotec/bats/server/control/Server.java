@@ -12,7 +12,6 @@ import java.util.List;
 import com.innotec.bats.general.*;
 import com.innotec.bats.server.dao.*;
 import com.innotec.bats.server.model.SessionTerminationException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class Server {
     /* Static variables */
