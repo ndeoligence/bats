@@ -1,12 +1,30 @@
-package com.innotec.bats.server.dao;
+package com.innotec.bats.server.DAO;
 
-import com.innotec.bats.general.*;
+import com.innotec.bats.general.ATMAdmin;
+import com.innotec.bats.general.Account;
+import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.AccountHolderCard;
+import com.innotec.bats.general.AdminCard;
+import com.innotec.bats.general.Card;
+import com.innotec.bats.general.CreditCardAccount;
+import com.innotec.bats.general.CurrentAccount;
+import com.innotec.bats.general.Deposit;
+import com.innotec.bats.general.Employee;
+import com.innotec.bats.general.SavingsAccount;
+import com.innotec.bats.general.Teller;
+import com.innotec.bats.general.Transaction;
+import com.innotec.bats.general.Transfer;
+import com.innotec.bats.general.Withdrawal;
 
+import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class DAO_Class implements DAO_Interface
 {
@@ -19,7 +37,7 @@ public class DAO_Class implements DAO_Interface
 	private static final String ADD_CURRENTACCOUNT = "insert into accounttbl values (?,1,?,100.00,?,?,true,?);";
 	private static final String ADD_SAVINGSACCOUNT = "insert into accounttbl values(?,2,?,1000.00,?,?,true,?);";
 	private static final String ADD_CREDITCARDACCOUNT = "insert into accounttbl values(?,3,?,?,?,?,true,?);";
-	private static final String ADD_TRANSACTION = "insert into transactiontbl values (?,?,?,?);";
+	private static final String ADD_TRANSACTION = "insert into transactiontbl (Amount, Type, ATM_ID, AccountNo) values (?,?,?,?);";
 	
 	private static final String ADD_PENDINGWITHDRAWAL = "insert into pendingwithdrawalstbl values (?, ?, ?);";
 	private static final String GET_PENDINGWITHDRAWAL = "select * from pendingwithdrawalstbl where accountNo = ?;";
@@ -35,7 +53,7 @@ public class DAO_Class implements DAO_Interface
 	private static final String GET_ACCOUNTBYACCOUNTNO = "select * from accounttbl where AccountNo = ?;";
 	private static final String GET_TRANSACTIONSFORACCOUNT = "select * from transactiontbl where AccountNo = ?;";
 	
-	private static final String ADJUST_FUNDS = "update Accounttbl set balance = ? where AccountNo = ?;";
+	private static final String ADJUST_FUNDS = "update accounttbl set Balance = ? where AccountNo = ?;";
 	
 	private static final String SET_CARDISACTIVE = "update cardtbl set Active = ? where CardNo = ?;";
 	private static final String CHANGE_PIN = "update accountholdercardtbl set PIN = ? where CardNo = ?;";
@@ -209,10 +227,9 @@ public class DAO_Class implements DAO_Interface
 			pStmt = conn.getConnection().prepareStatement(GET_ACCOUNTSBYCARDNO);
 			pStmt.setString(1, cardNo);
 			rs = pStmt.executeQuery();
-			rs.next();
-			//while (rs.next())
-			//{
-				if (rs.getInt(2) == 1)
+			while (rs.next())
+			{
+				if ((rs.getInt(2)) == 1)
 				{
 					account = new CurrentAccount(rs.getString(1),
 							rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
@@ -223,24 +240,26 @@ public class DAO_Class implements DAO_Interface
 				{
 					account = new SavingsAccount(rs.getString(1),
 							rs.getDouble(3), rs.getBoolean(7), rs.getDouble(6), rs.getDouble(5), "");
-	//				((SavingsAccount)account).setWithdrawalPending(rs.getBoolean(9));
-	//				System.out.println("DAO savingsAcc: " + account.toString());
-	//				if (rs.getBoolean(9))
-	//				{
-	//					pStmt = conn.getConnection().prepareStatement(GET_PENDINGWITHDRAWAL);
-	//					pStmt.setString(1, account.getAccountNo());
-	//					rs = pStmt.executeQuery();
-	//					((SavingsAccount)account).setFundsAvailableDate(rs.getDate(2));
-	//					((SavingsAccount)account).setPendingWithdrawalAmount(rs.getDouble(3));
-	//				}
+					((SavingsAccount)account).setWithdrawalPending(rs.getBoolean(9));
+					System.out.println("DAO savingsAcc: " + account.toString());
+					if (rs.getBoolean(9))
+					{
+						pStmt = conn.getConnection().prepareStatement(GET_PENDINGWITHDRAWAL);
+						pStmt.setString(1, account.getAccountNo());
+						rs = pStmt.executeQuery();
+						((SavingsAccount)account).setFundsAvailableDate(rs.getDate(2));
+						((SavingsAccount)account).setPendingWithdrawalAmount(rs.getDouble(3));
+					}
 					accounts.add(account);
 				}
-			//}
+			}
 			rs.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			System.out.println("Problem retrieving accounts from db.");
+			e.printStackTrace();
+			e.getMessage();
 			return null;
 		}
 		return accounts;
@@ -260,18 +279,23 @@ public class DAO_Class implements DAO_Interface
 				rs.next();
 				accountBalance = rs.getDouble(3);
 				
+				System.out.println(accountBalance);
 				accountBalance = accountBalance-newWithdrawal.getAmount();
+				System.out.println(accountBalance);
 				
 				pStmt = conn.getConnection().prepareStatement(ADJUST_FUNDS);
 				pStmt.setDouble(1, accountBalance);
 				pStmt.setString(2, newWithdrawal.getPrimAccountNo());
+				pStmt.executeUpdate();
 				
 				pStmt = conn.getConnection().prepareStatement(ADD_TRANSACTION);
-				pStmt.setDouble(3, newWithdrawal.getAmount());
-				pStmt.setInt(4, 1);
-				pStmt.setString(5, newWithdrawal.getATM_ID());
-				pStmt.setString(6, newWithdrawal.getPrimAccountNo());
+				pStmt.setDouble(1, newWithdrawal.getAmount());
+				pStmt.setInt(2, 1);
+				pStmt.setString(3, newWithdrawal.getATM_ID());
+				pStmt.setString(4, newWithdrawal.getPrimAccountNo());
 				pStmt.executeUpdate();
+				
+				rs.close();
 				return true;
 			}
 			catch (SQLException e)
@@ -398,7 +422,8 @@ public class DAO_Class implements DAO_Interface
 
 	@SuppressWarnings("null")
 	@Override
-	public boolean addCurrentAccount (CurrentAccount account, String tellerId)
+	public boolean addCurrentAccount (String accountHolderId,
+			CurrentAccount account)
 	{
 		try
 		{
@@ -423,7 +448,8 @@ public class DAO_Class implements DAO_Interface
 	}
 
 	@Override
-	public boolean addSavingsAccount (SavingsAccount account,String tellerId)
+	public boolean addSavingsAccount (String accountHolderId,
+			SavingsAccount account)
 	{
 		try
 		{

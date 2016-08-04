@@ -1,4 +1,4 @@
-package com.innotec.bats.server.dao;
+package com.innotec.bats.server.DAO;
 
 import java.io.FileInputStream;
 import java.io.IOException;

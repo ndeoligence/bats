@@ -29,7 +29,8 @@ public class AccountHolder extends Person
 
     public boolean addAccount (Account newAccount)
     {
-        return accounts.add(newAccount);
+        accounts.add(newAccount);
+        return true;
     }
     
     public boolean addAccountArrayList(ArrayList accountArrayList)

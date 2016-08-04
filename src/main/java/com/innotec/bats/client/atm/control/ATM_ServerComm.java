@@ -1,13 +1,16 @@
 package com.innotec.bats.client.atm.control;
 
-import com.innotec.bats.general.*;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
+import com.innotec.bats.general.*;
 
 
 public class ATM_ServerComm
@@ -22,13 +25,13 @@ public class ATM_ServerComm
 	private final String ATM_Password = "chiroptera13701";;
 	private ArrayList statement;
 	private Account account;
-
+	
 	//method takes in cardRetrieval object & sends to server
 	//method receives object from server & casts it to card be a object
 	//open/close connection methods
 	public ATM_ServerComm()
 	{
-
+		
 
 	}
 	
@@ -56,7 +59,6 @@ public class ATM_ServerComm
 		
 	}
 	
-	// Are these methods really needed on the ServerCom?
 	public Socket getSocket ()
 	{
 		return socket;
@@ -99,98 +101,123 @@ public class ATM_ServerComm
 
 	public Card sendCardRetrieval(CardRetrieval cardRetrieval)
 	{
-        try
-        {
-            card = (Card) sendAction(cardRetrieval);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            card = null;
-        }
-        return card;
+			try
+			{
+				oos.writeObject(cardRetrieval);
+				oos.flush();
+				card = (Card)this.getServerObject();
+				return card;
+			} 
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				card = null;
+				return card;
+			}		
 	}
 	
 	public AccountHolder sendAccountHolderRetrievalByCardNo (AccountHolderRetrievalByCardNo accountHolderRetrievalByCardNo)
 	{
 		try
 		{
-            accountHolder = (AccountHolder) sendAction(accountHolderRetrievalByCardNo);
+			oos.writeObject(accountHolderRetrievalByCardNo);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			accountHolder = null;
-		}
-        return accountHolder;
+			return accountHolder;
+		}		
 	}
 	
 	public AccountHolder sendAccountHolderRetrievalByIdNo (AccountHolderRetrievalByIdNo accountHolderRetrievalByIdNo)
 	{
 		try
 		{
-            accountHolder = (AccountHolder) sendAction(accountHolderRetrievalByIdNo);
+			oos.writeObject(accountHolderRetrievalByIdNo);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			accountHolder = null;
-		}
-        return accountHolder;
+			return accountHolder;
+		}		
 	}
 	
 	public AccountHolder sendAccountHolderRetrievalByAccountNo (AccountHolderRetrievalByAccountNo accountHolderRetrievalByAccountNo)
 	{
 		try
 		{
-			accountHolder = (AccountHolder) sendAction(accountHolderRetrievalByAccountNo);
+			oos.writeObject(accountHolderRetrievalByAccountNo);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			accountHolder = null;
-		}
-        return accountHolder;
+			return accountHolder;
+		}		
 	}
 	
 	public AccountHolder sendAccountHolderCreation(AccountHolderCreation accountHolderCreation)
 	{
 		try 
 		{
-			accountHolder = (AccountHolder) sendAction(accountHolderCreation);
+			oos.writeObject(accountHolderCreation);
+			oos.flush();
+			accountHolder = (AccountHolder)this.getServerObject();
+			return accountHolder;
+			
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
 			accountHolder = null;
+			e.printStackTrace();
+			return accountHolder;
 		}
-        return accountHolder;
 	}
 	
 	public Account sendAccountCreation(AccountCreation accountCreation)
 	{
 		try 
 		{
-            account = (Account) sendAction(accountCreation);
+			oos.writeObject(accountCreation);
+			oos.flush();
+			account = (Account)this.getServerObject();
+			return account;
+			
 		}
 		catch (IOException e)
 		{
+			accountHolder = null;
 			e.printStackTrace();
-			account = null;
+			return account;
 		}
-        return account;
 	}
 	
 	public boolean sendAccountClosure (AccountClosure accountClosure)
 	{
 		try
 		{
-		    return (Boolean) sendAction(accountClosure);
-		}
+			oos.writeObject(accountClosure);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-            return false;
+			boolean tf = false;
+			return tf;
 		}		
 	}
 	
@@ -198,12 +225,18 @@ public class ATM_ServerComm
 	{
 		try
 		{
-            return (Boolean) sendAction(withdrawal);
+			oos.writeObject(withdrawal);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			System.out.println(tf);
+			
+			return tf;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return false;
+			boolean tf = false;
+			return tf;
 		}		
 	}
 	
@@ -211,12 +244,17 @@ public class ATM_ServerComm
 	{
 		try
 		{
-            return (Boolean) sendAction(deposit);
+			oos.writeObject(deposit);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return false;
+			boolean tf = false;
+			return tf;
 		}		
 		
 	}
@@ -225,25 +263,36 @@ public class ATM_ServerComm
 	{
 		try
 		{
-            return (Boolean) sendAction(transfer);
-		}
+			oos.writeObject(transfer);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return false;
-		}
+			boolean tf = false;
+			return tf;
+		}		
+		
 	}
 	
 	public boolean sendPINChange(PINChange pinChange)
 	{
 		try
 		{
-            return (Boolean) sendAction(pinChange);
-		}
+			oos.writeObject(pinChange);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return false;
+			boolean tf = false;
+			return tf;
 		}		
 		
 	}
@@ -252,26 +301,34 @@ public class ATM_ServerComm
 	{
 		try
 		{
-			statement = (ArrayList) sendAction(statementRetrieval);
+			oos.writeObject(statementRetrieval);
+			oos.flush();
+			statement = (ArrayList)this.getServerObject();
+			return statement;
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			statement = null;
+			return statement;
 		}
-        return statement;
 	}
 	
 	public boolean sendCardDeactivation (CardDeactivation cardDeactivation)
 	{
 		try
 		{
-            return (Boolean) sendAction(cardDeactivation);
-		}
+			oos.writeObject(cardDeactivation);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
+		} 
 		catch (IOException e)
 		{
-            e.printStackTrace();
-			return false;
+			e.printStackTrace();
+			boolean tf = false;
+			return tf;
 		}		
 	}
 	
@@ -279,12 +336,17 @@ public class ATM_ServerComm
 	{
 		try
 		{
-            return (Boolean) sendAction(cardReactivation);
+			oos.writeObject(cardReactivation);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return false;
+			boolean tf = false;
+			return tf;
 		}		
 	}
 	
@@ -292,35 +354,35 @@ public class ATM_ServerComm
 	{
 		try
 		{
-            return (Boolean) sendAction(balanceSheetRequest);
+			oos.writeObject(balanceSheetRequest);
+			oos.flush();
+			boolean tf  = (Boolean)this.getServerObject();
+			
+			return tf;
 		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return false;
+			boolean tf = false;
+			return tf;
 		}		
 	}
-
-	private Object sendAction(Action action) throws IOException {
-		oos.writeObject(action);
-		oos.flush();
-		return getServerObject();
-	}
-
+	
 	public void sendSessionTermination (SessionTermination sessionTermination)
 	{
 		try
 		{
 			oos.writeObject(sessionTermination);
 			oos.flush();
-		}
+			
+		} 
 		catch (IOException e)
 		{
 			e.printStackTrace();
 
-		}
+		}		
 	}
-
+	
 	public Object getServerObject()
 	{
 		try
@@ -359,4 +421,5 @@ public class ATM_ServerComm
 			return false;
 		}
 	}
+	
 }

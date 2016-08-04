@@ -225,7 +225,7 @@ public void executeWithdrawal (Withdrawal withdrawal)
 		JOptionPane.showMessageDialog(null, "Thank you - please collect your cash", "Transaction Complete", JOptionPane.INFORMATION_MESSAGE);
 		//Call DNR_Manager methods
 		
-		if (JOptionPane.showInternalConfirmDialog(null, "Would you like to do another transaction?", "Transaction complete", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+		if (JOptionPane.showConfirmDialog(null, "Would you like to do another transaction?", "Transaction complete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
 		{
 			accountHolder = ATMApplication.serverComm.sendAccountHolderRetrievalByAccountNo(new AccountHolderRetrievalByAccountNo(withdrawal.getPrimAccountNo()));
 			new ATMAccountHolderMainMenu(framePanel, accountHolder);
