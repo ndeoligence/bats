@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.innotec.bats.general.*;
 import com.innotec.bats.server.DAO.*;
-import com.innotec.bats.server.DAO.DAO_Class;
 import com.innotec.bats.server.model.SessionTerminationException;
 
 public class Server
@@ -192,16 +191,21 @@ public class Server
 					processAccountHolderRetrieval((AccountHolderRetrieval) action);
 					System.out.println("action in processActionRetrieval Server: " + (AccountHolderRetrieval)action);
 				}
-				else
-					if (action instanceof TellerAction)
+				else 
+					if (action instanceof Transaction)
 					{
-						processTellerAction((TellerAction) action);
+						processTransaction((Transaction)action);
 					}
 					else
-					{
-						System.out.println("Unimplemented action handler: "
-								+ action);
-					}
+						if (action instanceof TellerAction)
+						{
+							processTellerAction((TellerAction) action);
+						}
+						else
+						{
+							System.out.println("Unimplemented action handler: "
+									+ action);
+						}
 		}
 
 		private boolean processCardRetrieval (CardRetrieval action)
@@ -264,46 +268,67 @@ public class Server
 					}
 					
 					card = dao.getAccountHolderCard(((AccountHolderRetrievalByCardNo)action).getCardNo());
-					accounts = dao.getAccounts(((AccountHolderRetrievalByCardNo)action).getCardNo());
+					System.out.println("CardNo param for getAccounts method: " +((AccountHolderRetrievalByCardNo)action).getCardNo() );
+					accounts = dao.getAccounts(((AccountHolderRetrievalByCardNo)action).getCardNo());	
+					System.out.println("Accounts from dao in Server method accHolderRet: " + accounts.toString());
 					accountHolder.addCard(card);
 					accountHolder.addAccountArrayList(accounts);
 			 
 			return sendToClient(accountHolder);
 		}
-
-		private void processAccountRetrieval (AccountRetrieval action)
+		
+		public boolean processTransaction(Transaction transaction)
 		{
-			List<Account> accounts = null;
-			if (action instanceof AccountRetrievalByAccountNo)
+			if (transaction instanceof Withdrawal)
 			{
-				accounts = new ArrayList<>();
-				// accounts.add(dao.getAccount(((AccountRetrievalByAccountNo)
-				// action).getAccountNo()));
+				
 			}
-			else
-				if (action instanceof AccountRetrievalByIdNo)
+			else 
+				if (transaction instanceof Deposit)
 				{
-					// accounts =
-					// (dao.getAccountsByIdNo(((AccountRetrievalByIdNo)
-					// action).getIdNo()));
+					
 				}
 				else
-					if (action instanceof AccountRetrievalByCardNo)
+					if (transaction instanceof Transfer)
 					{
-						// accounts =
-						// (dao.getAccountsByCardNo(((AccountRetrievalByCardNo)
-						// action).getCardNo()));
+						
 					}
-					else
-					{
-						System.err
-								.println("ClientHandler::processAccountRetrieval() >> Unrecognized AccountRetrieval sub-action"
-										+ "\n\tWill return empty list");
-						accounts = new ArrayList<>();
-					}
-
-			sendToClient(accounts);
+			return false;
 		}
+
+//		private void processAccountRetrieval (AccountRetrieval action)
+//		{
+//			List<Account> accounts = null;
+//			if (action instanceof AccountRetrievalByAccountNo)
+//			{
+//				accounts = new ArrayList<>();
+//				// accounts.add(dao.getAccount(((AccountRetrievalByAccountNo)
+//				// action).getAccountNo()));
+//			}
+//			else
+//				if (action instanceof AccountRetrievalByIdNo)
+//				{
+//					// accounts =
+//					// (dao.getAccountsByIdNo(((AccountRetrievalByIdNo)
+//					// action).getIdNo()));
+//				}
+//				else
+//					if (action instanceof AccountRetrievalByCardNo)
+//					{
+//						// accounts =
+//						// (dao.getAccountsByCardNo(((AccountRetrievalByCardNo)
+//						// action).getCardNo()));
+//					}
+//					else
+//					{
+//						System.err
+//								.println("ClientHandler::processAccountRetrieval() >> Unrecognized AccountRetrieval sub-action"
+//										+ "\n\tWill return empty list");
+//						accounts = new ArrayList<>();
+//					}
+//
+//			sendToClient(accounts);
+//		}
 
 		public boolean terminateSession ()
 		{

@@ -2,9 +2,11 @@ package com.innotec.bats.general;
 
 import java.sql.Date;
 
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
+
 public class Transaction extends Action
 {
-		private String primAccountNo;
+		private String primAccountNo, ATM_ID;
 		private double amount;
 		private Date datestamp;
 		
@@ -13,6 +15,12 @@ public class Transaction extends Action
 			this.primAccountNo = primAccountNo;
 			this.amount = amount;
 			datestamp = null;
+			ATM_ID = ATMApplication.serverComm.getAtmId();
+		}
+
+		public String getATM_ID ()
+		{
+			return ATM_ID;
 		}
 
 		public Date getDatestamp ()
