@@ -30,6 +30,7 @@ public class Person implements Serializable {
 		this.idNo = idNo;
 	}
 	public boolean validateIdNo() {
-		return false;
+		if (idNo == null) return false;
+		return idNo.matches("[0-9]{13}");
 	}
 }
