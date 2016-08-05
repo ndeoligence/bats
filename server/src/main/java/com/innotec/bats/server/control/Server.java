@@ -42,21 +42,23 @@ public class Server {
         serverSocket = new ServerSocket(SERVER_PORT_NR);
 
         /* Start: DB Test Code */
-//        System.out.println("Testing the database...");
-//        System.out.println("Getting a card...");
-//
-//        String cardNo = "1234567890123450";
-//        System.out.println("Asking for card from database (card # = "
-//                + cardNo + ")");
-//        AccountHolderCard card = dao.getAccountHolderCard(cardNo);
-//        System.out.println("Server >>\n\tReceived card:" + card);
-//        System.out
-//                .println("Asking for account holder from database (id # = "
-//                        + card.getAccountHolderIdNo() + ")");
-//        AccountHolder accountHolder = dao.getAccountHolderByIdNo(card
-//                .getAccountHolderIdNo());
-//        System.out.println("Server >>\n\tReceived account holder:"
-//                + accountHolder);
+        System.out.println("********Testing the database...********");
+        System.out.println("Add new account holder");
+        AccountHolder accountHolder = new AccountHolder();
+        System.out.println("Getting a card...");
+
+        String cardNo = "1234567890123450";
+        System.out.println("Asking for card from database (card # = "
+                + cardNo + ")");
+        AccountHolderCard card = dao.getAccountHolderCard(cardNo);
+        System.out.println("Server >>\n\tReceived card:" + card);
+        System.out
+                .println("Asking for account holder from database (id # = "
+                        + card.getAccountHolderIdNo() + ")");
+        AccountHolder accountHolder = dao.getAccountHolderByIdNo(card
+                .getAccountHolderIdNo());
+        System.out.println("Server >>\n\tReceived account holder:"
+                + accountHolder);
         /* End: DB Test Code */
     }
 
