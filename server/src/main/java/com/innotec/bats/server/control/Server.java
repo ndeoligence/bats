@@ -168,12 +168,12 @@ public class Server {
                         + action);
             }
         }
-//        private void processAccountHolderCreation(AccountHolderCreation action) {
-//            AccountHolder newAccountHolder = action.getAccountHolder();
-//
-//            Boolean flag = dao.addAccountHolder(newAccountHolder,action.getEmployeeNo());
-//            sendToClient(flag);
-//        }
+        private void processAccountHolderCreation(AccountHolderCreation action) {
+            AccountHolder newAccountHolder = action.getAccountHolder();
+
+            Boolean flag = dao.addAccountHolder(newAccountHolder,action.getEmployeeNo());
+            sendToClient(flag);
+        }
 //        private void processAccountCreation(AccountCreation action) {
 //            Account newAccount = action.getNewAccount();
 //            Boolean flag = false;
@@ -343,12 +343,21 @@ public class Server {
         private String getClientAlias() {
             return socket.getLocalAddress().toString();
         }
+        
         public void processDeposit(Deposit deposit) {
         	String accountNo = deposit.getPrimAccountNo();
         	double amount = deposit.getAmount();
-        	if (amount >= Deposit.MIN_AMOUNT) {
+        	if (amount < Deposit.MIN_AMOUNT) {
+        		sendToClient(false);
+        	} else {
         		//dao.processDeposit(accountNo, amount);
-        		dao.processDeposit(accountNo,amount);
+        		if (dao.processDeposit(accountNo,amount)) {
+        			/*todo...*/
+        			dao.logDeposit(deposit.getDatestamp(),accountNo,amount);
+        			sendToClient(true);
+        		} else {
+        			sendToClient(false);
+        		}
         	}
         }
     }
