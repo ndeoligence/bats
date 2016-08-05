@@ -182,8 +182,7 @@ public class DAO_Class implements DAO_Interface
 			rs = pStmt.executeQuery();
 			rs.next();
 
-			accountHolder = new AccountHolder(rs.getString(2), rs.getString(3), rs.getString(1),
-					rs.getString(4), rs.getString(5));
+			accountHolder = new AccountHolder(rs.getString(2), rs.getString(3), rs.getString(1), rs.getString(4), rs.getString(5));
 			rs.close();
 		}
 		catch (SQLException e)
@@ -680,4 +679,7 @@ public class DAO_Class implements DAO_Interface
 	// }
 	// return temp;
 	// }
+	public boolean logDeposit(java.util.Date dateTime,String accountNo, double amount) {
+		return false;
+	}
 }

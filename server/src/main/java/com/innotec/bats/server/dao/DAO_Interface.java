@@ -55,4 +55,5 @@ public interface DAO_Interface
 //	public Employee getEmployee(String employeeID);
 //	public Transaction getTransactionForAccount(String accountID);
 //	public AccountHolderCard getAccountHolderCardByCardNo(String cardNo);
+	public boolean logDeposit(java.util.Date dateTime,String accountNo, double amount);
 }
