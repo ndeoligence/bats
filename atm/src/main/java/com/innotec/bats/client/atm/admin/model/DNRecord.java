@@ -3,9 +3,6 @@ package com.innotec.bats.client.atm.admin.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by phoenix on 7/20/16.
- */
 public class DNRecord
 {
 	private String atmID;
