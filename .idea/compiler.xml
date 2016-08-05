@@ -19,8 +19,16 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="atm_main" target="1.7" />
+      <module name="atm_test" target="1.7" />
       <module name="bats_main" target="1.7" />
       <module name="bats_test" target="1.7" />
+      <module name="server_main" target="1.7" />
+      <module name="server_test" target="1.7" />
+      <module name="shared_main" target="1.7" />
+      <module name="shared_test" target="1.7" />
+      <module name="teller_main" target="1.7" />
+      <module name="teller_test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
