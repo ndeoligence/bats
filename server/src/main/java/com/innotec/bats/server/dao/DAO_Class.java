@@ -1,4 +1,4 @@
-package com.innotec.bats.server.dao;
+package com.innotec.bats.server.DAO;
 
 import com.innotec.bats.general.ATMAdmin;
 import com.innotec.bats.general.Account;
@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
@@ -41,8 +42,8 @@ public class DAO_Class implements DAO_Interface
 	
 	private static final String ADD_PENDINGWITHDRAWAL = "insert into pendingwithdrawalstbl values (?, ?, ?);";
 	private static final String GET_PENDINGWITHDRAWAL = "select * from pendingwithdrawalstbl where accountNo = ?;";
-	private static final String SET_PENDINGWITHDRAWAL = "update accountstbl set WithdrawalPending = ? where AccountNo = ?;";
 
+	private static final String SET_PENDINGWITHDRAWAL = "update accounttbl set WithdrawalPending = ? where AccountNo like ?;";
 	private static final String GET_ACCOUNTHOLDERCARDBYCARDNO = "select * from accountholdercardtbl where CardNo = ?;";
 	private static final String GET_ADMINCARDBYCARDNO = "select * from admincardtbl where CardNo = ?;";
 	
@@ -247,6 +248,7 @@ public class DAO_Class implements DAO_Interface
 						pStmt = conn.getConnection().prepareStatement(GET_PENDINGWITHDRAWAL);
 						pStmt.setString(1, account.getAccountNo());
 						rs = pStmt.executeQuery();
+						rs.next();
 						((SavingsAccount)account).setFundsAvailableDate(rs.getDate(2));
 						((SavingsAccount)account).setPendingWithdrawalAmount(rs.getDouble(3));
 					}
@@ -306,8 +308,33 @@ public class DAO_Class implements DAO_Interface
 		}
 		else
 		{
+			try
+			{
+				pStmt.getConnection().prepareStatement(SET_PENDINGWITHDRAWAL);
+				pStmt.setBoolean(1, true);
+				pStmt.setString(2, newWithdrawal.getPrimAccountNo());
+				pStmt.executeUpdate();
+				
+				Calendar calender = Calendar.getInstance();
+				calender.add(Calendar.DATE, 32);
+				java.util.Date utilDate = new java.util.Date();
+				utilDate = calender.getTime();
+			    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+				
+				pStmt.getConnection().prepareStatement(ADD_PENDINGWITHDRAWAL);
+				pStmt.setString(1, newWithdrawal.getPrimAccountNo());
+				pStmt.setDate(2, sqlDate);
+				pStmt.setDouble(3, newWithdrawal.getAmount());
+				
+				return true;
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+				return false; 
+			}
+			//test withdrawal with waiting period
 			
-			return false; //still code withdrawal with waiting period
 		}
 	}
 

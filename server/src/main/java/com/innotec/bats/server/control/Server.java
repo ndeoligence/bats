@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.innotec.bats.general.*;
-import com.innotec.bats.server.dao.*;
-import com.innotec.bats.server.model.*;
+import com.innotec.bats.server.DAO.*;
+import com.innotec.bats.server.model.SessionTerminationException;
 
 public class Server {
     /* Static variables */
@@ -343,7 +343,6 @@ public class Server {
         private String getClientAlias() {
             return socket.getLocalAddress().toString();
         }
-        
         public void processDeposit(Deposit deposit) {
         	String accountNo = deposit.getPrimAccountNo();
         	double amount = deposit.getAmount();
@@ -353,18 +352,18 @@ public class Server {
         	}
         }
     }
-    
+
     public static void main(String[] args) {
         try {
             Server server = new Server();
             System.out.println("Server started.");
             while (true) {
                 System.out.println("Waiting for connection...");
-                server.newClientHandler().start();
+                (server.newClientHandler()).start();
                 System.out.println("New client found!");
             }
         } catch (IOException e) {
-            System.err.println("Error listening for connections.\nTry restarting the program");
+            System.err.println("Error starting server up and listening for connections.\nTry restarting the program");
             e.printStackTrace();
             System.out.println("Server is stopping.");
             System.exit(1);
