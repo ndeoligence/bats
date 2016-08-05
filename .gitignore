@@ -1,7 +1,4 @@
-.classpath*
 .gradle*
-.idea*
-.project*
-.settings*
+.idea
 bin*
 build*
