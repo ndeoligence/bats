@@ -7,9 +7,8 @@ import java.awt.*;
 
 import javax.swing.border.*;
 
+import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
 import com.innotec.bats.client.atm.accountholder.model.ATMUserLogout;
-import com.innotec.bats.general.AccountHolder;
-import com.innotec.bats.general.SessionTermination;
 import com.innotec.bats.general.*;
 import com.innotec.bats.general.Action;
 
@@ -177,18 +176,21 @@ public void actionPerformed (ActionEvent ae)
 	if (source == btnWithdrawCash)
 	{
 		Transaction withdrawal = new Withdrawal("", 0.00, false);
+		withdrawal.setATM_ID(ATMApplication.serverComm.getAtmId());
 		new SelectAccount(framePanel, accountHolder, withdrawal, "withdrawal");
 	}
 	
 	if (source == btnDepositCash)
 	{
-		Action deposit = new Deposit("", 0.00);
+		Transaction deposit = new Deposit("", 0.00);
+		deposit.setATM_ID(ATMApplication.serverComm.getAtmId());
 		new SelectAccount(framePanel, accountHolder, deposit, "deposit");
 	}
 	
 	if (source == btnTransferMoney)
 	{
-		Action transfer = new Transfer("", "", 0.00);
+		Transaction transfer = new Transfer("", "", 0.00);
+		transfer.setATM_ID(ATMApplication.serverComm.getAtmId());
 		new SelectAccount(framePanel, accountHolder, transfer, "transfer FROM");
 	}
 	
@@ -201,6 +203,7 @@ public void actionPerformed (ActionEvent ae)
 	if (source == btnViewStatement)
 	{
 		Action viewStatement = new ViewStatement(null, "");
+		
 		new SelectAccount(framePanel, accountHolder, viewStatement, "viewing");
 	}
 	

@@ -12,6 +12,11 @@ public class Deposit extends Transaction
 		super(accountNo, amount);
 	}
 
+	public static double getMinAmount ()
+	{
+		return MIN_AMOUNT;
+	}
+	
 	public String toString ()
 	{
 		return "Deposit of R" + getAmount() + " to: " + getPrimAccountNo();
