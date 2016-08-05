@@ -348,7 +348,7 @@ public class Server {
         	double amount = deposit.getAmount();
         	if (amount >= Deposit.MIN_AMOUNT) {
         		//dao.processDeposit(accountNo, amount);
-        		dao.processDeposit(deposit);
+        		dao.processDeposit(accountNo,amount);
         	}
         }
     }

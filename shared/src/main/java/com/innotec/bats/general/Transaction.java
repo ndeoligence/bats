@@ -1,6 +1,6 @@
 package com.innotec.bats.general;
 
-import java.sql.Date;
+import java.util.Date;
 
 // import com.innotec.bats.client.atm.accountholder.control.ATMApplication; // The general classes mustn't depend on client/server
 
@@ -14,7 +14,7 @@ public class Transaction extends Action
 		{
 			this.primAccountNo = primAccountNo;
 			this.amount = amount;
-			datestamp = null;
+			datestamp = new Date();
 			// ATM_ID = ATMApplication.serverComm.getAtmId(); // The ATM must use setter method OR ctor to set its id#!
 		}
 

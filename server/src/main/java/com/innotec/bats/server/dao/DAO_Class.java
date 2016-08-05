@@ -339,7 +339,7 @@ public class DAO_Class implements DAO_Interface
 	}
 
 	@Override
-	public boolean processDeposit (Deposit newDeposit)
+	public boolean processDeposit(String account, double amount)
 	{
 		return false;
 	}

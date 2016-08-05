@@ -16,7 +16,7 @@ public interface DAO_Interface
 	public boolean addAccountHolderCard(AccountHolderCard newCard);
 	
 	public boolean processWithdrawal(Withdrawal newWithdrawal);
-	public boolean processDeposit(Deposit newDeposit);
+	public boolean processDeposit(String account, double amount);
 	public boolean processTransfer(Transfer newTransfer);
 
 	public boolean changePIN(String newPIN, String cardNo);
