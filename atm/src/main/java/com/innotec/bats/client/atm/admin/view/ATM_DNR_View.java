@@ -86,9 +86,8 @@ public class ATM_DNR_View extends JPanel
 		
 		table = new JTable();
 		panel.add(table);
-
-		framePanel.add(this);
-		framePanel.revalidate();
 		
+		framePanel.add(this);
+
 	}
 }
