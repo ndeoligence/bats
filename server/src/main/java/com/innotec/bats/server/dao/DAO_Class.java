@@ -1,4 +1,4 @@
-package com.innotec.bats.server.DAO;
+package com.innotec.bats.server.dao;
 
 import com.innotec.bats.general.ATMAdmin;
 import com.innotec.bats.general.Account;

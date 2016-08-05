@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.innotec.bats.general.*;
-import com.innotec.bats.server.DAO.*;
+import com.innotec.bats.server.dao.*;
 import com.innotec.bats.server.model.SessionTerminationException;
 
 public class Server {
