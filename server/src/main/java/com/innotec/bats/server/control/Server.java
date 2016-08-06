@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.innotec.bats.general.*;
 import com.innotec.bats.server.dao.*;
-import com.innotec.bats.server.model.SessionTerminationException;
+import com.innotec.bats.server.model.*;
 
 public class Server {
     /* Static variables */
@@ -19,7 +19,7 @@ public class Server {
     /* Member variables */
     private ServerSocket serverSocket;
     private List<ClientHandler> clientHandlers;
-    private DAO_Interface dao;
+    private BatsDAO dao;
 
     /* ctor */
     public Server() throws IOException {
@@ -27,7 +27,7 @@ public class Server {
         /* connect to dbms */
         try {
             System.out.println("Server::ctor >>\n\tConnecting to Database...");
-            dao = new DAO_Class();
+            dao = new BatsDAO_dbImpl();
             if (dao != null)
                 System.out.println("\tSuccess!");
             else
@@ -41,27 +41,39 @@ public class Server {
         /* server socket */
         serverSocket = new ServerSocket(SERVER_PORT_NR);
 
-        /* Start: DB Test Code */
+        /* Start: Temporal Test Code */
+        tempTesta_db();
+        /* End: Temporal Test Code */
+    }
+
+    private void tempTesta_db() {
+
         System.out.println("********Testing the database...********");
         System.out.println("Add new account holder");
-        AccountHolder accountHolder = new AccountHolder();
-        System.out.println("Getting a card...");
 
+        AccountHolder accountHolder = new AccountHolder("John","Wilde","7910014066087","7 Ave - 11th Str, Houghton Estate, Johannesburg","011 5198 832");
+        System.out.println("\tAccount Holder:\t" + accountHolder);
+        if (dao.addAccountHolder(accountHolder,"00000"))
+            System.out.println("Success!");
+        else System.out.println("Failed!");
+
+        System.out.println("Creating an account for " + accountHolder+"...");
+        AccountHolderCard card = new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastCardNo()),"1234",true,accountHolder.getIdNo());
+        dao.addAccountHolderCard(card);
+
+        System.out.println("Getting a card...");
         String cardNo = "1234567890123450";
         System.out.println("Asking for card from database (card # = "
                 + cardNo + ")");
-        AccountHolderCard card = dao.getAccountHolderCard(cardNo);
+        AccountHolderCard card1 = dao.getAccountHolderCard(cardNo);
         System.out.println("Server >>\n\tReceived card:" + card);
         System.out
                 .println("Asking for account holder from database (id # = "
-                        + card.getAccountHolderIdNo() + ")");
-        AccountHolder accountHolder = dao.getAccountHolderByIdNo(card
-                .getAccountHolderIdNo());
+                        + card1.getAccountHolderIdNo() + ")");
+        accountHolder = dao.getAccountHolderByIdNo(card1.getAccountHolderIdNo());
         System.out.println("Server >>\n\tReceived account holder:"
                 + accountHolder);
-        /* End: DB Test Code */
     }
-
     /* Methods */
     public ClientHandler newClientHandler() throws IOException {
         ClientHandler handler = new ClientHandler(serverSocket.accept());
@@ -160,20 +172,19 @@ public class Server {
                 processAccountHolderRetrieval((AccountHolderRetrieval) action);
             } else if (action instanceof TellerAction) {
                 processTellerAction((TellerAction) action);
-            } else 
-				if (action instanceof Transaction)
-				{
-					processTransaction((Transaction)action);
-				} else {
+            } else if (action instanceof Transaction) {
+                processTransaction((Transaction) action);
+            } else {
                 System.out.println("Server::ClientHandler::processAction >>" +
                         "\n\tUnimplemented action handler: "
                         + action);
             }
         }
+
         private void processAccountHolderCreation(AccountHolderCreation action) {
             AccountHolder newAccountHolder = action.getAccountHolder();
 
-            Boolean flag = dao.addAccountHolder(newAccountHolder,action.getEmployeeNo());
+            Boolean flag = dao.addAccountHolder(newAccountHolder, action.getEmployeeNo());
             sendToClient(flag);
         }
 //        private void processAccountCreation(AccountCreation action) {
@@ -194,46 +205,35 @@ public class Server {
 //            }
 //            sendToClient(flag);
 //        }
-        
-		private boolean processAccountHolderRetrieval (AccountHolderRetrieval action)
-		{
-			AccountHolder accountHolder = null;
-			ArrayList<Account>accounts = new ArrayList();
-			AccountHolderCard card;
 
-			if (action instanceof AccountHolderRetrievalByIdNo)
-			{
-				 accountHolder = dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo)action).getIdNo());
-				 
-			}
-			else
-				if (action instanceof AccountHolderRetrievalByCardNo)
-				{
-					 try
-					{
-						accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo)action).getCardNo());
-						System.out.println("Accountholder retrieved in server method: " + accountHolder.toString());
-					}
-					catch (SQLException e)
-					{
-						e.printStackTrace();
-					}
-				}
-				else
-					if (action instanceof AccountHolderRetrievalByAccountNo)
-					{
-						 accountHolder =dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo)action).getAccountNo());
-					}
-					
-					card = dao.getAccountHolderCard(((AccountHolderRetrievalByCardNo)action).getCardNo());
-					System.out.println("CardNo param for getAccounts method: " +((AccountHolderRetrievalByCardNo)action).getCardNo() );
-					accounts = (ArrayList<Account>) dao.getAccounts(((AccountHolderRetrievalByCardNo)action).getCardNo()).clone();	
-					System.out.println("Accounts from dao in Server method accHolderRet: " + accounts.toString());
-					accountHolder.addCard(card);
-					accountHolder.addAccountArrayList(accounts);
-			 
-			return sendToClient(accountHolder);
-		}
+        private boolean processAccountHolderRetrieval(AccountHolderRetrieval action) {
+            AccountHolder accountHolder = null;
+            ArrayList<Account> accounts = new ArrayList();
+            AccountHolderCard card;
+
+            if (action instanceof AccountHolderRetrievalByIdNo) {
+                accountHolder = dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo) action).getIdNo());
+
+            } else if (action instanceof AccountHolderRetrievalByCardNo) {
+                try {
+                    accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo) action).getCardNo());
+                    System.out.println("Accountholder retrieved in server method: " + accountHolder.toString());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else if (action instanceof AccountHolderRetrievalByAccountNo) {
+                accountHolder = dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo) action).getAccountNo());
+            }
+
+            card = dao.getAccountHolderCard(((AccountHolderRetrievalByCardNo) action).getCardNo());
+            System.out.println("CardNo param for getAccounts method: " + ((AccountHolderRetrievalByCardNo) action).getCardNo());
+            accounts = (ArrayList<Account>) dao.getAccounts(((AccountHolderRetrievalByCardNo) action).getCardNo()).clone();
+            System.out.println("Accounts from dao in Server method accHolderRet: " + accounts.toString());
+            accountHolder.addCard(card);
+            accountHolder.addAccountArrayList(accounts);
+
+            return sendToClient(accountHolder);
+        }
 
         private void processAccountRetrieval(AccountRetrieval action) {
             List<Account> accounts = null;
@@ -241,7 +241,7 @@ public class Server {
 //                accounts = new ArrayList<>();
 //                accounts.add(dao.getAccountByAccountNo(((AccountRetrievalByAccountNo) action).getAccountNo()));
             } else if (action instanceof AccountRetrievalByIdNo) {
-//                accounts = (dao.getAccountsByIdNo(((AccountRetrievalByIdNo) action).getIdNo()));
+//                accounts = (dao.getAccountsByCardNo(((AccountRetrievalByIdNo) action).getIdNo()));
             } else if (action instanceof AccountRetrievalByCardNo) {
 //                accounts = (dao.getAccountsByCardNo(((AccountRetrievalByCardNo) action).getCardNo()));
             } else {
@@ -267,56 +267,40 @@ public class Server {
             return socket.isClosed();
         }
 
-		private boolean processCardRetrieval (CardRetrieval action)
-		{
-			Card card = null;
-			String cardNo = action.getCardNo();
-			System.out.println("ClientHandler::processCardRetrieval (card#: "
-					+ cardNo + ")");
+        private boolean processCardRetrieval(CardRetrieval action) {
+            Card card = null;
+            String cardNo = action.getCardNo();
+            System.out.println("ClientHandler::processCardRetrieval (card#: " + cardNo + ")");
 
-			if (cardNo.length() == AdminCard.CARD_NO_LEN)
-			{ // admin card
-			 card = dao.getAdminCard(cardNo);
-			}
-			else
-				if (cardNo.length() == AccountHolderCard.CARD_NO_LEN)
-				{
-					
-						card = dao.getAccountHolderCard(cardNo);
-					
-				}
-				else
-				{
-					System.err
-							.println("Error: Received a card with an invalid card# length: "
-									+ cardNo.length()
-									+ ".\nWill send write back: 'null'.");
-				}
+            if (cardNo.length() == AdminCard.CARD_NO_LEN) { // admin card
+                card = dao.getAdminCard(cardNo);
+            } else if (cardNo.length() == AccountHolderCard.CARD_NO_LEN) {
 
-			return sendToClient(card);
-		}
+                card = dao.getAccountHolderCard(cardNo);
 
-		public boolean processTransaction(Transaction transaction)
-		{
-			if (transaction instanceof Withdrawal)
-			{
-				
-					return this.sendToClient(dao.processWithdrawal((Withdrawal)transaction));
-				
-			}
-			else 
-				if (transaction instanceof Deposit)
-				{
-					
-				}
-				else
-					if (transaction instanceof Transfer)
-					{
-						
-					}
-			return false;
-		}
-		
+            } else {
+                System.err
+                        .println("Error: Received a card with an invalid card# length: "
+                                + cardNo.length()
+                                + ".\nWill send write back: 'null'.");
+            }
+
+            return sendToClient(card);
+        }
+
+        public boolean processTransaction(Transaction transaction) {
+            if (transaction instanceof Withdrawal) {
+
+                return this.sendToClient(dao.processWithdrawal((Withdrawal) transaction));
+
+            } else if (transaction instanceof Deposit) {
+
+            } else if (transaction instanceof Transfer) {
+
+            }
+            return false;
+        }
+
         void processTellerAction(TellerAction action) {
 //            if (action instanceof AccountHolderCreation) {
 //                processAccountHolderCreation((AccountHolderCreation) action);
@@ -340,27 +324,28 @@ public class Server {
         /**
          * This is how the client is referred to by the program, whenever a term
          * more descriptive than 'client' is preferred.
+         *
          * @return A descriptive name for the client specific to this handler
          */
         private String getClientAlias() {
             return socket.getLocalAddress().toString();
         }
-        
+
         public void processDeposit(Deposit deposit) {
-        	String accountNo = deposit.getPrimAccountNo();
-        	double amount = deposit.getAmount();
-        	if (amount < Deposit.MIN_AMOUNT) {
-        		sendToClient(false);
-        	} else {
-        		//dao.processDeposit(accountNo, amount);
-        		if (dao.processDeposit(accountNo,amount)) {
-        			/*todo...*/
-        			dao.logDeposit(deposit.getDatestamp(),accountNo,amount);
-        			sendToClient(true);
-        		} else {
-        			sendToClient(false);
-        		}
-        	}
+            String accountNo = deposit.getPrimAccountNo();
+            double amount = deposit.getAmount();
+            if (amount < Deposit.MIN_AMOUNT) {
+                sendToClient(false);
+            } else {
+                //dao.processDeposit(accountNo, amount);
+                if (dao.processDeposit(accountNo, amount)) {
+                    /*todo...*/
+                    dao.logDeposit(deposit.getDatestamp(), accountNo, amount);
+                    sendToClient(true);
+                } else {
+                    sendToClient(false);
+                }
+            }
         }
     }
 
