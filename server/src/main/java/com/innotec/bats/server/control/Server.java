@@ -22,7 +22,7 @@ public class Server {
     private BatsDAO dao;
 
     /* ctor */
-    public Server() throws IOException {
+    public Server(){
         clientHandlers = new ArrayList<>();
         /* connect to dbms */
         try {
@@ -32,14 +32,16 @@ public class Server {
                 System.out.println("\tSuccess!");
             else
                 throw new SQLException("dao returned null to server");
+            /* server socket */
+            serverSocket = new ServerSocket(SERVER_PORT_NR);
         } catch (SQLException e) {
             System.err
                     .println("Server::ctor >>\n\tFailed connecting to the Database.\n\t: "
                             + e + "\n\tServer will stop!");
             System.exit(-1);
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
         }
-        /* server socket */
-        serverSocket = new ServerSocket(SERVER_PORT_NR);
 
         /* Start: Temporal Test Code */
         tempTesta_db();
@@ -65,7 +67,7 @@ public class Server {
         String cardNo = "1234567890123450";
         System.out.println("Asking for card from database (card # = "
                 + cardNo + ")");
-        AccountHolderCard card1 = dao.getAccountHolderCard(cardNo);
+        AccountHolderCard card1 = dao.getAccountHolderCardByCardNo(cardNo);
         System.out.println("Server >>\n\tReceived card:" + card);
         System.out
                 .println("Asking for account holder from database (id # = "
@@ -208,30 +210,40 @@ public class Server {
 
         private boolean processAccountHolderRetrieval(AccountHolderRetrieval action) {
             AccountHolder accountHolder = null;
-            ArrayList<Account> accounts = new ArrayList();
-            AccountHolderCard card;
 
-            if (action instanceof AccountHolderRetrievalByIdNo) {
-                accountHolder = dao.getAccountHolderByIdNo(((AccountHolderRetrievalByIdNo) action).getIdNo());
-
+            if(action instanceof AccountHolderRetrievalByIdNo) {
+                return retrieveAccountHolderByIdNo((AccountHolderRetrievalByIdNo)action);
             } else if (action instanceof AccountHolderRetrievalByCardNo) {
-                try {
-                    accountHolder = dao.getAccountHolderByCardNo(((AccountHolderRetrievalByCardNo) action).getCardNo());
-                    System.out.println("Accountholder retrieved in server method: " + accountHolder.toString());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                return retrieveAccountHolderByCardNo((AccountHolderRetrievalByCardNo)action);
             } else if (action instanceof AccountHolderRetrievalByAccountNo) {
-                accountHolder = dao.getAccountHolderByAccountNo(((AccountHolderRetrievalByAccountNo) action).getAccountNo());
+                return retrieveAccountHolderByAccountNo((AccountHolderRetrievalByAccountNo)action);
+            } else {
+                return false;
             }
+        }
 
-            card = dao.getAccountHolderCard(((AccountHolderRetrievalByCardNo) action).getCardNo());
-            System.out.println("CardNo param for getAccounts method: " + ((AccountHolderRetrievalByCardNo) action).getCardNo());
-            accounts = (ArrayList<Account>) dao.getAccounts(((AccountHolderRetrievalByCardNo) action).getCardNo()).clone();
-            System.out.println("Accounts from dao in Server method accHolderRet: " + accounts.toString());
-            accountHolder.addCard(card);
-            accountHolder.addAccountArrayList(accounts);
+        private boolean retrieveAccountHolderByAccountNo(AccountHolderRetrievalByAccountNo action) {
+            String accountNo=action.getAccountNo();
+            AccountHolder accountHolder=dao.getAccountHolderByAccountNo(accountNo);
+            String idNo=accountHolder.getIdNo();
+            accountHolder.addCard(dao.getAccountHolderCardByIdNo(idNo));
+            accountHolder.setAccounts(dao.getAccountsByIdNo(idNo));
+            return sendToClient(accountHolder);
+        }
 
+        private boolean retrieveAccountHolderByCardNo(AccountHolderRetrievalByCardNo action) {
+            String cardNo = action.getCardNo();
+            AccountHolder accountHolder=dao.getAccountHolderByCardNo(cardNo);
+            accountHolder.addCard(dao.getAccountHolderCardByCardNo(cardNo));
+            accountHolder.setAccounts(dao.getAccountsByCardNo(cardNo));
+            return sendToClient(accountHolder);
+        }
+
+        private boolean retrieveAccountHolderByIdNo(AccountHolderRetrievalByIdNo action) {
+            String idNo=action.getIdNo();
+            AccountHolder accountHolder=dao.getAccountHolderByIdNo(idNo);
+            accountHolder.addCard(dao.getAccountHolderCardByIdNo(idNo));
+            accountHolder.setAccounts(dao.getAccountsByIdNo(idNo));
             return sendToClient(accountHolder);
         }
 
@@ -273,10 +285,10 @@ public class Server {
             System.out.println("ClientHandler::processCardRetrieval (card#: " + cardNo + ")");
 
             if (cardNo.length() == AdminCard.CARD_NO_LEN) { // admin card
-                card = dao.getAdminCard(cardNo);
+                card = dao.getAdminCardByCardNo(cardNo);
             } else if (cardNo.length() == AccountHolderCard.CARD_NO_LEN) {
 
-                card = dao.getAccountHolderCard(cardNo);
+                card = dao.getAccountHolderCardByCardNo(cardNo);
 
             } else {
                 System.err
