@@ -4,6 +4,7 @@ import com.innotec.bats.general.*;
 import com.innotec.bats.server.model.BadAccountTypeException;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public interface BatsDAO {
@@ -22,40 +23,36 @@ public interface BatsDAO {
     AccountHolder       getAccountHolderByIdNo(String idNo) throws SQLException, BadAccountTypeException;
     AccountHolder       getAccountHolderByAccountNo(String accountNo) throws SQLException, BadAccountTypeException;
     AccountHolderCard   getAccountHolderCardByCardNo(String cardNo) throws SQLException;
-    AccountHolderCard   getAccountHolderCardByIdNo(String idNo) throws SQLException;
+    AccountHolderCard   getAccountHolderCardByIdNo(String idNo) throws SQLException, BadAccountTypeException;
     AdminCard           getAdminCardByCardNo(String cardNo) throws SQLException;
     AdminCard           getAdminCardByEmployeeNo(String idNo) throws SQLException;
-    Account             getAccount(String accountNo) throws SQLException, BadAccountTypeException;
+    ATMAdmin            getATMAdminByEmployeeNo(String employeeNo);
+    ATMAdmin            getATMAdminByCardNo(String cardNo);
+    Account             getAccountByAccountNo(String accountNo) throws SQLException, BadAccountTypeException;
     List<Account>       getAccountsByIdNo(String cardNo) throws SQLException, BadAccountTypeException;
     List<Account>       getAccountsByCardNo(String idNo) throws SQLException, BadAccountTypeException;
 
-    boolean     transferFunds(String accountNo_source, String accountNo_dest);
     boolean     setAccountBalance(String accountNo, double newBalance) throws SQLException;
+    boolean     incrementAccountFunds(String accountNo, double amount);
+    boolean     decrementAccountFunds(String accountNo, double amount);
     boolean     setAccountHolderPinNo(String cardNo, String newPinNo) throws SQLException;
     boolean     setAdminPinNo(String cardNo, String newPinNo) throws SQLException;
 
-    String getLastCardNo() throws SQLException;
+    String getLastAccountNo() throws SQLException;
 
+    String getLastAccountHolderCardNo() throws SQLException;
 
-//    boolean processWithdrawal(Withdrawal newWithdrawal);
-//    boolean processDeposit(String account, double amount);
-//    boolean processTransfer(Transfer newTransfer);
-//    boolean changePIN(String newPIN, String cardNo);
-//    AdminCard getAdminCard(String cardNo);
-//
 //    boolean closeAccount(String accNo);
-//
 //    boolean deactivateCard(String cardNo);
-//
 //    boolean reactivateCard(String cardNo);
-//
 //    boolean createBalanceSheet(String atmId, Date date);
-
-//	 CreditCardAccount getCreditCardAccount(String accountHolderIdNo);
-
-    //	 boolean updateCardActivity(boolean cardActivity, String cardNo);
+//   boolean updateCardActivity(boolean cardActivity, String cardNo);
 //	 boolean updateAccountActivity(boolean activity, String accountNo);
 //	 Employee getEmployee(String employeeID);
 //	 Transaction getTransactionForAccount(String accountID);
-//    boolean logDeposit(java.util.Date dateTime, String accountNo, double amount);
+    boolean exist(Account account) throws SQLException, BadAccountTypeException;
+    boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException;
+    boolean exist(AccountHolderCard card) throws SQLException;
+    boolean exist(AdminCard card) throws SQLException;
+    boolean logTransaction(java.util.Date dateTimeStamp, Transaction transaction);
 }

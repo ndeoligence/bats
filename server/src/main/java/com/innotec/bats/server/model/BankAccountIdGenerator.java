@@ -73,7 +73,7 @@ public class BankAccountIdGenerator {
     private static int randomInt(int low, int high) throws IllegalArgumentException
     {
         if (low > high)
-            throw new IllegalArgumentException("low > high");
+            throw new IllegalArgumentException("low > high -> args: "+low+","+high);
 
         return (low + (int) ((high - low + 1) * java.lang.Math.random()) );
     }
@@ -87,7 +87,7 @@ public class BankAccountIdGenerator {
     private static String randomDigits(int len) {
         if (len<=0) return "";
         int low = (int)Math.pow(10,len-1);
-        int high = (int) Math.pow(10,len)-1;
+        int high = (int)(Math.pow(10,len)-1);
         String digits = Integer.toString(randomInt(low,high));
         return digits;
     }
