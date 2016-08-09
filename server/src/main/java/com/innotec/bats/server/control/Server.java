@@ -459,23 +459,75 @@ public class Server {
          * @return {@code true} if the transaction is possible, or {@code false} otherwise.
          */
         private boolean transactionPossible(Transaction transaction,double charges) throws SQLException, BadAccountTypeException {
-            Account account = dao.getAccountByAccountNo(transaction.getPrimAccountNo());
-            double amount=transaction.getAmount();
-            double newBalance=account.getBalance()-amount-charges;
-            //check if amount !< min_amount for the transaction (if applicable)
-            /*transaction dependant limits*/
-            if (transaction instanceof Withdrawal) {
-                if (amount > account.getMaxWithdrawalPerDay())
-                    return false;
-            } else if (transaction instanceof Deposit) {
-
-            } else if (transaction instanceof Transfer) {
-                if (amount > account.getMaxTransferPerDay())
-                    return false;
+            try {
+                Account account = dao.getAccountByAccountNo(transaction.getPrimAccountNo());
+                if(!account.isActive()) return false;
+                /*transaction dependant limits*/
+                if (transaction instanceof Withdrawal) {
+                    return isWithdrawalPossible((Withdrawal) transaction,account,charges);
+                } else if (transaction instanceof Deposit) {
+                    return isDepositPossible((Deposit) transaction, charges);
+                } else if (transaction instanceof Transfer) {
+                    Transfer transfer=(Transfer)transaction;
+                    Account account2nd=dao.getAccountByAccountNo(transfer.getSecondaryAccountNo());
+                    if (!account2nd.isActive()) return false;
+                    return isTransferPossible(transfer,account,account2nd, charges);
+                } else return false;
+                /*account dependant limits*/
+            } catch (SQLException | BadAccountTypeException e) {
+                System.out.println(getHandlerAlias()+"::isWithdrawalPossible >>" +
+                        "\n\tError: "+e);
+                throw e;
             }
-            /*account dependant limits*/
+        }
+        boolean isWithdrawalPossible(Withdrawal withdrawal,Account account, double charges) {
+            double amount = withdrawal.getAmount();
+            double newBalance=account.getBalance()-amount-charges;
+
+            if ((amount+dao.getAccountTotalWithdrawnAmountToday(account.getAccountNo())) > account.getMaxWithdrawalPerDay())
+                return false;
+            if (account instanceof CurrentAccount) {
+                if (newBalance < CurrentAccount.MIN_BALANCE) return false;
+            } else if (account instanceof SavingsAccount) {
+                SavingsAccount savingsAccount = (SavingsAccount) account;
+                if (newBalance < savingsAccount.MIN_BALANCE) return false;
+                if (withdrawal instanceof Withdrawal) {
+                    if (savingsAccount.getWithdrawalPending()) {
+
+                        if (savingsAccount.getFundsAvailableDate().after(new java.util.Date()))
+                            return false;
+                    } else { // if no pending withdrawal, then the
+
+                    }
+                }
+            } else if (account instanceof CreditCardAccount) {
+                return false;
+            }
             return true;
+
+        }
+        boolean isDepositPossible(Deposit deposit, double charges) {
+            return (deposit.getAmount() >= Deposit.MIN_AMOUNT);
+        }
+        boolean isTransferPossible(Transfer transfer,Account primaryAccount, Account secondaryAccount, double charges) {
             /*todo : implement!*/
+            double transferAmount=transfer.getAmount();
+            double newBalance=primaryAccount.getBalance()-transferAmount-charges;
+            if (transferAmount > primaryAccount.getMaxTransferPerDay())
+                return false;
+            if (primaryAccount instanceof CurrentAccount) {
+                if (newBalance<CurrentAccount.MIN_BALANCE) return false;
+            } else if (primaryAccount instanceof SavingsAccount) {
+                SavingsAccount savingsAccount=(SavingsAccount)primaryAccount;
+                if (newBalance<SavingsAccount.MIN_BALANCE) return false;
+                if (savingsAccount.getWithdrawalPending()) {
+                    if (savingsAccount.getPendingWithdrawalAmount()<transferAmount)
+                        return false;
+                } else { // At the moment, we can't really withdraw from Savings to a different account.
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
@@ -518,16 +570,19 @@ public class Server {
     public static void main(String[] args) {
         try {
             Server server = new Server();
-            System.out.println("Server::main >>\n\tServer started.");
+            System.out.println("Server::main >>\n\tServer started." +
+                    "\n\tWaiting for connections...");
             while (true) {
-                System.out.println("Server::main >>\n\tWaiting for connection...");
                 (server.newClientHandler()).start();
-                System.out.println("Server::main >>\n\tClient found!");
             }
         } catch (IOException e) {
-            System.err.println("Server::main >>\n\tError starting server up and listening for connections.\nTry restarting the program");
-            e.printStackTrace();
-            System.out.println("Server::main >>\n\tServer is stopping.");
+            System.out.println("Server::main >>" +
+                    "\n\tError: Server encountered an error." +
+                    "\n\tTry restarting the program");
+            System.out.println("\tError: "+e);
+            System.out.flush();
+            System.out.println("Server::main >>" +
+                    "\n\tServer is stopping.");
             System.exit(1);
         }
     }

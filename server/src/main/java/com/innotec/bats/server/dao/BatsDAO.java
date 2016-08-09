@@ -2,6 +2,7 @@ package com.innotec.bats.server.dao;
 
 import com.innotec.bats.general.*;
 import com.innotec.bats.server.model.BadAccountTypeException;
+import com.innotec.bats.server.model.BadTransactionTypeException;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -57,6 +58,8 @@ public interface BatsDAO {
     boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException;
     boolean exist(AccountHolderCard card) throws SQLException;
     boolean exist(AdminCard card) throws SQLException;
-    boolean logTransaction(Transaction transaction);
-    double calculateTransactionCharges(Transaction transaction);
+    boolean logTransaction(Transaction transaction) throws SQLException, BadTransactionTypeException;
+    double calculateTransactionCharges(Transaction transaction) throws SQLException;
+
+    double getAccountTotalWithdrawnAmountToday(String accountNo) throws SQLException, BadTransactionTypeException;
 }

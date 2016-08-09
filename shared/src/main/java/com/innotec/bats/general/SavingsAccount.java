@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class SavingsAccount extends Account
 {
-	private final double MIN_BALANCE = 1000.00;
-	private final int WITHDRAWAL_NOTICE_PERIOD = 32;
-	private final int MAX_WITHDRAWALS_PER_MONTH = 1;
+	public static final double MIN_BALANCE = 1000.00;
+	public static final int WITHDRAWAL_NOTICE_PERIOD = 32;
+	public static final int MAX_WITHDRAWALS_PER_MONTH = 1;
 	private Date fundsAvailableDate;
 	private boolean withdrawalPending;
 	private double pendingWithdrawalAmount;
