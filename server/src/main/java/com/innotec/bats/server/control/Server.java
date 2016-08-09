@@ -44,44 +44,8 @@ public class Server {
         }
 
         /* Start: Temporal Test Code */
-        tempTesta_db();
+//        tempTesta_db();
         /* End: Temporal Test Code */
-    }
-
-    private void tempTesta_db() {
-
-        System.out.println("****************Testing the database...****************");
-        System.out.println("Test: ADD ACCOUNT HOLDER");
-
-        try {
-            String idNo = "7403051433965";
-            System.out.println("\tGetting account holder by idNo: " + idNo);
-            AccountHolder accountHolder = dao.getAccountHolderByIdNo(idNo);
-            System.out.println("\tReceived:\t" + accountHolder);
-
-            System.out.println("Test: CREATE ACCOUNT");
-            System.out.println("Creating an account for " + accountHolder + "...");
-//            AccountHolderCard card = new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()), "1234", true, accountHolder.getIdNo());
-//            dao.addAccountHolderCard(card);
-
-            System.out.println("Test: GET CARD");
-            String cardNo = "2147483647";
-            System.out.println("Getting card from database (card # = "
-                    + cardNo + ")");
-            AccountHolderCard card = dao.getAccountHolderCardByCardNo(cardNo);
-            System.out.println("Server >>\n\tReceived card:" + card);
-            System.out.println("Test: GET ACCOUNT HOLDER");
-            System.out.println("Asking for account holder from database (id # = "
-                    + card.getAccountHolderIdNo() + ")");
-            System.out.println("Getting account holder from DB, by idNo: " + card.getAccountHolderIdNo());
-            accountHolder = dao.getAccountHolderByIdNo(card.getAccountHolderIdNo());
-            System.out.println("Server >>\n\tReceived account holder:"
-                    + accountHolder);
-        } catch (SQLException | BadAccountTypeException e) {
-            System.out.println("Server::tempTesta_db() >>" +
-                    "\n\tError: " + e);
-        }
-        System.out.println("*******************************************************");
     }
 
     /* Methods */
@@ -124,23 +88,22 @@ public class Server {
                     processAction((Action) object);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.err.println(getHandlerAlias()+"::run >>\n"
-                        + "\tError reading action from client.\n\t" + e);
+                System.err.println(getHandlerAlias()+"::run >>\n"+
+                        "\tError reading action from client.\n\t" +
+                        "Error: " + e);
             } catch (SessionTerminationException e) {
                 // This is after the session termination.
-                System.out.println(getHandlerAlias()+"::run >>\n\tClient handler stopping...");
+                System.out.println(getHandlerAlias()+"::run >>" +
+                        "\n\tStopping. : "+e);
                 return;
-                // The exception isn't an error. Fyi.
             } finally {
                 try {
                     if (socket.isConnected())
                         socket.close();
                 } catch (IOException e) {
-                    System.err.println(getHandlerAlias()+"::run >>\n\tFailed to close socket for"
-                                    + socket.getLocalAddress());
+                    System.err.println(getHandlerAlias()+"::run >>\n\tFailed to close socket");
                 }
             }
-
         }
 
         /**
@@ -152,25 +115,24 @@ public class Server {
          * @throws SessionTerminationException if the action is of type SessionTermination.
          */
         private void processAction(Action action) throws SessionTerminationException {
-            System.out.println("ClientHandler::processAction >>" +
+            System.out.println(getHandlerAlias()+"::processAction >>" +
                     "\n\taction:\t" + action);
             if (action == null) { // make sure action isn't null
                 System.err.println(getHandlerAlias()+"::processAction >>\n\t"
-                        + "Null action received.\n\tWriting back Null");
+                        + "Null action received from client.\n\tWriting back Null");
                 sendToClient(null);
                 return;
             }
             /* First check for session termination */
             if (action instanceof SessionTermination) {
                 System.err.println(getHandlerAlias()+"::processAction >>\n"
-                        + "\tHonoring session termination request from "
-                        + getClientAlias());
+                        + "\tHonoring session termination request from client");
                 if (terminateSession()) {
                     System.out.println("\tSuccess!");
-                    throw new SessionTerminationException("Session end success");
+                    throw new SessionTerminationException("Successful");
                 } else {
                     System.out.println("\tFailed.");
-                    throw new SessionTerminationException("Session end fail");
+                    throw new SessionTerminationException("Failure");
                 }
             }
             /* Then check for other actions */
@@ -187,7 +149,7 @@ public class Server {
                 processTransaction((Transaction) action);
             } else {
                 System.out.println(getHandlerAlias()+"::processAction >>" +
-                        "\n\tUnimplemented action: "
+                        "\n\tUnsupported action type: "
                         + action);
             }
         }
@@ -200,6 +162,8 @@ public class Server {
             } else if (action instanceof AccountHolderRetrievalByAccountNo) {
                 return processAccountHolderRetrievalByAccountNo((AccountHolderRetrievalByAccountNo) action);
             } else {
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrieval >>" +
+                        "\n\tUnsupported AccountHolderRetrieval type: " + action);
                 return sendToClient(null);
             }
         }
@@ -334,15 +298,15 @@ public class Server {
         }
 
         public boolean processTransaction(Transaction transaction) {
-            try {
+            /*try {
                 if (!transactionPossible(transaction)) {
                     sendToClient(false);
                     return false;
                 }
             } catch (SQLException | BadAccountTypeException e) {
-                System.out.println("ClientHandler::processTransaction() >>" +
+                System.out.println(getHandlerAlias()+"::processTransaction() >>" +
                         "\n\tError: " + e);
-            }
+            }*/
 
             if (transaction instanceof Withdrawal) {
                 return sendToClient(processWithdrawal((Withdrawal) transaction));
@@ -351,6 +315,8 @@ public class Server {
             } else if (transaction instanceof Transfer) {
                 return sendToClient(processTransfer((Transfer) transaction));
             } else {
+                System.out.println(getHandlerAlias()+"::processAction >>" +
+                        "\n\tUnsupported Transaction type: "+transaction);
                 return sendToClient(false);
             }
         }
@@ -370,10 +336,27 @@ public class Server {
             if (action.getAccountHolder().getIdNo() == null || action.getAccountHolder().getAddress() == null || action.getAccountHolder().getContactNo() == null || action.getAccountHolder().getName() == null || action.getAccountHolder().getSurname() == null) {
                 System.out.println("ClientHandler::processAccountHolderCreation() >>" +
                         "\n\tError: One of the required fields for account holder creation is null");
+                sendToClient(false);
+                return;
+            }
+            if (action.getAccountHolder().getCard()==null) {
+                System.out.println("ClientHandler::processAccountHolderCreation() >>" +
+                        "\n\tError: Missing card object : null");
+                sendToClient(false);
+                return;
             }
             AccountHolder newAccountHolder = action.getAccountHolder();
-
-            Boolean flag = dao.addAccountHolder(newAccountHolder, action.getEmployeeNo());
+            String newPin=newAccountHolder.getCard().getPinNo();
+            Boolean flag = false;
+            try {
+                newAccountHolder.addCard(new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()), newPin, true, newAccountHolder.getIdNo()));
+                flag = dao.addAccountHolder(newAccountHolder, action.getEmployeeNo());
+            } catch (SQLException e) {
+                System.out.println("ClientHandler::processAccountHolderCreation() >>" +
+                        "\n\tError: Missing card object : null");
+                sendToClient(false);
+                return;
+            }
             sendToClient(flag);
         }
 
@@ -448,26 +431,82 @@ public class Server {
         }
 
         boolean processWithdrawal(Withdrawal withdrawal) {
-            return false;
+            try {
+                double charges = dao.calculateTransactionCharges(withdrawal);
+                if (transactionPossible(withdrawal,charges)) {
+
+                    return false;
+                } else {
+                    System.out.println(getHandlerAlias()+"::processWithdrawal()>>" +
+                            "\n\tUnmet condition: transactionPossible");
+                    return false;
+                }
+            } catch (Exception e) {
+                System.out.println(getHandlerAlias()+"::processWithdrawal()>>" +
+                        "\n\tError: "+e);
+                return false;
+            }
         }
 
         /**
          * @param transaction - the transaction to be validated
          * @return {@code true} if the transaction is possible, or {@code false} otherwise.
          */
-        private boolean transactionPossible(Transaction transaction) throws SQLException, BadAccountTypeException {
+        private boolean transactionPossible(Transaction transaction,double charges) throws SQLException, BadAccountTypeException {
             Account account = dao.getAccountByAccountNo(transaction.getPrimAccountNo());
+            double amount=transaction.getAmount();
+            double newBalance=account.getBalance()-amount-charges;
             //check if amount !< min_amount for the transaction (if applicable)
-            //check if amount !> maxTransfer/maxWithdrawal per day
+            /*transaction dependant limits*/
             if (transaction instanceof Withdrawal) {
-
-                return false;
+                if (amount > account.getMaxWithdrawalPerDay())
+                    return false;
             } else if (transaction instanceof Deposit) {
-                return false;
+
             } else if (transaction instanceof Transfer) {
-                return false;
-            } else return false;
+                if (amount > account.getMaxTransferPerDay())
+                    return false;
+            }
+            /*account dependant limits*/
+            return true;
+            /*todo : implement!*/
         }
+    }
+
+    private void tempTesta_db() {
+
+        System.out.println("****************Testing the database...****************");
+        System.out.println("Test: ADD ACCOUNT HOLDER");
+
+        try {
+            String idNo = "7403051433965";
+            System.out.println("\tGetting account holder by idNo: " + idNo);
+            AccountHolder accountHolder = dao.getAccountHolderByIdNo(idNo);
+            System.out.println("\tReceived:\t" + accountHolder);
+
+            System.out.println("Test: CREATE ACCOUNT");
+            System.out.println("Creating an account for " + accountHolder + "...");
+//            AccountHolderCard card = new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()), "1234", true, accountHolder.getIdNo());
+//            dao.addAccountHolderCard(card);
+
+            System.out.println("Test: GET CARD");
+            String cardNo = "2147483647";
+            System.out.println("Getting card from database (card # = "
+                    + cardNo + ")");
+            AccountHolderCard card = dao.getAccountHolderCardByCardNo(cardNo);
+            System.out.println("Server >>\n\tReceived card:" + card);
+            System.out.println("Test: GET ACCOUNT HOLDER");
+            System.out.println("Asking for account holder from database (id # = "
+                    + card.getAccountHolderIdNo() + ")");
+            System.out.println("Getting account holder from DB, by idNo: " + card.getAccountHolderIdNo());
+            accountHolder = dao.getAccountHolderByIdNo(card.getAccountHolderIdNo());
+            System.out.println("Server >>\n\tReceived account holder:"
+                    + accountHolder);
+        } catch (SQLException | BadAccountTypeException e) {
+            System.out.println("Server::tempTesta_db() >>" +
+                    "\n\tError: " + e);
+        }
+        System.out.println("*******************************************************");
     }
 
     public static void main(String[] args) {

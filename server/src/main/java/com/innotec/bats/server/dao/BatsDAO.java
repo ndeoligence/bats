@@ -58,4 +58,5 @@ public interface BatsDAO {
     boolean exist(AccountHolderCard card) throws SQLException;
     boolean exist(AdminCard card) throws SQLException;
     boolean logTransaction(Transaction transaction);
+    double calculateTransactionCharges(Transaction transaction);
 }

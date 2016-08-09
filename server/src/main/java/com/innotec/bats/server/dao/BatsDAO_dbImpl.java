@@ -17,6 +17,9 @@ public class BatsDAO_dbImpl implements BatsDAO {
     private static final String SAVINGS_ACCOUNT = "Savings";
     private static final String CURRENT_ACCOUNT = "Current";
     private static final String CREDIT_ACCOUNT = "CreditCard";
+    public static final String TRANSACTION_DEPOSIT="Deposit",
+                                TRANSACTION_TRANSFER="Transfer",
+                                TRANSACTION_WITHDRAWAL="Withdrawal";
     /*Prepared Statements*/
                                                     // Table: ID, Name, Surname, Address, ContactNumber, AccountHolderCardNo
     private static final String ADD_ACCOUNT_HOLDER = "INSERT INTO accountHolders VALUES (?,?,?,?,?,?);";
@@ -107,6 +110,18 @@ public class BatsDAO_dbImpl implements BatsDAO {
         else if (transaction instanceof Deposit)
             return (logWithdrawal((Withdrawal) transaction));
         else return false;
+    }
+
+    @Override
+    public double calculateTransactionCharges(Transaction transaction) {
+        double standardCharge,perUnitCharge,unitAmount;
+
+        return 0; /*todo : implement!*/
+    }
+    private double getTransactionStandardCharge(Transaction transaction) {
+
+        /*todo : implement!*/
+        return 0;
     }
 
     @Override
