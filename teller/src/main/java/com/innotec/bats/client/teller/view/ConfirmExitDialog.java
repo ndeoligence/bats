@@ -25,6 +25,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.JLabel;
 import javax.swing.SpringLayout;
 
+import com.innotec.bats.client.teller.control.BankTellerApplication;
+
 public class ConfirmExitDialog extends JDialog implements ActionListener
 {
 
@@ -95,6 +97,7 @@ public class ConfirmExitDialog extends JDialog implements ActionListener
 		Object source = acEvent.getSource();
 		if(source == okButton)
 		{
+			BankTellerApplication.serverComm.closeConnection();
 			System.exit(0);
 		}
 		if(source == cancelButton)

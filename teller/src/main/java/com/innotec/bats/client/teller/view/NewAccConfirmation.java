@@ -21,10 +21,11 @@ import java.awt.event.ActionListener;
 import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 
-import com.innotec.bats.client.teller.control.BankTellerApplication;
 import com.innotec.bats.general.Account;
 import com.innotec.bats.general.AccountCreation;
 import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.CurrentAccount;
+import com.innotec.bats.general.SavingsAccount;
 
 public class NewAccConfirmation extends JDialog implements ActionListener
 {
@@ -33,6 +34,7 @@ public class NewAccConfirmation extends JDialog implements ActionListener
 	private JPanel framePanel;
 	private JButton okButton;
 	private TellerHomePage tellerHomePage;
+	private JLabel lblAccType, lblaccNo0000, lblCardNo0000;
 	private Account account;
 	private AccountHolder accountHolder;
 	private AccountCreation accountCreation;
@@ -57,11 +59,12 @@ public class NewAccConfirmation extends JDialog implements ActionListener
 	/**
 	 * Create the dialog.
 	 */
-	public NewAccConfirmation(JPanel framePanel, AccountHolder accountHolder)
+	public NewAccConfirmation(AccountHolder accountHolder, Account account)
 	{
 		this.accountHolder = accountHolder;
-		framePanel.removeAll();
-		this.framePanel = framePanel;
+		this.account = account;
+//		framePanel.removeAll();
+//		this.framePanel = framePanel;
 		setTitle("New Account");
 		setResizable(false);
 		setBounds(100, 100, 488, 325);
@@ -73,28 +76,52 @@ public class NewAccConfirmation extends JDialog implements ActionListener
 		contentPanel.setLayout(sl_contentPanel);
 		
 		JLabel lblNewLabel = new JLabel("New Account:");
+		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblNewLabel, 41, SpringLayout.NORTH, contentPanel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, lblNewLabel, 40, SpringLayout.WEST, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.SOUTH, lblNewLabel, -153, SpringLayout.SOUTH, contentPanel);
 		lblNewLabel.setFont(new Font("Cambria", Font.BOLD, 22));
 		contentPanel.add(lblNewLabel);
 		
 		JLabel lblAccountNo = new JLabel("Account No:");
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblAccountNo, 63, SpringLayout.SOUTH, lblNewLabel);
 		sl_contentPanel.putConstraint(SpringLayout.WEST, lblAccountNo, 40, SpringLayout.WEST, contentPanel);
+		sl_contentPanel.putConstraint(SpringLayout.SOUTH, lblAccountNo, -108, SpringLayout.SOUTH, contentPanel);
 		lblAccountNo.setFont(new Font("Cambria", Font.BOLD, 22));
 		contentPanel.add(lblAccountNo);
 		
-		JLabel lblNewLabel_1 = new JLabel("Savings");
-		sl_contentPanel.putConstraint(SpringLayout.SOUTH, lblNewLabel_1, 0, SpringLayout.SOUTH, lblNewLabel);
-		lblNewLabel_1.setFont(new Font("Cambria", Font.ITALIC, 22));
-		sl_contentPanel.putConstraint(SpringLayout.WEST, lblNewLabel_1, 44, SpringLayout.EAST, lblNewLabel);
-		contentPanel.add(lblNewLabel_1);
+		lblAccType = new JLabel("");
+		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblAccType, 0, SpringLayout.NORTH, lblNewLabel);
+		sl_contentPanel.putConstraint(SpringLayout.WEST, lblAccType, 44, SpringLayout.EAST, lblNewLabel);
+		lblAccType.setFont(new Font("Cambria", Font.ITALIC, 22));
+		contentPanel.add(lblAccType);
 		
-		JLabel label = new JLabel("000000000000");
-		sl_contentPanel.putConstraint(SpringLayout.WEST, label, 61, SpringLayout.EAST, lblAccountNo);
-		sl_contentPanel.putConstraint(SpringLayout.SOUTH, label, 0, SpringLayout.SOUTH, lblAccountNo);
-		label.setFont(new Font("Cambria", Font.ITALIC, 22));
-		contentPanel.add(label);
+		if(account instanceof SavingsAccount)
+		{
+			lblAccType.setText("Savings");
+		}
+		if(account instanceof CurrentAccount)
+		{
+			lblAccType.setText("Current");
+		}
+		
+		lblaccNo0000 = new JLabel("000000000000");
+		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblaccNo0000, 0, SpringLayout.NORTH, lblAccountNo);
+		sl_contentPanel.putConstraint(SpringLayout.WEST, lblaccNo0000, 61, SpringLayout.EAST, lblAccountNo);
+		lblaccNo0000.setFont(new Font("Cambria", Font.ITALIC, 22));
+		contentPanel.add(lblaccNo0000);
+		lblaccNo0000.setText(account.getAccountNo());
+		
+		JLabel lblCardNo = new JLabel("Card No:");
+		sl_contentPanel.putConstraint(SpringLayout.WEST, lblCardNo, 40, SpringLayout.WEST, contentPanel);
+		sl_contentPanel.putConstraint(SpringLayout.SOUTH, lblCardNo, -41, SpringLayout.SOUTH, contentPanel);
+		lblCardNo.setFont(new Font("Cambria", Font.BOLD, 22));
+		contentPanel.add(lblCardNo);
+		
+		lblCardNo0000 = new JLabel("000000000000");
+		sl_contentPanel.putConstraint(SpringLayout.NORTH, lblCardNo0000, 0, SpringLayout.NORTH, lblCardNo);
+		sl_contentPanel.putConstraint(SpringLayout.WEST, lblCardNo0000, 0, SpringLayout.WEST, lblaccNo0000);
+		lblCardNo0000.setFont(new Font("Cambria", Font.ITALIC, 22));
+		lblCardNo.setText(accountHolder.getCard().getCardNo());
+		
+		contentPanel.add(lblCardNo0000);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBackground(SystemColor.inactiveCaption);
@@ -109,7 +136,7 @@ public class NewAccConfirmation extends JDialog implements ActionListener
 				getRootPane().setDefaultButton(okButton);
 			}
 		}
-		framePanel.add(this);
+//		framePanel.add(this);
 		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}
@@ -135,8 +162,6 @@ public class NewAccConfirmation extends JDialog implements ActionListener
 		Object source = acEvent.getSource();
 		if(source == okButton)
 		{
-			accountCreation = new AccountCreation(TellerHomePage.tellerID, account, accountHolder.getAccountHolderID());
-			BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
 			tellerHomePage = new TellerHomePage(framePanel);
 		}
 	}

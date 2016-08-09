@@ -57,12 +57,12 @@ public class OpenNewAccount extends JPanel implements ActionListener
 	private JButton btnOpenAccount, btnCancel, btnBackBtn;
 	private ConfirmExitDialog confirmExitDialog;
 	private AccHolderPIN_Entry accHolderPIN_Entry;
-	private JRadioButton rdbtnNewRadioButton, rdbtnWithdrawalMax, rdbtnDefaultTransferAmount, rdbtnTransferMaxR;
+	private JRadioButton rdbtnDefaultWithdrawal, rdbtnWithdrawalMax, rdbtnDefaultTransferAmount, rdbtnTransferMaxR;
 	private TellerHomePage tellerHomePage;
 	private AccountHolder accountHolder;
 	private Account account;
-	private SavingsAccount savingsAccount;
-	private CurrentAccount currentAccount;
+	private Account savingsAccount;
+	private Account currentAccount;
 	private String name, surname, idNo, address, contactNo;
 	private JCheckBox chckbxCurrentAccount, chckbxSavingsAccount, chckbxCreditCard;
 	private String accountNo = "";
@@ -112,7 +112,6 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField = new JTextField();
 		textField.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField.setColumns(10);
-		name = textField.getText();
 		
 		JLabel lblSurname = new JLabel("Surname:");
 		lblSurname.setHorizontalAlignment(SwingConstants.LEFT);
@@ -121,7 +120,6 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField_1 = new JTextField();
 		textField_1.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_1.setColumns(10);
-		surname = textField_1.getText();
 		
 		JLabel lblIdNo = new JLabel("ID No:");
 		lblIdNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -130,7 +128,6 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField_2 = new JTextField();
 		textField_2.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_2.setColumns(10);
-		idNo = textField_2.getText();
 		
 		JLabel lblCellNo = new JLabel("Cell No:");
 		lblCellNo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -139,22 +136,20 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		textField_3 = new JTextField();
 		textField_3.setFont(new Font("Cambria", Font.PLAIN, 20));
 		textField_3.setColumns(10);
-		contactNo = textField_3.getText();
 		
 		JLabel lblAddress = new JLabel("Address:");
 		lblAddress.setHorizontalAlignment(SwingConstants.LEFT);
 		lblAddress.setFont(new Font("Cambria", Font.BOLD, 30));
 		
-		rdbtnNewRadioButton = new JRadioButton("Default Daily Withdrawal Amount (R1 000.00)");
-		rdbtnNewRadioButton.setBackground(SystemColor.inactiveCaption);
-		rdbtnNewRadioButton.setFont(new Font("Cambria", Font.BOLD, 24));
-		rdbtnNewRadioButton.addActionListener(this);
-		rdbtnNewRadioButton.setSelected(true);
+		rdbtnDefaultWithdrawal = new JRadioButton("Default Daily Withdrawal Amount (R1 000.00)");
+		rdbtnDefaultWithdrawal.setBackground(SystemColor.inactiveCaption);
+		rdbtnDefaultWithdrawal.setFont(new Font("Cambria", Font.BOLD, 24));
+		rdbtnDefaultWithdrawal.addActionListener(this);
+		rdbtnDefaultWithdrawal.setSelected(true);
 		
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setFont(new Font("Cambria", Font.PLAIN, 20));
-		address = textArea.getText();
 		
 		rdbtnWithdrawalMax = new JRadioButton("Withdrawal Max  R:");
 		rdbtnWithdrawalMax.setFont(new Font("Cambria", Font.BOLD, 24));
@@ -162,7 +157,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		rdbtnWithdrawalMax.addActionListener(this);
 		
 		bg = new ButtonGroup();
-		bg.add(rdbtnNewRadioButton);
+		bg.add(rdbtnDefaultWithdrawal);
 		bg.add(rdbtnWithdrawalMax);
 		
 		textField_4 = new JTextField();
@@ -233,15 +228,15 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		sl_panel_1.putConstraint(SpringLayout.WEST, textField_3, 78, SpringLayout.EAST, lblCellNo);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textField_3, -245, SpringLayout.EAST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, textArea, 27, SpringLayout.EAST, lblAddress);
-		sl_panel_1.putConstraint(SpringLayout.EAST, textArea, -46, SpringLayout.WEST, rdbtnNewRadioButton);
+		sl_panel_1.putConstraint(SpringLayout.EAST, textArea, -46, SpringLayout.WEST, rdbtnDefaultWithdrawal);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textField_1, -245, SpringLayout.EAST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textField_2, 510, SpringLayout.WEST, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, lblAccountType, 129, SpringLayout.SOUTH, textArea);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, rdbtnNewRadioButton, 17, SpringLayout.SOUTH, lblCellNo);
+		sl_panel_1.putConstraint(SpringLayout.NORTH, rdbtnDefaultWithdrawal, 17, SpringLayout.SOUTH, lblCellNo);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, textField_2, 43, SpringLayout.SOUTH, textField);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, textArea, 0, SpringLayout.NORTH, lblAddress);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, textArea, 246, SpringLayout.NORTH, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.NORTH, rdbtnWithdrawalMax, 3, SpringLayout.SOUTH, rdbtnNewRadioButton);
+		sl_panel_1.putConstraint(SpringLayout.NORTH, rdbtnWithdrawalMax, 3, SpringLayout.SOUTH, rdbtnDefaultWithdrawal);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, rdbtnTransferMaxR, 281, SpringLayout.NORTH, panel_1);
 		sl_panel_1.putConstraint(SpringLayout.WEST, rdbtnDefaultTransferAmount, 0, SpringLayout.WEST, lblSurname);
 		sl_panel_1.putConstraint(SpringLayout.SOUTH, rdbtnDefaultTransferAmount, -6, SpringLayout.NORTH, rdbtnTransferMaxR);
@@ -253,7 +248,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		sl_panel_1.putConstraint(SpringLayout.NORTH, textField_5, 3, SpringLayout.NORTH, rdbtnTransferMaxR);
 		sl_panel_1.putConstraint(SpringLayout.NORTH, textField_4, 3, SpringLayout.NORTH, rdbtnWithdrawalMax);
 		sl_panel_1.putConstraint(SpringLayout.WEST, textField_1, 750, SpringLayout.WEST, panel_1);
-		sl_panel_1.putConstraint(SpringLayout.WEST, rdbtnNewRadioButton, 0, SpringLayout.WEST, lblCellNo);
+		sl_panel_1.putConstraint(SpringLayout.WEST, rdbtnDefaultWithdrawal, 0, SpringLayout.WEST, lblCellNo);
 		sl_panel_1.putConstraint(SpringLayout.WEST, textField, 50, SpringLayout.EAST, lblName);
 		sl_panel_1.putConstraint(SpringLayout.EAST, textField, -46, SpringLayout.WEST, lblSurname);
 		sl_panel_1.putConstraint(SpringLayout.WEST, btnCancel, 601, SpringLayout.WEST, panel_1);
@@ -286,7 +281,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		panel_1.add(textField_3);
 		panel_1.add(lblAddress);
 		panel_1.add(textArea);
-		panel_1.add(rdbtnNewRadioButton);
+		panel_1.add(rdbtnDefaultWithdrawal);
 		panel_1.add(rdbtnWithdrawalMax);
 		panel_1.add(textField_4);
 		panel_1.add(rdbtnDefaultTransferAmount);
@@ -379,79 +374,112 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		}
 		if(source == btnOpenAccount)
 		{
+			name = textField.getText();
+			surname = textField_1.getText();
+			idNo = textField_2.getText();
+			contactNo = textField_3.getText();
+			address = textArea.getText();
 			accountHolder = new AccountHolder(name, surname, idNo, address, contactNo);
-			if(rdbtnNewRadioButton.isSelected())
-			{
-				maxWithdrawalPerDay = 1000.00;
-			}
+		//	System.out.println(accountHolder.toString());
+			
 			if(rdbtnWithdrawalMax.isSelected())
 			{
 				maxWithdrawalPerDay = Double.parseDouble(textField_4.getText());
-			}
-			if(rdbtnDefaultTransferAmount.isSelected())
-			{
-				maxTransferPerDay = 1000.00;
 			}
 			if(rdbtnTransferMaxR.isSelected())
 			{
 				maxTransferPerDay = Double.parseDouble(textField_5.getText());
 			}
+			
 			if(chckbxCurrentAccount.isSelected() && (!(chckbxSavingsAccount.isSelected())))
 			{
-				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
+				if(rdbtnDefaultWithdrawal.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
-					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active);
+					currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, idNo);
+					//System.out.println(currentAccount.toString());
 					accountHolder.addAccount(currentAccount);
+					//System.out.println(currentAccount.toString());
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
-					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay);
+					currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay, idNo);
 					accountHolder.addAccount(currentAccount);
 				}
 			}
+			
 			if(chckbxSavingsAccount.isSelected() && (!(chckbxCurrentAccount.isSelected())))
 			{
-				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
+				if(rdbtnDefaultWithdrawal.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
-					Account savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active);
+					savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active, idNo);
 					accountHolder.addAccount(savingsAccount);
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
-					Account savingsAccount = new Account(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay);
+					savingsAccount = new Account(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay, idNo);
 					accountHolder.addAccount(savingsAccount);
 				}
-				accHolderPIN_Entry.setAccount(savingsAccount);
+				//accHolderPIN_Entry.setAccount(savingsAccount);
 			}
+			
 			if(chckbxCurrentAccount.isSelected() && chckbxSavingsAccount.isSelected())
 			{
-				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
+				if(rdbtnDefaultWithdrawal.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
-					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active);
+					currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, idNo);
 					accountHolder.addAccount(currentAccount);
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
-					Account currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay);
+					currentAccount = new CurrentAccount(accountNo, balanceCurrent, active, maxWithdrawalPerDay, maxTransferPerDay, idNo);
 					accountHolder.addAccount(currentAccount);
 				}
-				if(rdbtnNewRadioButton.isSelected() && rdbtnDefaultTransferAmount.isSelected())
+				if(rdbtnDefaultWithdrawal.isSelected() && rdbtnDefaultTransferAmount.isSelected())
 				{
-					Account savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active);
+					savingsAccount = new SavingsAccount(accountNo, balanceCurrent, active, idNo);
 				}
 				if(rdbtnTransferMaxR.isSelected() && rdbtnWithdrawalMax.isSelected())
 				{
-					Account savingsAccount = new SavingsAccount(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay);
+					savingsAccount = new SavingsAccount(accountNo, balanceSavings, active, maxWithdrawalPerDay, maxTransferPerDay, idNo);
 				}
 			}
 			if(this.areAllCriteriaMet() == true)
 			{
-				accHolderPIN_Entry = new AccHolderPIN_Entry(framePanel, accountHolder);	
+//				if((!(chckbxCurrentAccount.isSelected())) && chckbxSavingsAccount.isSelected())
+//				{
+//					accountHolder.addAccount(savingsAccount);
+//				}
+				
+				System.out.println(accountHolder.toString());
+				
+				if(chckbxSavingsAccount.isSelected())
+				{
+					account = savingsAccount;
+				}
+				else
+				{
+					account = currentAccount;
+				}
+				
+				accHolderPIN_Entry = new AccHolderPIN_Entry(framePanel, accountHolder, account, idNo);	
 				framePanel.removeAll();
 				framePanel.add(this);
 				framePanel.revalidate();
 				framePanel.repaint();
-				accHolderPIN_Entry.setAccount(savingsAccount);
+				
+				if(chckbxCurrentAccount.isSelected() && chckbxSavingsAccount.isSelected())
+				{
+					accHolderPIN_Entry.setAccount(savingsAccount);
+				}
+//				if((!(chckbxCurrentAccount.isSelected())) && chckbxSavingsAccount.isSelected())
+//				{
+//					accountHolder.addAccount(savingsAccount);
+//				}
+				if(chckbxCurrentAccount.isSelected())
+				{
+					System.out.println(" 1 " + currentAccount.toString());
+//					accHolderPIN_Entry.setAccount(currentAccount);
+				}
 			}
 			else
 			{
@@ -463,7 +491,7 @@ public class OpenNewAccount extends JPanel implements ActionListener
 				this.areAllCriteriaMet();
 			}
 		}
-		if(rdbtnNewRadioButton.isSelected())
+		if(rdbtnDefaultWithdrawal.isSelected())
 		{
 			textField_4.setEnabled(false);
 			rdbtnDefaultTransferAmount.setSelected(true);
@@ -476,14 +504,17 @@ public class OpenNewAccount extends JPanel implements ActionListener
 		if(rdbtnDefaultTransferAmount.isSelected())
 		{
 			textField_5.setEnabled(false);
+			rdbtnDefaultWithdrawal.setSelected(true);
 		}
 		if(rdbtnTransferMaxR.isSelected())
 		{
 			textField_5.setEnabled(true);
+			rdbtnWithdrawalMax.setSelected(true);
 		}
 		if(source == btnBackBtn)
 		{
 			tellerHomePage = new TellerHomePage(framePanel);
 		}
 	}
+	
 }

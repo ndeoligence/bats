@@ -7,22 +7,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.border.*;
 
-import com.innotec.bats.general.AccountHolder;
-
 
 public class HelpChooseTopic extends JPanel implements ActionListener
 {
 	private JPanel framePanel;
 	private ImageIcon withdrawalFile, depositFile, transferFile, viewBalanceFile, viewStatementFile, changePINFile, guidelinesFile; 
 	private JButton btnDepositingCash, btnWithdrawingCash, btnTransferMoney, btnViewStatement, btnChangePin, btnViewBalance, btnCancel, btnSecurityGuidelines;
-	private AccountHolder accountHolder;
 
-public HelpChooseTopic (JPanel framePanel, AccountHolder accountHolder)
+public HelpChooseTopic (JPanel framePanel)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
-	
-	this.accountHolder = accountHolder;
 	
 	withdrawalFile = new ImageIcon("resources/Help File Withdrawal.jpg");
 	depositFile = new ImageIcon("resources/Help File Deposit.jpg");
@@ -178,42 +173,42 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnWithdrawingCash)
 	{
-		new HelpShowFile(framePanel, withdrawalFile, accountHolder);
+		new HelpShowFile(framePanel, withdrawalFile);
 	}
 	
 	if (source == btnDepositingCash)
 	{
-		new HelpShowFile(framePanel, depositFile, accountHolder);
+		new HelpShowFile(framePanel, depositFile);
 	}
 	
 	if (source == btnTransferMoney)
 	{
-		new HelpShowFile(framePanel, transferFile, accountHolder);
+		new HelpShowFile(framePanel, transferFile);
 	}
 	
 	if (source == btnViewBalance)
 	{
-		new HelpShowFile(framePanel, viewBalanceFile, accountHolder);
+		new HelpShowFile(framePanel, viewBalanceFile);
 	}
 	
 	if (source == btnViewStatement)
 	{
-		new HelpShowFile(framePanel, viewStatementFile, accountHolder);
+		new HelpShowFile(framePanel, viewStatementFile);
 	}
 	
 	if (source == btnChangePin)
 	{
-		new HelpShowFile(framePanel, changePINFile, accountHolder);
+		new HelpShowFile(framePanel, changePINFile);
 	}
 	
 	if (source == btnSecurityGuidelines)
 	{
-		new HelpShowFile(framePanel, guidelinesFile, accountHolder);
+		new HelpShowFile(framePanel, guidelinesFile);
 	}
 	
 	if (source == btnCancel)
 	{
-		new ATMAccountHolderMainMenu(framePanel, accountHolder);
+		new ATMAccountHolderMainMenu(framePanel, null);
 	}
 	
 }

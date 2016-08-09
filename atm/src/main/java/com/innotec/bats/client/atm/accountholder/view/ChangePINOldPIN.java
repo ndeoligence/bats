@@ -2,34 +2,18 @@ package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.border.*;
 
-import com.innotec.bats.client.atm.accountholder.control.ATMApplication;
-import com.innotec.bats.general.AccountHolder;
-import com.innotec.bats.general.CardDeactivation;
-import com.innotec.bats.general.PINChange;
 
-
-public class ChangePINOldPIN extends JPanel implements ActionListener
+public class ChangePINOldPIN extends JPanel
 {
 	private JPanel framePanel;
-	private JPasswordField passwordField;
-	private JButton btnOK, btnHelp, btnCancel;
-	private AccountHolder accountHolder;
-	private PINChange pinChange;
-	private int incorrectPINCounter;
 
-public ChangePINOldPIN (JPanel framePanel, AccountHolder accountHolder, PINChange pinChange)
+public ChangePINOldPIN (JPanel framePanel)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
-	
-	this.accountHolder = accountHolder;
-	
-	incorrectPINCounter = 0;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -78,23 +62,21 @@ public ChangePINOldPIN (JPanel framePanel, AccountHolder accountHolder, PINChang
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	btnOK = new JButton("OK");
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnOK, 236, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnOK, -236, SpringLayout.EAST, panel_2);
-	btnOK.setIcon(new ImageIcon("resources/YesIcon.jpg"));
-	btnOK.setFont(new Font("Cambria", Font.PLAIN, 38));
-	panel_2.add(btnOK);
-	btnOK.addActionListener(this);
+	JButton btnTransferMoney = new JButton("OK");
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 236, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -236, SpringLayout.EAST, panel_2);
+	btnTransferMoney.setIcon(new ImageIcon("resources/YesIcon.jpg"));
+	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
+	panel_2.add(btnTransferMoney);
 	
-	btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnOK, -54, SpringLayout.NORTH, btnHelp);
+	JButton btnHelp = new JButton("Help");
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -54, SpringLayout.NORTH, btnHelp);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
 	btnHelp.setIcon(new ImageIcon("resources/HelpIcon.jpg"));
 	btnHelp.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnHelp);
-	btnHelp.addActionListener(this);
 	
-	btnCancel = new JButton("Cancel");
+	JButton btnCancel = new JButton("Cancel");
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 0, SpringLayout.NORTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, 0, SpringLayout.SOUTH, btnCancel);
 	sl_panel_2.putConstraint(SpringLayout.EAST, btnHelp, -23, SpringLayout.WEST, btnCancel);
@@ -105,23 +87,22 @@ public ChangePINOldPIN (JPanel framePanel, AccountHolder accountHolder, PINChang
 	btnCancel.setIcon(new ImageIcon("resources/CancelIcon.jpg"));
 	btnCancel.setFont(new Font("Cambria", Font.PLAIN, 38));
 	panel_2.add(btnCancel);
-	btnCancel.addActionListener(this);
 	
 	JLabel lblR = new JLabel("PIN:");
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, lblR, -298, SpringLayout.SOUTH, panel_2);
 	lblR.setFont(new Font("Cambria", Font.PLAIN, 70));
 	panel_2.add(lblR);
 	
-	passwordField = new JPasswordField();
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnOK, 70, SpringLayout.SOUTH, passwordField);
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, passwordField, -310, SpringLayout.SOUTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.NORTH, passwordField, 112, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, lblR, -73, SpringLayout.WEST, passwordField);
-	sl_panel_2.putConstraint(SpringLayout.WEST, passwordField, 318, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, passwordField, -194, SpringLayout.EAST, panel_2);
-	passwordField.setFont(new Font("Calibri", Font.PLAIN, 54));
-	panel_2.add(passwordField);
-	passwordField.setColumns(10);
+	JTextField textField = new JTextField();
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 70, SpringLayout.SOUTH, textField);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, textField, -310, SpringLayout.SOUTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.NORTH, textField, 112, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, lblR, -73, SpringLayout.WEST, textField);
+	sl_panel_2.putConstraint(SpringLayout.WEST, textField, 318, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, textField, -194, SpringLayout.EAST, panel_2);
+	textField.setFont(new Font("Calibri", Font.PLAIN, 54));
+	panel_2.add(textField);
+	textField.setColumns(10);
 	
 	JLabel lblWhatWouldYou = new JLabel("Enter your old PIN:");
 	sl_panel_1.putConstraint(SpringLayout.NORTH, lblWhatWouldYou, 10, SpringLayout.NORTH, panel_1);
@@ -131,43 +112,6 @@ public ChangePINOldPIN (JPanel framePanel, AccountHolder accountHolder, PINChang
 	
 	framePanel.add(this);
 	framePanel.revalidate();
-}
-
-@Override
-public void actionPerformed (ActionEvent ae)
-{
-	Object source = ae.getSource();
-	
-	if (source == btnOK)
-	{
-		if (String.valueOf(passwordField.getPassword()).equals(accountHolder.getCard().getPinNo()))
-		{
-			new ChangePINNewPIN(framePanel, accountHolder, pinChange);
-		}
-		else
-		{
-			{
-				incorrectPINCounter++;
-				if (incorrectPINCounter < 3)
-				{
-					JOptionPane.showMessageDialog(null, "The PIN you entered is incorrect. You have " + (3 - incorrectPINCounter) + " tries left. Please try again.", "Incorrect PIN", JOptionPane.INFORMATION_MESSAGE);
-				}
-				
-				if (incorrectPINCounter == 3)
-				{
-					if (ATMApplication.serverComm.sendCardDeactivation(new CardDeactivation(pinChange.getCardNo(), ATMApplication.serverComm.getAtmId())))
-					{
-						JOptionPane.showMessageDialog(null, "You have entered your PIN incorrectly 3 times. Your card has been blocked. Please visit your nearest branch to unblock.", "Card Blocked", JOptionPane.INFORMATION_MESSAGE);
-						new ATMWelcomeScreen(framePanel);
-					}
-				}
-				System.out.println("Validate returned false");
-				//textField.setText("");
-				passwordField.setText("");
-			}
-		}
-	}
-	
 }
 
 }

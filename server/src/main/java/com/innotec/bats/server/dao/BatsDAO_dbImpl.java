@@ -166,7 +166,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setString(3,newAccountHolder.getSurname());
             preparedStatement.setString(4,newAccountHolder.getAddress());
             preparedStatement.setString(5,newAccountHolder.getContactNo());
-            preparedStatement.setString(6,null);//set card nr to null
+            preparedStatement.setString(6,newAccountHolder.getCard().getCardNo());
             return (executeUpdateStatement(preparedStatement) > 0);
         } catch (SQLException e) {
             System.out.println("BatsDAO_dbImpl::addAccountHolder() >>" +

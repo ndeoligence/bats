@@ -5,14 +5,12 @@ import java.awt.*;
 
 import javax.swing.border.*;
 
-import com.innotec.bats.general.AccountHolder;
-
 
 public class DepositSelectAccount extends JPanel
 {
 	private JPanel framePanel;
 
-public DepositSelectAccount (JPanel framePanel, AccountHolder accountHolder)
+public DepositSelectAccount (JPanel framePanel)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();

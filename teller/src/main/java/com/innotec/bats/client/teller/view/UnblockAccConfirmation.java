@@ -1,3 +1,4 @@
+
 package com.innotec.bats.client.teller.view;
 
 import java.awt.BorderLayout;
@@ -27,6 +28,7 @@ public class UnblockAccConfirmation extends JDialog implements ActionListener
 	private final JPanel contentPanel = new JPanel();
 	private JLabel lblUnblockAccount;
 	private JButton okButton;
+	private boolean tf = false;
 
 	/**
 	 * Launch the application.
@@ -97,8 +99,14 @@ public class UnblockAccConfirmation extends JDialog implements ActionListener
 		Object source = acEvent.getSource();
 		if(source == okButton)
 		{
+			tf = true;
 			this.dispose();
 		}
+	}
+	
+	public boolean okBtnPressed()
+	{
+		return tf;
 	}
 
 }

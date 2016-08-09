@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
@@ -34,28 +36,31 @@ public class AccHolderIDno_Teller extends JDialog implements ActionListener
 {
 
 	private final JPanel contentPanel = new JPanel();
+	private JPanel framePanel;
 	private JLabel lblEnterClientsAccount;
 	private JLabel lblAccountNo;
 	private JTextField textField;
 	private JButton btnOk, button_1;
 	private AccountHolder accountHolder;
 	private String accHolderIDno;
+	private Character ch;
+	private OpenNewAccountForExistingAccountHolder newAccountForExistingAccountHolder;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args)
-	{
-		try
-		{
-			AccHolderIDno_Teller dialog = new AccHolderIDno_Teller();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args)
+//	{
+//		try
+//		{
+//			AccHolderIDno_Teller dialog = new AccHolderIDno_Teller();
+//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//			dialog.setVisible(true);
+//		} catch (Exception e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Create the dialog.
@@ -124,6 +129,7 @@ public class AccHolderIDno_Teller extends JDialog implements ActionListener
 			accountHolder = BankTellerApplication.serverComm.sendAccountHolderRetrievalByIdNo(new AccountHolderRetrievalByIdNo(accHolderIDno));
 			if(!(accountHolder.equals(null)))
 			{
+				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel, accountHolder);
 				this.dispose();
 			}
 		}

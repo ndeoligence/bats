@@ -2,25 +2,18 @@ package com.innotec.bats.client.atm.accountholder.view;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.border.*;
 
-import com.innotec.bats.general.AccountHolder;
-import com.innotec.bats.general.Action;
 
-public class DepositInsertEnvelope extends JPanel implements ActionListener
+public class DepositInsertEnvelope extends JPanel
 {
 	private JPanel framePanel;
-	AccountHolder accountHolder;
 
-public DepositInsertEnvelope (JPanel framePanel, AccountHolder accountHolder, Action action)
+public DepositInsertEnvelope (JPanel framePanel)
 {
 	this.framePanel = framePanel;
 	framePanel.removeAll();
-	
-	this.accountHolder = accountHolder;
 	
 	setBackground(SystemColor.inactiveCaption);
 	SpringLayout springLayout = new SpringLayout();
@@ -69,18 +62,17 @@ public DepositInsertEnvelope (JPanel framePanel, AccountHolder accountHolder, Ac
 	SpringLayout sl_panel_2 = new SpringLayout();
 	panel_2.setLayout(sl_panel_2);
 	
-	JButton btnInsertEnvelope = new JButton("");
-	sl_panel_2.putConstraint(SpringLayout.NORTH, btnInsertEnvelope, 20, SpringLayout.NORTH, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.WEST, btnInsertEnvelope, 282, SpringLayout.WEST, panel_2);
-	sl_panel_2.putConstraint(SpringLayout.EAST, btnInsertEnvelope, -282, SpringLayout.EAST, panel_2);
-	btnInsertEnvelope.setIcon(new ImageIcon("resources/InsertEnvelopeIcon.jpg"));
-	btnInsertEnvelope.setFont(new Font("Cambria", Font.PLAIN, 38));
-	btnInsertEnvelope.setBorder(BorderFactory.createRaisedBevelBorder());
-	panel_2.add(btnInsertEnvelope);
-	btnInsertEnvelope.addActionListener(this);
+	JButton btnTransferMoney = new JButton("");
+	sl_panel_2.putConstraint(SpringLayout.NORTH, btnTransferMoney, 20, SpringLayout.NORTH, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.WEST, btnTransferMoney, 282, SpringLayout.WEST, panel_2);
+	sl_panel_2.putConstraint(SpringLayout.EAST, btnTransferMoney, -282, SpringLayout.EAST, panel_2);
+	btnTransferMoney.setIcon(new ImageIcon("resources/InsertEnvelopeIcon.jpg"));
+	btnTransferMoney.setFont(new Font("Cambria", Font.PLAIN, 38));
+	btnTransferMoney.setBorder(BorderFactory.createRaisedBevelBorder());
+	panel_2.add(btnTransferMoney);
 	
 	JButton btnHelp = new JButton("Help");
-	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnInsertEnvelope, -42, SpringLayout.NORTH, btnHelp);
+	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnTransferMoney, -42, SpringLayout.NORTH, btnHelp);
 	sl_panel_2.putConstraint(SpringLayout.NORTH, btnHelp, 388, SpringLayout.NORTH, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.WEST, btnHelp, 20, SpringLayout.WEST, panel_2);
 	sl_panel_2.putConstraint(SpringLayout.SOUTH, btnHelp, -12, SpringLayout.SOUTH, panel_2);
@@ -106,11 +98,6 @@ public DepositInsertEnvelope (JPanel framePanel, AccountHolder accountHolder, Ac
 	
 	framePanel.add(this);
 	framePanel.revalidate();
-}
-
-@Override
-public void actionPerformed (ActionEvent arg0)
-{
 }
 
 }

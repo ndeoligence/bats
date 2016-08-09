@@ -347,17 +347,23 @@ public class Server {
             }
             AccountHolder newAccountHolder = action.getAccountHolder();
             String newPin=newAccountHolder.getCard().getPinNo();
-            Boolean flag = false;
             try {
                 newAccountHolder.addCard(new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()), newPin, true, newAccountHolder.getIdNo()));
-                flag = dao.addAccountHolder(newAccountHolder, action.getEmployeeNo());
+                if (!dao.addAccountHolder(newAccountHolder, action.getEmployeeNo())) {
+                    sendToClient(false);
+                    return;
+                }
+                if (!dao.addAccountHolderCard((AccountHolderCard) newAccountHolder.getCard())) {
+                    sendToClient(false);
+                    return;
+                }
+                sendToClient(true);
             } catch (SQLException e) {
                 System.out.println("ClientHandler::processAccountHolderCreation() >>" +
                         "\n\tError: Missing card object : null");
                 sendToClient(false);
                 return;
             }
-            sendToClient(flag);
         }
 
         private void processAccountCreation(AccountCreation action) {

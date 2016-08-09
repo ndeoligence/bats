@@ -3,6 +3,9 @@ package com.innotec.bats.client.atm.admin.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by phoenix on 7/20/16.
+ */
 public class DNRecord
 {
 	private String atmID;
@@ -19,7 +22,7 @@ public class DNRecord
 	public void readFromDAOfile()
 	{
 		dnRecord =  dnr_DAO.readFromDNR();
-		dnrEntries.add(dnRecord);
+		//dnrEntries.add(dnRecord);
 	}
 	
 	public void add(DNREntry dnrEntry)

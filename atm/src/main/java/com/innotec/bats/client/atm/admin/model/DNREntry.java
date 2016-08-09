@@ -1,44 +1,34 @@
 package com.innotec.bats.client.atm.admin.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import com.innotec.bats.general.Account;
 
 public class DNREntry
 {
 	private Date date;
-	private int dateStamp;
-	private long timeStamp;
-	private Account acc;
+	private String dateStamp;
+	//private Account accNo;
 	private String accNo;
-	private double amount;
+	//private double amount;
+	private int[] record;
 
-	public DNREntry(double amount, String accNo)
+	public DNREntry(int[] record, String accNo)
 	{
-		this.dateStamp = date.getDate();//look for alt
-		this.timeStamp = date.getTime();
+		date = new Date();
+		this.dateStamp = date.toString();
 		this.accNo = accNo;
-		this.amount = amount;
+		this.record = record;
 	}
 
-	public int getDateStamp()
+	public String getDateStamp()
 	{
 		return dateStamp;
 	}
 
-	public void setDateStamp(int dateStamp)
+	public void setDateStamp(String dateStamp)
 	{
-		this.dateStamp = dateStamp;
-	}
-
-	public long getTimeStamp()
-	{
-		return timeStamp;
-	}
-
-	public void setTimeStamp(long timeStamp)
-	{
-		this.timeStamp = timeStamp;
+		this.dateStamp = date.toString();
 	}
 
 	public String getAccNo()
@@ -51,14 +41,14 @@ public class DNREntry
 		this.accNo = accNo;
 	}
 
-	public double getAmount()
+	public int[] getRecord()
 	{
-		return amount;
+		return record;
 	}
 
-	public void setAmount(double amount)
+	public void setRecord(int[] record)
 	{
-		this.amount = amount;
+		this.record = record;
 	}
 
 }

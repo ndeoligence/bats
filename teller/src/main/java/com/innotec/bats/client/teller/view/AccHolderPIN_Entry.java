@@ -29,7 +29,10 @@ import com.innotec.bats.client.teller.control.BankTellerApplication;
 import com.innotec.bats.general.Account;
 import com.innotec.bats.general.AccountCreation;
 import com.innotec.bats.general.AccountHolder;
+import com.innotec.bats.general.AccountHolderCard;
 import com.innotec.bats.general.AccountHolderCreation;
+import com.innotec.bats.general.AccountHolderRetrieval;
+import com.innotec.bats.general.AccountHolderRetrievalByIdNo;
 import com.innotec.bats.general.Card;
 
 
@@ -50,7 +53,11 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 	private AccountHolderCreation accountHolderCreation;
 	private AccountCreation accountCreation;
 	private Account account;
-	private boolean tf;
+	private boolean tf, tf1, tf2;
+	private String idNo;
+	private NewAccConfirmation newAccConfirmation;
+	private AccountHolderRetrievalByIdNo accountHolderRetrievalByIdNo;
+	private OpenNewAccount openNewAccount;
 
 //	public static void main(String[] args)
 //	{
@@ -68,11 +75,13 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 	/**
 	 * Create the dialog.
 	 */
-	public AccHolderPIN_Entry(JPanel framePanel, AccountHolder accountHolder)
+	public AccHolderPIN_Entry(JPanel framePanel, AccountHolder accountHolder, Account account, String idNo)
 	{
 		framePanel.removeAll();
 		this.framePanel = framePanel;
 		this.accountHolder = accountHolder;
+		this.account = account;
+		this.idNo = idNo;
 		setResizable(false);
 		setTitle("Please Enter PIN");
 		setBounds(100, 100, 470, 355);
@@ -132,19 +141,9 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 		this.setVisible(true);
 	}
 
-	public boolean setAccount(Account account)
+	public void setAccount(Account account)
 	{
 		this.account = account;
-		if(!(account.equals(null)))
-		{
-			tf = true;
-		}
-
-		if(account.equals(null))
-		{
-			tf =false;
-		}
-		return tf;
 	}
 	
 	@Override
@@ -155,17 +154,25 @@ public class AccHolderPIN_Entry extends JDialog implements ActionListener
 		{
 			if(String.valueOf(passwordField.getPassword()).equals(String.valueOf(passwordField_1.getPassword())))
 			{
-				card = new Card("", String.valueOf(passwordField.getPassword()), true);
+				card = new AccountHolderCard("", String.valueOf(passwordField.getPassword()), true, idNo);
 				accountHolder.addCard(card);
 				accountHolderCreation = new AccountHolderCreation(accountHolder, TellerHomePage.tellerID);
-				BankTellerApplication.serverComm.sendAccountHolderCreation(accountHolderCreation);
-				tellerHomePage = new TellerHomePage(framePanel);
+				System.out.println(" 2 " + accountHolder.toString());
+				tf1 = BankTellerApplication.serverComm.sendAccountHolderCreation(accountHolderCreation);
 				
-				if(!(account.equals(null)))
-				{
-					accountCreation = new AccountCreation(TellerHomePage.tellerID, account, accountHolder.getAccountHolderID());
-					BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
-				}
+//				if(tf1 == true)
+//				{
+//					System.out.println("ACCOUNT : " + account.toString() + " TellerID : " + TellerHomePage.tellerID + " IDno : " + idNo);
+//					accountCreation = new AccountCreation(TellerHomePage.tellerID, account, idNo);
+//					tf2 = BankTellerApplication.serverComm.sendAccountCreation(accountCreation);
+//				}
+				
+//				accountHolderRetrievalByIdNo = new AccountHolderRetrievalByIdNo(idNo);
+//				
+//				accountHolder = BankTellerApplication.serverComm.sendAccountHolderRetrievalByIdNo(accountHolderRetrievalByIdNo);
+				
+				newAccConfirmation = new NewAccConfirmation(accountHolder, account);
+				//this.dispose();
 			}
 			else
 			{

@@ -18,41 +18,35 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
+
+import com.innotec.bats.client.teller.control.BankTellerApplication;
+import com.innotec.bats.general.AccountClosure;
+import com.innotec.bats.general.AccountHolder;
 
 public class ConfirmAccClosure_WithPIN extends JDialog implements ActionListener
 {
 
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField passwordField;
-	private JButton okButton, cancelButton;
+	private JButton btnYes, btnNo;
 	private JLabel label;
 	private JLabel label_1;
+	private AccountHolder accountHolder;
+	private AccountClosure accountClosure;
+	private boolean tf;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args)
-	{
-		try
-		{
-			ConfirmAccClosure_WithPIN dialog = new ConfirmAccClosure_WithPIN();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public ConfirmAccClosure_WithPIN()
+	public ConfirmAccClosure_WithPIN(AccountHolder accountHolder)
 	{
+		this.accountHolder = accountHolder;
 		setTitle("Close Account!");
 		setResizable(false);
 		setBounds(100, 100, 557, 385);
@@ -94,19 +88,19 @@ public class ConfirmAccClosure_WithPIN extends JDialog implements ActionListener
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 			{
-				okButton = new JButton("YES");
-				okButton.setFont(new Font("Cambria", Font.BOLD, 18));
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				okButton.addActionListener(this);
-				getRootPane().setDefaultButton(okButton);
+				btnYes = new JButton("YES");
+				btnYes.setFont(new Font("Cambria", Font.BOLD, 18));
+				btnYes.setActionCommand("OK");
+				buttonPane.add(btnYes);
+				btnYes.addActionListener(this);
+				getRootPane().setDefaultButton(btnYes);
 			}
 			{
-				cancelButton = new JButton(" NO ");
-				cancelButton.setFont(new Font("Cambria", Font.BOLD, 18));
-				cancelButton.setActionCommand("Cancel");
-				cancelButton.addActionListener(this);
-				buttonPane.add(cancelButton);
+				btnNo = new JButton(" NO ");
+				btnNo.setFont(new Font("Cambria", Font.BOLD, 18));
+				btnNo.setActionCommand("Cancel");
+				btnNo.addActionListener(this);
+				buttonPane.add(btnNo);
 			}
 			this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			this.setVisible(true);
@@ -117,14 +111,28 @@ public class ConfirmAccClosure_WithPIN extends JDialog implements ActionListener
 	public void actionPerformed(ActionEvent acEvent)
 	{
 		Object source = acEvent.getSource();
-		if(source == okButton)
+		if(source == btnYes)
 		{
-			String.valueOf(passwordField.getPassword());
+			if(String.valueOf(passwordField.getPassword()).equals(accountHolder.getCard().getPinNo()))
+			{
+				accountClosure = new AccountClosure(BankTellerApplication.tellerID, AccountNumber_Teller.ACCOUNTNO);
+				tf = BankTellerApplication.serverComm.sendAccountClosure(accountClosure);
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "PIN is incorrect! /n Please re-enter PIN",
+						"PIN INCORRECT", JOptionPane.INFORMATION_MESSAGE);			
+			}
 			this.dispose();
 		}
-		if(source == cancelButton)
+		if(source == btnNo)
 		{
 			this.dispose();
 		}
+	}
+	
+	public boolean accountClosed()
+	{
+		return tf;
 	}
 }

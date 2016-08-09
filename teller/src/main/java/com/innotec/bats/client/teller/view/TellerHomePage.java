@@ -33,6 +33,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import com.innotec.bats.general.AccountHolder;
+
 import java.awt.Component;
 
 
@@ -48,6 +50,8 @@ public class TellerHomePage extends JPanel implements ActionListener
 	private ConfirmExitDialog confirmExitDialog;
 	private OpenNewAccountForExistingAccountHolder newAccountForExistingAccountHolder;
 	public static final String tellerID = "chiroptera13801";
+	private AccountNoNotRegistered accountNoNotRegistered;
+	private AccountHolder accountHolder;
 	
 	public TellerHomePage(JPanel framePanel)
 	{
@@ -125,7 +129,6 @@ public class TellerHomePage extends JPanel implements ActionListener
 		sl_panel_1.putConstraint(SpringLayout.EAST, btnExit, 771, SpringLayout.WEST, panel_1);
 		
 		panel_1.setLayout(sl_panel_1);
-
 		panel_1.add(lblNewLabel_1);
 		panel_1.add(btnNewAcc);
 		panel_1.add(lblNewLabel_2);
@@ -167,35 +170,42 @@ public class TellerHomePage extends JPanel implements ActionListener
 		if(source == btnAddNewAcc)
 		{
 			idDialog = new AccHolderIDno_Teller();
-			//if(idDialog.isAnAccHolder() == true)
-			//{
+			accountHolder = idDialog.getAccHolderDetails();
+			if(accountHolder != null)
+			{
 				framePanel.removeAll();
 				framePanel.validate();
 
-				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel);
-			//}
+				newAccountForExistingAccountHolder = new OpenNewAccountForExistingAccountHolder(framePanel, accountHolder);
+			}
 		}
 		if(source == btnCloseAcc)
 		{
 			accNoDialog = new AccountNumber_Teller();
-//			if()
-//			{
+			accountHolder = accNoDialog.getAccountHolder();
+			if(accountHolder != null)
+			{
 				framePanel.removeAll();
 				framePanel.validate();
 
-				closeAccountPanel = new CloseAccount_Teller(framePanel);
-//			}
+				closeAccountPanel = new CloseAccount_Teller(framePanel, accountHolder);
+			}
 		}
 		if(source == btnUnblockAcc)
 		{
 			accNoDialog2 = new AccountNumber_Teller();
-//			if(accNoDialog.getAccountHolder() != null)
-//			{
+			accountHolder = accNoDialog.getAccountHolder();
+			if(accountHolder != null)
+			{
 				framePanel.removeAll();
 				framePanel.validate();
 				
-				unblockCardPanel = new UnblockCard(framePanel);
-//			}
+				unblockCardPanel = new UnblockCard(framePanel, accountHolder);
+			}
+			else
+			{
+				accountNoNotRegistered = new AccountNoNotRegistered();
+			}
 		}
 		if(source == btnExit)
 		{

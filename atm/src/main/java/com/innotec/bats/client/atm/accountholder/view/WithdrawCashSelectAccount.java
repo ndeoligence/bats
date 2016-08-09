@@ -37,7 +37,7 @@ public WithdrawCashSelectAccount (JPanel framePanel, ArrayList<Account> accounts
 		if (accounts.get(i) instanceof CurrentAccount)
 		{
 			currentAccountActive = true;
-			currentAccount = (CurrentAccount)accounts.get(i);
+			currentAccount = (CurrentAccount)accounts.get(i).clone();
 		}
 		if (accounts.get(i) instanceof SavingsAccount)
 		{
@@ -167,7 +167,7 @@ public void actionPerformed (ActionEvent ae)
 	
 	if (source == btnHelp)
 	{
-		new HelpShowFile(framePanel, new ImageIcon("resources/Help File Withdrawal.jpg"), accountHolder);
+		new HelpShowFile(framePanel, new ImageIcon("resources/Help File Withdrawal.jpg"));
 	}
 	
 	if (source == btnCancel)

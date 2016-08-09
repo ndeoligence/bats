@@ -35,13 +35,14 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 {
 
 	private final JPanel contentPanel = new JPanel();
+	private JPanel framePanel = new JPanel();
 	private JLabel lblEnterClientsAccount;
 	private JLabel lblAccountNo;
 	private JTextField textField;
 	private JButton btnOk, button_1;
-    private String accountNo;
+    static String ACCOUNTNO;
     private AccountHolder accountHolder;
-    private UnblockCard unblockAccount;
+    private UnblockCard unblockCard;
     private AccountHolderRetrievalByAccountNo accountHolderRetrievalByAccountNo;
     
 
@@ -88,15 +89,15 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 			sl_contentPanel.putConstraint(SpringLayout.NORTH, lblAccountNo, 89, SpringLayout.SOUTH, lblEnterClientsAccount);
 			sl_contentPanel.putConstraint(SpringLayout.WEST, lblAccountNo, 10, SpringLayout.WEST, contentPanel);
 			lblAccountNo.setHorizontalAlignment(SwingConstants.LEFT);
-			lblAccountNo.setFont(new Font("Cambria", Font.BOLD, 20));
+			lblAccountNo.setFont(new Font("Cambria", Font.BOLD, 24));
 			contentPanel.add(lblAccountNo);
 		}
 		
 		textField = new JTextField();
-		sl_contentPanel.putConstraint(SpringLayout.NORTH, textField, 89, SpringLayout.SOUTH, lblEnterClientsAccount);
-		sl_contentPanel.putConstraint(SpringLayout.WEST, textField, 200, SpringLayout.WEST, contentPanel);
-		sl_contentPanel.putConstraint(SpringLayout.EAST, textField, -33, SpringLayout.EAST, contentPanel);
-		textField.setFont(new Font("Cambria", Font.PLAIN, 14));
+		sl_contentPanel.putConstraint(SpringLayout.WEST, textField, 14, SpringLayout.EAST, lblAccountNo);
+		sl_contentPanel.putConstraint(SpringLayout.SOUTH, textField, 0, SpringLayout.SOUTH, lblAccountNo);
+		sl_contentPanel.putConstraint(SpringLayout.EAST, textField, -15, SpringLayout.EAST, contentPanel);
+		textField.setFont(new Font("Cambria", Font.PLAIN, 16));
 		textField.setColumns(10);
 		contentPanel.add(textField);
 		{
@@ -119,20 +120,26 @@ public class AccountNumber_Teller extends JDialog implements ActionListener
 		this.setVisible(true);
 	}
 
+//	public String getAccountNo()
+//	{
+//		return accountNo;
+//	}
+	
 	@Override
 	public void actionPerformed(ActionEvent acEvent)
 	{
 		Object source = acEvent.getSource();
 		if(source == btnOk)
 		{
-			accountNo = textField.getText();
-			accountHolderRetrievalByAccountNo = new AccountHolderRetrievalByAccountNo(accountNo);
+			ACCOUNTNO = textField.getText();
+			accountHolderRetrievalByAccountNo = new AccountHolderRetrievalByAccountNo(ACCOUNTNO);
 			accountHolder = BankTellerApplication.serverComm.sendAccountHolderRetrievalByAccountNo(accountHolderRetrievalByAccountNo);
-			if(accountHolder != null)
+			
+			if(accountHolder == null)
 			{
-				unblockAccount = new UnblockCard(accountHolder);
+				JOptionPane.showMessageDialog(null, "Account Holder error! /nIs account number correct?", "Account Holder does not exist", JOptionPane.INFORMATION_MESSAGE);
 			}
-			JOptionPane.showMessageDialog(null, "Account Holder error! /nIs account number correct?", "Account Holder does not exist", JOptionPane.INFORMATION_MESSAGE);
+			
 			this.dispose();
 		}
 		if(source == button_1)

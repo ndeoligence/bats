@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.SwingConstants;
 
-public class MissingInformation extends JDialog implements ActionListener 
+public class AccountNoNotRegistered extends JDialog implements ActionListener 
 {
 
 	private final JPanel contentPanel = new JPanel();
@@ -50,12 +50,12 @@ public class MissingInformation extends JDialog implements ActionListener
 	/**
 	 * Create the dialog.
 	 */
-	public MissingInformation(JPanel framePanel)
+	public AccountNoNotRegistered()
 	{
-		framePanel.removeAll();
-		this.framePanel = framePanel;
+		//framePanel.removeAll();
+		//this.framePanel = framePanel;
 		setResizable(false);
-		setTitle("Missing Information!");
+		setTitle("Incorrect Information!");
 		setBounds(100, 100, 488, 320);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(SystemColor.inactiveCaption);
@@ -64,7 +64,7 @@ public class MissingInformation extends JDialog implements ActionListener
 		SpringLayout sl_contentPanel = new SpringLayout();
 		contentPanel.setLayout(sl_contentPanel);
 		{
-			JLabel lblSomeInformationIs = new JLabel("Some Information Is Missing!");
+			JLabel lblSomeInformationIs = new JLabel("Account Number Non-Existent!");
 			sl_contentPanel.putConstraint(SpringLayout.NORTH, lblSomeInformationIs, 99, SpringLayout.NORTH, contentPanel);
 			sl_contentPanel.putConstraint(SpringLayout.WEST, lblSomeInformationIs, 85, SpringLayout.WEST, contentPanel);
 			lblSomeInformationIs.setHorizontalAlignment(SwingConstants.LEFT);

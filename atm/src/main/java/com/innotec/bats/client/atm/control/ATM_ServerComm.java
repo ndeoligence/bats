@@ -21,8 +21,7 @@ public class ATM_ServerComm
 	private Card card = null;
 	private Object serverObject = null;
 	private AccountHolder accountHolder;
-	private final String ATM_ID = "13701";
-	private final String ATM_Password = "chiroptera13701";;
+	private final String ATM_ID, ATM_Password;
 	private ArrayList statement;
 	private Account account;
 	
@@ -31,74 +30,15 @@ public class ATM_ServerComm
 	//open/close connection methods
 	public ATM_ServerComm()
 	{
-		
-
+		ATM_ID = "13701";
+		ATM_Password = "chiroptera13701";
 	}
 	
-	public boolean openConnection()
-	{
-		try
-		{
-			socket = new Socket("localhost", 13700);
-			
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			ois = new ObjectInputStream(socket.getInputStream());
-				
-			return true;
-		}
-		catch (UnknownHostException e)
-		{
-			e.printStackTrace();
-			return false;
-		} 
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
-	
-	public Socket getSocket ()
-	{
-		return socket;
-	}
-
-	public ObjectInputStream getOis ()
-	{
-		return ois;
-	}
-
-	public ObjectOutputStream getOos ()
-	{
-		return oos;
-	}
-
-	public Card getCard ()
-	{
-		return card;
-	}
-
-	public AccountHolder getAccountHolder ()
-	{
-		return accountHolder;
-	}
-
-	public String getAtmId ()
+	public String getATM_ID()
 	{
 		return ATM_ID;
 	}
-
-	public ArrayList getStatement ()
-	{
-		return statement;
-	}
-
-	public Account getAccount ()
-	{
-		return account;
-	}
-
+	
 	public Card sendCardRetrieval(CardRetrieval cardRetrieval)
 	{
 			try
@@ -167,39 +107,36 @@ public class ATM_ServerComm
 		}		
 	}
 	
-	public AccountHolder sendAccountHolderCreation(AccountHolderCreation accountHolderCreation)
+	public boolean sendAccountHolderCreation(AccountHolderCreation accountHolderCreation)
 	{
 		try 
 		{
 			oos.writeObject(accountHolderCreation);
 			oos.flush();
-			accountHolder = (AccountHolder)this.getServerObject();
-			return accountHolder;
-			
+			return (boolean) this.getServerObject();
 		}
 		catch (IOException e)
 		{
 			accountHolder = null;
 			e.printStackTrace();
-			return accountHolder;
+			return false;
 		}
 	}
 	
-	public Account sendAccountCreation(AccountCreation accountCreation)
+	public boolean sendAccountCreation(AccountCreation accountCreation)
 	{
 		try 
 		{
 			oos.writeObject(accountCreation);
 			oos.flush();
-			account = (Account)this.getServerObject();
-			return account;
+			return (boolean) this.getServerObject();
 			
 		}
 		catch (IOException e)
 		{
 			accountHolder = null;
 			e.printStackTrace();
-			return account;
+			return false;
 		}
 	}
 	
@@ -228,7 +165,6 @@ public class ATM_ServerComm
 			oos.writeObject(withdrawal);
 			oos.flush();
 			boolean tf  = (Boolean)this.getServerObject();
-			System.out.println(tf);
 			
 			return tf;
 		} 
@@ -404,7 +340,30 @@ public class ATM_ServerComm
 		return serverObject;
 	}
 	
-	
+	public boolean openConnection()
+	{
+		try
+		{
+			socket = new Socket("192.168.43.104", 13700);
+//			  192.168.43.72
+			
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
+				
+			return true;
+		}
+		catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+			return false;
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
 	
 	public boolean closeConnection()
 	{
