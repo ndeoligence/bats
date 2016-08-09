@@ -33,8 +33,11 @@ public interface BatsDAO {
     List<Account>       getAccountsByCardNo(String idNo) throws SQLException, BadAccountTypeException;
 
     boolean     setAccountBalance(String accountNo, double newBalance) throws SQLException;
-    boolean     incrementAccountFunds(String accountNo, double amount);
-    boolean     decrementAccountFunds(String accountNo, double amount);
+
+    double getAccountBalance(String accountNo) throws SQLException;
+
+    boolean     incrementAccountFunds(String accountNo, double amount) throws SQLException;
+    boolean     decrementAccountFunds(String accountNo, double amount) throws SQLException;
     boolean     setAccountHolderPinNo(String cardNo, String newPinNo) throws SQLException;
     boolean     setAdminPinNo(String cardNo, String newPinNo) throws SQLException;
 
@@ -54,5 +57,5 @@ public interface BatsDAO {
     boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException;
     boolean exist(AccountHolderCard card) throws SQLException;
     boolean exist(AdminCard card) throws SQLException;
-    boolean logTransaction(java.util.Date dateTimeStamp, Transaction transaction);
+    boolean logTransaction(Transaction transaction);
 }

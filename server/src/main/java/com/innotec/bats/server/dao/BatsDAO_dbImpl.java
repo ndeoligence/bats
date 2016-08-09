@@ -99,8 +99,14 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
 
     @Override
-    public boolean logTransaction(Date dateTimeStamp, Transaction transaction) {
-        return false;
+    public boolean logTransaction(Transaction transaction) {
+        if (transaction instanceof Withdrawal)
+            return (logWithdrawal((Withdrawal)transaction));
+        else if (transaction instanceof Transfer)
+            return (logTransfer((Transfer)transaction));
+        else if (transaction instanceof Deposit)
+            return (logWithdrawal((Withdrawal) transaction));
+        else return false;
     }
 
     @Override
@@ -262,18 +268,44 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         }
     }
-
     @Override
-    public boolean incrementAccountFunds(String accountNo, double amount) {
-        String sqlStr = "";
-        // get balance
-        // work out new balance
-        // set new balance
+    public double getAccountBalance(String accountNo) throws SQLException {
+        String sqlStr = "SELECT Balance FROM accounts WHERE AccountNo=?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
+            preparedStatement.setString(1, accountNo);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) return Double.NaN;
+            return resultSet.getDouble("Balance");
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::getAccountBalance() >>\n\tError: "+e);
+            throw e;
+        }
+    }
+    @Override
+    public boolean incrementAccountFunds(String accountNo, double amount) throws SQLException {
+        try {
+            double curBalance = getAccountBalance(accountNo);
+            if (Double.isNaN(curBalance)) return false;
+            double newBalance = curBalance+amount;
+            return setAccountBalance(accountNo,newBalance);
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::incrementAccountFunds() >>\n\tError: "+e);
+            throw e;
+        }
     }
 
     @Override
-    public boolean decrementAccountFunds(String accountNo, double amount) {
-        return false;
+    public boolean decrementAccountFunds(String accountNo, double amount) throws SQLException {
+        try {
+            double curBalance = getAccountBalance(accountNo);
+            if (Double.isNaN(curBalance)) return false;
+            double newBalance = curBalance-amount;
+            return setAccountBalance(accountNo,newBalance);
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::decrementAccountFunds() >>\n\tError: "+e);
+            throw e;
+        }
     }
 
     @Override
@@ -553,7 +585,16 @@ public class BatsDAO_dbImpl implements BatsDAO {
             connection.setAutoCommit(true);
         }
     }
+    private boolean logDeposit(Deposit deposit) {
 
+        return false;
+    }
+    private boolean logTransfer(Transfer transfer) {
+        return false;
+    }
+    private boolean logWithdrawal(Withdrawal withdrawal) {
+        return false;
+    }
     private int getLastAtmId() throws SQLException {
         String sqlStr = "SELECT MAX(ID) AS LastAtmId FROM atms;";
         PreparedStatement preparedStatement=connection.prepareStatement(sqlStr);
