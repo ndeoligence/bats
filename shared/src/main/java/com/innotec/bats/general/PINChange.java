@@ -31,4 +31,11 @@ public class PINChange extends AccountAction
 	{
 		this.newPIN = newPIN;
 	}
+
+	@Override
+	public String toString ()
+	{
+		return "PINChange [cardNo=" + cardNo + ", newPIN=" + newPIN + "]";
+	}
+	
 }
