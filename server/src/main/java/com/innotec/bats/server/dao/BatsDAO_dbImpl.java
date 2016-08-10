@@ -20,7 +20,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     public static final String TRANSACTION_DEPOSIT="Deposit",
                                 TRANSACTION_TRANSFER="Transfer",
                                 TRANSACTION_WITHDRAWAL="Withdrawal",
-                                TRANSACTION_WITHDRAWAL_NOTICE="WithdrawalNotice";
+                                TRANSACTION_WITHDRAWAL_NOTICE="WithdrawalNotice",
+                                TRANSACTION_BANK_CHAGES="BankCharges";
     /*Prepared Statements*/
                                                     // Table: ID, Name, Surname, Address, ContactNumber, AccountHolderCardNo
     private static final String ADD_ACCOUNT_HOLDER = "INSERT INTO accountHolders VALUES (?,?,?,?,?,?);";
@@ -134,9 +135,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
 
     @Override
-    public double calculateTransactionCharges(Transaction transaction) throws SQLException {
-        // Table (transactionCharges) : TypeId,InitialCharge,PerUnitCharge,UnitAmount
-        // Table (transactionTypes) : TypeNo,TransactionType
+    public double calculateTransactionCharges(Transaction transaction) throws SQLException, BadTransactionTypeException {
         try {
             String transType;
             if (transaction instanceof Withdrawal)
@@ -152,49 +151,54 @@ public class BatsDAO_dbImpl implements BatsDAO {
                     unitAmount = getTransactionChargeUnitAmount(transType);
             double amount = transaction.getAmount();
             return (amount + standardCharge + perUnitCharge * (Math.ceil((amount * 1.0) / unitAmount)));//because we charge a full amount for a fraction of a R100 as well
-        } catch (SQLException e) {
+        } catch (SQLException|BadTransactionTypeException e) {
             System.out.println("BatsDAO_dbImpl::calculateTransactionCharges() >>" +
                     "\n\tError..." + e);
             throw e;
         }
     }
-    private double getTransactionStandardCharge(final String transactionType) throws SQLException {
-        String sqlStr="SELECT InitialCharge FROM transactionCharges,transactionTypes WHERE TypeId=TypeNo AND TransactionType=?;";
+    private double getTransactionStandardCharge(final String transactionType) throws SQLException, BadTransactionTypeException {
+        String sqlStr="SELECT InitialCharge FROM transactionCharges,transactionTypes WHERE TypeId=TypeNo AND TypeNo=?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
-            preparedStatement.setString(1,transactionType);
+            preparedStatement.setInt(1,getTransactionTypeId(transactionType));
             ResultSet resultSet=preparedStatement.executeQuery();
-            if (!resultSet.next()) return Double.NaN;
+            if (!resultSet.next()) {
+                System.out.println("BatsDAO_dbImpl::getTransactionStandardCharge() >>" +
+                        "\n\tError: ResultSet empty - for InitialCharge.");
+                return Double.NaN;
+            }
             return resultSet.getDouble("InitialCharge");
-        } catch (SQLException e) {
+        } catch (SQLException|BadTransactionTypeException e) {
             System.out.println("BatsDAO_dbImpl::getTransactionStandardCharge() >>" +
-                    "\n\tError..." + e);
+                    "\n\tError..." + e +
+                    "\n\tTransactionType = "+transactionType);
             throw e;
         }
     }
-    private double getTransactionChargePerUnit(final String transactionType) throws SQLException {
-        String sqlStr="SELECT PerUnitCharge FROM transactionCharges,transactionTypes WHERE TypeId=TypeNo AND TransactionType=?;";
+    private double getTransactionChargePerUnit(final String transactionType) throws SQLException, BadTransactionTypeException {
+        String sqlStr="SELECT PerUnitCharge FROM transactionCharges,transactionTypes WHERE TypeId=TypeNo AND TypeNo=?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
-            preparedStatement.setString(1,transactionType);
+            preparedStatement.setInt(1,getTransactionTypeId(transactionType));
             ResultSet resultSet=preparedStatement.executeQuery();
             if (!resultSet.next()) return Double.NaN;
-            return resultSet.getDouble("InitialCharge");
-        } catch (SQLException e) {
+            return resultSet.getDouble("PerUnitCharge");
+        } catch (SQLException|BadTransactionTypeException e) {
             System.out.println("BatsDAO_dbImpl::getTransactionChargePerUnit() >>" +
                     "\n\tError..." + e);
             throw e;
         }
     }
-    private double getTransactionChargeUnitAmount(final String transactionType) throws SQLException {
-        String sqlStr="SELECT UnitAmount FROM transactionCharges,transactionTypes WHERE TypeId=TypeNo AND TransactionType=?;";
+    private double getTransactionChargeUnitAmount(final String transactionType) throws SQLException, BadTransactionTypeException {
+        String sqlStr="SELECT UnitAmount FROM transactionCharges,transactionTypes WHERE TypeId=TypeNo AND TypeNo=?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
-            preparedStatement.setString(1,transactionType);
+            preparedStatement.setInt(1,getTransactionTypeId(transactionType));
             ResultSet resultSet=preparedStatement.executeQuery();
             if (!resultSet.next()) return Double.NaN;
-            return resultSet.getDouble("InitialCharge");
-        } catch (SQLException e) {
+            return resultSet.getDouble("UnitAmount");
+        } catch (SQLException|BadTransactionTypeException e) {
             System.out.println("BatsDAO_dbImpl::getTransactionChargeUnitAmount() >>" +
                     "\n\tError..." + e);
             throw e;
@@ -253,27 +257,40 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
     @Override
     public AccountHolder getAccountHolderByIdNo(String idNo) throws SQLException, BadAccountTypeException {
-        PreparedStatement preparedStatement=connection.prepareStatement(GET_ACCOUNT_HOLDER_BY_ID_NO);
-        preparedStatement.setString(1,idNo);
-        ResultSet resultSet=preparedStatement.executeQuery();
-        if (!resultSet.next()) {
-            return null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_HOLDER_BY_ID_NO);
+            preparedStatement.setString(1, idNo);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()) {
+                System.out.println("BatsDAO_dbImpl::getAccountHolderByIdNo() >>" +
+                        "\n\tAccount holder not found.");
+                return null;
+            }
+
+            String name, surname, address, contactNo;
+            Card card;
+
+            name = resultSet.getString("Name");
+            surname = resultSet.getString("Surname");
+            address = resultSet.getString("Address");
+            contactNo = resultSet.getString("ContactNumber");
+            resultSet.close();
+
+            card = getAccountHolderCardByCardNo(getCardNoByIdNo(idNo));
+            if (card==null) {
+                System.out.println("BatsDAO_dbImpl::getAccountHolderByIdNo() >>" +
+                        "\n\tCARD not found.");
+            }
+            AccountHolder accountHolder = new AccountHolder(name, surname, idNo, address, contactNo, card);
+            accountHolder.setAccounts((ArrayList<Account>) getAccountsByCardNo(idNo));
+            System.out.println("BatsDAO_dbImpl::getAccountHolderByIdNo() >>" +
+                    "\n\tReturning account holder: "+accountHolder);
+            return accountHolder;
+        } catch (SQLException|BadAccountTypeException e) {
+            System.out.println("BatsDAO_dbImpl::getAccountHolderByIdNo() >>" +
+                    "\n\tError..." + e);
+            throw e;
         }
-
-        String name,surname,address,contactNo;
-        Card card;
-
-        idNo=resultSet.getString("ID");
-        name=resultSet.getString("Name");
-        surname=resultSet.getString("Surname");
-        address=resultSet.getString("Address");
-        contactNo=resultSet.getString("ContactNumber");
-        resultSet.close();
-
-        card = getAccountHolderCardByCardNo(getCardNoByIdNo(idNo));
-        AccountHolder accountHolder = new AccountHolder(name,surname,idNo,address,contactNo,card);
-        accountHolder.setAccounts((ArrayList<Account>) getAccountsByCardNo(idNo));
-        return accountHolder;
     }
 
     @Override
@@ -297,7 +314,10 @@ public class BatsDAO_dbImpl implements BatsDAO {
 
     @Override
     public AccountHolder getAccountHolderByCardNo(String cardNo) throws SQLException, BadAccountTypeException {
-        return getAccountHolderByIdNo(getCardNoByIdNo(cardNo));
+        String idNo=getIdNoByCardNo(cardNo);
+        System.out.println("BatsDAO_dbImpl::getAccountHolderByCardNo() >>" +
+                "\n\tcalled method, getIdNoByCardNo(), returns - " + idNo);
+        return getAccountHolderByIdNo(idNo);
     }
     @Override
     public List<Account> getAccountsByIdNo(String idNo) throws SQLException, BadAccountTypeException {
@@ -305,9 +325,10 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
     @Override
     public List<Account> getAccountsByCardNo(String cardNo) throws SQLException, BadAccountTypeException {
+        String sqlStr="SELECT * FROM accounts WHERE CardNo=?;";
         try {
             List<Account> accounts = new ArrayList<>();
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_CARD_BY_CARD_NO);
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1, cardNo);
             ResultSet resultSet = preparedStatement.executeQuery();
             String accountNo, idNo;
@@ -322,7 +343,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
                 maxTransferPerDay = resultSet.getDouble("MaxTransferPerDay");
                 active = resultSet.getBoolean("Active");
 
-                switch (resultSet.getString("Type")) {
+                switch (getAccountTypeString(resultSet.getInt("Type"))) {
                     case (CURRENT_ACCOUNT):
                         accounts.add(new CurrentAccount(accountNo, balance, active, maxWithdrawalPerDay, maxTransferPerDay, idNo));
                         break;
@@ -727,6 +748,32 @@ public class BatsDAO_dbImpl implements BatsDAO {
         }
     }
 
+    @Override
+    public boolean logTransactionCharges(Transaction transaction, double charges) throws SQLException, BadTransactionTypeException {
+        //Table (transactions) : TransactionID,TimeStamp,Amount,Type,ATM_ID,SecondaryAccountNo,PrimaryAccountNo
+        try {
+            String sqlStr = "INSERT INTO transactions VALUES (?,?,?,?,?,?,?);";
+            PreparedStatement ps = connection.prepareStatement(sqlStr);
+            ps.setInt(1,0);
+
+            ps.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
+            ps.setDouble(3,transaction.getAmount());
+            ps.setInt(4,getTransactionTypeId(TRANSACTION_BANK_CHAGES));
+            ps.setInt(5,Integer.parseInt(transaction.getATM_ID()));// this is problematic
+            ps.setString(6,null);
+            ps.setString(7,transaction.getPrimAccountNo());
+            return (executeUpdateStatement(ps)>0);
+        } catch (SQLException|BadTransactionTypeException e) {
+            System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
+                    "\n\tError..." + e);
+            throw e;
+        } catch (NumberFormatException e) {
+            System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
+                    "\n\tError...............................: " + e);
+            throw e;
+        }
+    }
+
     private int getAccountTypeId(String accountType) throws SQLException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_TYPE_ID);
@@ -901,13 +948,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
         String sqlStr="SELECT TypeNo FROM transactionTypes WHERE TransactionType=?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
-            if (transactionTypeStr.equals(TRANSACTION_WITHDRAWAL))
-                preparedStatement.setString(1, TRANSACTION_WITHDRAWAL);
-            else if (transactionTypeStr.equals(TRANSACTION_DEPOSIT))
-                preparedStatement.setString(1, TRANSACTION_DEPOSIT);
-            else if (transactionTypeStr.equals(TRANSACTION_TRANSFER))
-                preparedStatement.setString(1, TRANSACTION_TRANSFER);
-            else throw new BadTransactionTypeException("Unsupported transaction: "+transactionTypeStr);
+            preparedStatement.setString(1, transactionTypeStr);
             ResultSet resultSet=preparedStatement.executeQuery();
             if(!resultSet.next()) throw new BadTransactionTypeException("Transaction "+transactionTypeStr+" has no ID on DB");
             else return resultSet.getInt("TypeNo");

@@ -58,7 +58,7 @@ public interface BatsDAO {
     boolean exist(AccountHolderCard card) throws SQLException;
     boolean exist(AdminCard card) throws SQLException;
     boolean logTransaction(Transaction transaction) throws SQLException, BadTransactionTypeException;
-    double calculateTransactionCharges(Transaction transaction) throws SQLException;
+    double calculateTransactionCharges(Transaction transaction) throws SQLException, BadTransactionTypeException;
 
     double getAccountTotalWithdrawnAmountToday(String accountNo) throws SQLException, BadTransactionTypeException;
     boolean removeLastTransaction() throws SQLException;
@@ -66,4 +66,6 @@ public interface BatsDAO {
     boolean blockAdminCard(String cardNo) throws SQLException;
     boolean unblockAccountHolderCard(String cardNo, String employeeNo) throws SQLException;
     boolean unblockAdminCard(String cardNo, String employeeNo) throws SQLException;
+
+    boolean logTransactionCharges(Transaction transaction, double charges) throws SQLException, BadTransactionTypeException;
 }

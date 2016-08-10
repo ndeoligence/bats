@@ -177,7 +177,7 @@ public class Server {
 
         private boolean processAccountHolderRetrievalByAccountNo(AccountHolderRetrievalByAccountNo action) {
             if (action.getAccountNo() == null) {
-                System.out.println("ClientHandler::processAccountHolderRetrievalByAccountNo >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByAccountNo >>" +
                         "\n\tError: Account holder accountNo (required) is null");
             }
             String accountNo = action.getAccountNo();
@@ -189,7 +189,7 @@ public class Server {
                 accountHolder.setAccounts((ArrayList<Account>) dao.getAccountsByIdNo(idNo));
                 return sendToClient(accountHolder);
             } catch (SQLException | BadAccountTypeException e) {
-                System.out.println("ClientHandler::processAccountHolderRetrievalByAccountNo >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByAccountNo >>" +
                         "\n\tError: " + e);
                 if (sendToClient(accountHolder))
                     return (accountHolder != null);
@@ -200,18 +200,24 @@ public class Server {
 
         private boolean processAccountHolderRetrievalByCardNo(AccountHolderRetrievalByCardNo action) {
             if (action.getCardNo() == null) {
-                System.out.println("ClientHandler::processAccountHolderRetrievalByCardNo >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByCardNo >>" +
                         "\n\tError: Account holder cardNo  (required) is null");
             }
             String cardNo = action.getCardNo();
             AccountHolder accountHolder = null;
             try {
                 accountHolder = dao.getAccountHolderByCardNo(cardNo);
+                if (accountHolder==null) {
+                    System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByCardNo >>" +
+                            "\n\tCard ["+cardNo+"] not found.");
+                    sendToClient(false);
+                    return false;
+                }
                 accountHolder.addCard(dao.getAccountHolderCardByCardNo(cardNo));
                 accountHolder.setAccounts((ArrayList<Account>) dao.getAccountsByCardNo(cardNo));
                 return sendToClient(accountHolder);
             } catch (SQLException | BadAccountTypeException e) {
-                System.out.println("ClientHandler::processAccountHolderRetrievalByCardNo >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByCardNo >>" +
                         "\n\tError: " + e);
                 if (sendToClient(accountHolder))
                     return (accountHolder != null);
@@ -221,18 +227,23 @@ public class Server {
 
         private boolean processAccountHolderRetrievalByIdNo(AccountHolderRetrievalByIdNo action) {
             if (action.getIdNo() == null) {
-                System.out.println("ClientHandler::processAccountHolderRetrievalByIdNo >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByIdNo >>" +
                         "\n\tError: Account holder idNo  (required) is null");
             }
             String idNo = action.getIdNo();
             AccountHolder accountHolder = null;
             try {
                 accountHolder = dao.getAccountHolderByIdNo(idNo);
+                if (accountHolder==null) {
+                    System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByIdNo >>" +
+                            "\n\tOutcome: Account Holder not found.");
+                    sendToClient(null);
+                }
                 accountHolder.addCard(dao.getAccountHolderCardByIdNo(idNo));
                 accountHolder.setAccounts((ArrayList<Account>) dao.getAccountsByIdNo(idNo));
                 return sendToClient(accountHolder);
             } catch (SQLException | BadAccountTypeException e) {
-                System.out.println("ClientHandler::processAccountHolderRetrievalByCardNo >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderRetrievalByIdNo >>" +
                         "\n\tError: " + e);
                 if (sendToClient(accountHolder))
                     return (accountHolder != null);
@@ -251,7 +262,7 @@ public class Server {
                 } else if (action instanceof AccountRetrievalByCardNo) {
                     accounts = (dao.getAccountsByCardNo(((AccountRetrievalByCardNo) action).getCardNo()));
                 } else {
-                    System.err.println("ClientHandler::processAccountRetrieval() >>" +
+                    System.err.println(getHandlerAlias()+"::processAccountRetrieval() >>" +
                             "\n\tUnrecognized AccountRetrieval sub-action" +
                             "\n\tWill return empty list");
                     accounts = new ArrayList<>();
@@ -265,13 +276,13 @@ public class Server {
         }
 
         public boolean terminateSession() {
-            System.out.println("ClientHandler::terminateSession() >>" +
+            System.out.println(getHandlerAlias()+"::terminateSession() >>" +
                     "\n\tTerminating session...");
             try {
                 if (socket.isConnected())
                     socket.close();
             } catch (IOException e) {
-                System.err.println("ClientHandler::terminateSession() >>" +
+                System.err.println(getHandlerAlias()+"::terminateSession() >>" +
                         "\n\tFailed closing socket");
             }
             return socket.isClosed();
@@ -280,7 +291,7 @@ public class Server {
         private boolean processCardRetrieval(CardRetrieval action) {
             Card card = null;
             String cardNo = action.getCardNo();
-            System.out.println("ClientHandler::processCardRetrieval >>" +
+            System.out.println(getHandlerAlias()+"::processCardRetrieval >>" +
                     "\n\tcard#: " + cardNo + ", sourceId: " + action.getSourceId());
 
             try {
@@ -297,7 +308,7 @@ public class Server {
                                     + ".\nWill send write back: 'null'.");
                 }
             } catch (SQLException e) {
-                System.out.println("ClientHandler::processCardRetrieval >>" +
+                System.out.println(getHandlerAlias()+"::processCardRetrieval >>" +
                         "\n\tError: " + e);
             }
 
@@ -339,7 +350,7 @@ public class Server {
             else try {
                 dao.closeAccount(action.getAccountNo(),action.getEmployeeNo());
             } catch (SQLException e) {
-                System.out.println("ClientHandler::processAccountClosure() >>" +
+                System.out.println(getHandlerAlias()+"::processAccountClosure() >>" +
                         "\n\tError: "+e);
             }
         }
@@ -351,7 +362,7 @@ public class Server {
                     sendToClient(dao.setAccountHolderPinNo(action.getCardNo(),action.getNewPIN()));
                 else sendToClient(false);
             } catch (SQLException e) {
-                System.out.println("ClientHandler::processCardDeactivation() >>" +
+                System.out.println(getHandlerAlias()+"::processCardDeactivation() >>" +
                         "Error: "+e);
                 sendToClient(false);
             }
@@ -365,7 +376,7 @@ public class Server {
                     sendToClient(dao.blockAccountHolderCard(action.getCardNo()));
                 else sendToClient(false);
             } catch (SQLException e) {
-                System.out.println("ClientHandler::processCardDeactivation() >>" +
+                System.out.println(getHandlerAlias()+"::processCardDeactivation() >>" +
                         "Error: "+e);
                 sendToClient(false);
             }
@@ -378,29 +389,35 @@ public class Server {
                     sendToClient(dao.unblockAdminCard(action.getCardNo(),action.getEmployeeNo()));
                 else sendToClient(false);
             } catch (SQLException e) {
-                System.out.println("ClientHandler::processCardDeactivation() >>" +
+                System.out.println(getHandlerAlias()+"::processCardDeactivation() >>" +
                         "Error: "+e);
                 sendToClient(false);
             }
         }
 
         private void processAccountHolderCreation(AccountHolderCreation action) {
-            System.out.println("ClientHandler::processAccountHolderCreation() >>" +
+            System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
                     "\n\taction details:" +
                     "\n\t\t---" + action.getAccountHolder());
             if (action.getAccountHolder().getIdNo() == null || action.getAccountHolder().getAddress() == null || action.getAccountHolder().getContactNo() == null || action.getAccountHolder().getName() == null || action.getAccountHolder().getSurname() == null) {
-                System.out.println("ClientHandler::processAccountHolderCreation() >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
                         "\n\tError: One of the required fields for account holder creation is null");
                 sendToClient(false);
                 return;
             }
             if (action.getAccountHolder().getCard()==null) {
-                System.out.println("ClientHandler::processAccountHolderCreation() >>" +
+                System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
                         "\n\tError: Missing card object : "+action.getAccountHolder().getCard());
                 sendToClient(false);
                 return;
             }
             AccountHolder newAccountHolder = action.getAccountHolder();
+            /*if (!newAccountHolder.validateIdNo()) {
+                System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
+                        "\n\tError: Invalid id # "+newAccountHolder.getIdNo());
+                sendToClient(false);
+                return;
+            }*/
             String newPin=newAccountHolder.getCard().getPinNo();
             try {
                 newAccountHolder.addCard(new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()), newPin, true, newAccountHolder.getIdNo()));
@@ -412,9 +429,16 @@ public class Server {
                     sendToClient(false);
                     return;
                 }
+                if (newAccountHolder.getAccounts() != null) {
+                    for (Account account: newAccountHolder.getAccounts()) {
+                        System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
+                                "\n\tCreating account: "+account);
+                        helper_createNewAccount(account,action.getEmployeeNo());
+                    }
+                }
                 sendToClient(true);
-            } catch (SQLException e) {
-                System.out.println("ClientHandler::processAccountHolderCreation() >>" +
+            } catch (SQLException|BadAccountTypeException e) {
+                System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
                         "\n\tError: Missing card object : null");
                 sendToClient(false);
                 return;
@@ -422,41 +446,50 @@ public class Server {
         }
 
         private void processAccountCreation(AccountCreation action) {
-            if (action.getNewAccount() == null) {
-                System.out.println("ClientHandler::processAccountCreation() >>" +
-                        "\n\tError: AccountCreation newAccount attribute is null!");
-                sendToClient(false);
-                return;
-            }
-            if (action.getNewAccount().getAccountHolderId() == null) {
-                System.out.println("ClientHandler::processAccountCreation() >>" +
-                        "\n\tError: One of the required fields for account creation is null");
-                sendToClient(false);
-                return;
-            }
-            Account newAccount = action.getNewAccount();
-            Boolean flag = false;
             try {
-                if (newAccount instanceof CurrentAccount) {
-                    newAccount.setAccountNo(BankAccountIdGenerator.nextCurrentAccountNo(dao.getLastAccountNo()));
-                    flag = dao.addCurrentAccount(action.getEmployeeNo(), (CurrentAccount) newAccount);
-                } else if (newAccount instanceof SavingsAccount) {
-                    flag = dao.addSavingsAccount(action.getEmployeeNo(), (SavingsAccount) newAccount);
-                } else if (newAccount instanceof CreditCardAccount) {
-                    System.out.println(getHandlerAlias()+"::processAccountCreation >>" +
-                            "\n\tEmployee " + action.getEmployeeNo() +
-                            " tried to add [unimplemented] credit card account." +
-                            "\n\tRequest won't be processed.");
-                } else {
-                    System.err.println(getHandlerAlias()+"::processAccountCreation >>" +
-                            "\n\tUnrecognized AccountCreation sub-type: " + action);
-                }
-            } catch (SQLException e) {
+                sendToClient(helper_createNewAccount(action.getNewAccount(), action.getEmployeeNo()));
+            } catch (SQLException|BadAccountTypeException e) {
                 System.out.println(getHandlerAlias()+"::processAccountCreation >>" +
                         "\n\tError: " + e);
             }
-            sendToClient(flag);
         }
+
+        private boolean helper_createNewAccount(Account proposedAccount,String employeeNo) throws SQLException, BadAccountTypeException {
+            if (proposedAccount == null) {
+                System.out.println(getHandlerAlias()+"::helper_createNewAccount() >>" +
+                        "\n\tError: AccountCreation newAccount attribute is null!");
+                return (false);
+            }
+            if (proposedAccount.getAccountHolderId() == null) {
+                System.out.println(getHandlerAlias()+"::helper_createNewAccount() >>" +
+                        "\n\tError: One of the required fields for account creation is null");
+                return (false);
+            }
+            if (dao.getAccountHolderCardByIdNo(proposedAccount.getAccountHolderId())==null) {
+                dao.addAccountHolderCard(new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()),"1234",true,proposedAccount.getAccountHolderId()));
+            }
+            Account newAccount = proposedAccount;
+            Boolean flag = false;
+
+            if (newAccount instanceof CurrentAccount) {
+                newAccount.setAccountNo(BankAccountIdGenerator.nextCurrentAccountNo(dao.getLastAccountNo()));
+                flag = dao.addCurrentAccount(employeeNo, (CurrentAccount) newAccount);
+            } else if (newAccount instanceof SavingsAccount) {
+                flag = dao.addSavingsAccount(employeeNo, (SavingsAccount) newAccount);
+            } else if (newAccount instanceof CreditCardAccount) {
+                System.out.println(getHandlerAlias()+"::helper_createNewAccount >>" +
+                        "\n\tEmployee " + employeeNo +
+                        " tried to add [unimplemented] credit card account." +
+                        "\n\tRequest won't be processed.");
+            } else {
+                System.err.println(getHandlerAlias()+"::helper_createNewAccount >>" +
+                        "\n\tUnrecognized Account type: " + proposedAccount);
+                throw new BadAccountTypeException("Unrecognized Account type: " + proposedAccount);
+            }
+
+            return (flag);
+        }
+
 
         synchronized private boolean sendToClient(Object obj) {
             System.out.println("ClientHandler --> " + getClientAlias() + " >> " + obj);
@@ -484,7 +517,22 @@ public class Server {
         }
 
         boolean processDeposit(Deposit deposit) {
-            return false;
+            try {
+                double charges = dao.calculateTransactionCharges(deposit);
+                if (isTransactionPossible(deposit, charges)) {
+                    dao.incrementAccountFunds(deposit.getPrimAccountNo(),deposit.getAmount());
+                    dao.decrementAccountFunds(deposit.getPrimAccountNo(),charges);
+                    dao.logTransaction(deposit);
+                    dao.logTransactionCharges(deposit,charges);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (BadTransactionTypeException|SQLException|BadAccountTypeException e) {
+                System.err.println(getHandlerAlias()+"::processDeposit >>" +
+                        "\n\tError: " + e);
+                return false;
+            }
         }
 
         boolean processTransfer(Transfer transfer) {
@@ -492,9 +540,12 @@ public class Server {
                 double charges = dao.calculateTransactionCharges(transfer);
                 if (isTransactionPossible(transfer,charges)) {
                     if (dao.logTransaction(transfer)) {
-                        if (dao.decrementAccountFunds(transfer.getPrimAccountNo(), (transfer.getAmount() + charges)))
+                        if (dao.decrementAccountFunds(transfer.getPrimAccountNo(), (transfer.getAmount() + charges))) {
+                            dao.decrementAccountFunds(transfer.getPrimAccountNo(),charges);
+                            dao.logTransaction(transfer);
+                            dao.logTransactionCharges(transfer,charges);
                             return true;
-                        else {
+                        } else {
                             dao.removeLastTransaction();
                             return false;
                         }
@@ -520,9 +571,12 @@ public class Server {
                 double charges = dao.calculateTransactionCharges(withdrawal);
                 if (isTransactionPossible(withdrawal,charges)) {
                     if (dao.logTransaction(withdrawal))
-                        if (dao.decrementAccountFunds(withdrawal.getPrimAccountNo(),(withdrawal.getAmount()+charges)))
+                        if (dao.decrementAccountFunds(withdrawal.getPrimAccountNo(),(withdrawal.getAmount()+charges))) {
+                            dao.decrementAccountFunds(withdrawal.getPrimAccountNo(),charges);
+                            dao.logTransaction(withdrawal);
+                            dao.logTransactionCharges(withdrawal,charges);
                             return true;
-                        else {
+                        } else {
                             return false;
                         }
                     else {
