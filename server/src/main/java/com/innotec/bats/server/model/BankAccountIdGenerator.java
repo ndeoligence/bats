@@ -1,6 +1,8 @@
 package com.innotec.bats.server.model;
 import com.innotec.bats.general.*;
 
+import java.math.BigInteger;
+
 /**
  * Created by phoenix on 8/3/16.
  */
@@ -12,8 +14,6 @@ public class BankAccountIdGenerator {
     private static String CUR_ACC ="10", SAV_ACC ="20", CRED_ACC ="30";
 
     public static String nextAccountHolderCardNo(String lastUsed) {
-        System.out.println("BankAccountIdGenerator::nextAccountHolderCardNo() >>" +
-                "\n\targument (lastUsed) = "+lastUsed);
         int cardNoLen = AccountHolderCard.CARD_NO_LEN;
         String nextCardNo;
         if (lastUsed==null || lastUsed.length()!=cardNoLen) {
@@ -22,7 +22,6 @@ public class BankAccountIdGenerator {
             String incr=lastUsed.substring(BANK_CARD_NO.length()-1);
             nextCardNo= BANK_CARD_NO +incrementNumberString(lastUsed);
         }
-        System.out.println("\tnewCardNo: "+nextCardNo);
         return nextCardNo;
     }
     public static String nextCurrentAccountNo(String lastUsed) {
@@ -95,13 +94,18 @@ public class BankAccountIdGenerator {
      */
     private static String randomDigits(int len) {
         if (len<=0) return "";
+        if (len > 4) {
+            return randomDigits(4)+randomDigits(len-4);
+        }
         int low = (int)Math.pow(10,len-1);
         int high = (int)(Math.pow(10,len)-1);
         String digits = Integer.toString(randomInt(low,high));
         return digits;
     }
     private static String incrementNumberString(String numStr) {
-        String result = Integer.toString((new Integer(numStr))+1);
+        if (numStr==null)
+            return "-1";
+        String result=(new BigInteger(numStr).add(BigInteger.ONE)).toString();
         if (result.length() == numStr.length()) return result;
         else if (result.length() > numStr.length()) {
             return result.substring(result.length()-numStr.length());
@@ -109,5 +113,49 @@ public class BankAccountIdGenerator {
             String temp = numStr.replaceAll("[1-9]","0");
             return temp.substring(0,numStr.length()-result.length())+result;
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("****************Testa for BankAccountIdGenerator****************");
+        declareTesting("randomDigits(len="+7+","+8+","+13+")");
+        printOutcome(randomDigits(7));
+        printOutcome(randomDigits(8));
+        printOutcome(randomDigits(13));
+        declareTesting("incrementNumberString() > args: " + "null, "+"12345678, "+"003923429, "+"9999");
+        printOutcome(incrementNumberString(null));
+        printOutcome(incrementNumberString("12345678"));
+        printOutcome(incrementNumberString("003923429"));
+        printOutcome(incrementNumberString("9999"));
+        declareTesting("nextAccountHolderCardNo(null | '1234567' | '9999')");
+        printOutcome(nextAccountHolderCardNo(null));
+        printOutcome(nextAccountHolderCardNo("1234567"));
+        printOutcome(nextAccountHolderCardNo("9999"));
+        declareTesting("nextAccountNo(CURRENT, null | CURRENT, '1234567' | SAVINGS, '9999')");
+        printOutcome(nextAccountNo(AccountType.CURRENT,null));
+        printOutcome(nextAccountNo(AccountType.CURRENT,"1234567"));
+        printOutcome(nextAccountNo(AccountType.SAVINGS,"9999"));
+        declareTesting("nextCurrentAccountNo(null | '1234567' | '9999')");
+        printOutcome(nextCurrentAccountNo(null));
+        printOutcome(nextCurrentAccountNo("1234567"));
+        printOutcome(nextCurrentAccountNo("9999"));
+        declareTesting("nextCreditAccountNo(null | '1234567' | '9999')");
+        printOutcome(nextCreditAccountNo(null));
+        printOutcome(nextCreditAccountNo("1234567"));
+        printOutcome(nextCreditAccountNo("9999"));
+        declareTesting("nextSavingsAccountNo(null | '1234567' | '9999')");
+        printOutcome(nextSavingsAccountNo(null));
+        printOutcome(nextSavingsAccountNo("1234567"));
+        printOutcome(nextSavingsAccountNo("9999"));
+        declareTesting("nextEmployeeNo(null | '1234567' | '9999')");
+        printOutcome(nextEmployeeNo(null));
+        printOutcome(nextEmployeeNo("1234567"));
+        printOutcome(nextEmployeeNo("9999"));
+        System.out.println("****************End Testa***************************************");
+    }
+    private static void declareTesting(String methodName) {
+        System.out.println("TESTING METHOD: "+methodName);
+    }
+    private static void printOutcome(Object obj) {
+        System.out.println("\tOUTCOME: "+obj.toString());
     }
 }
