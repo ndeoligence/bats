@@ -10,12 +10,17 @@ public class BankAccountIdGenerator {
     private static String CUR_ACC ="10", SAV_ACC ="20", CRED_ACC ="30";
 
     public static String nextAccountHolderCardNo(String lastUsed) {
+        System.out.println("BankAccountIdGenerator::nextAccountHolderCardNo() >>" +
+                "\n\targument (lastUsed) = "+lastUsed);
         int cardNoLen = AccountHolderCard.CARD_NO_LEN;
+        String nextCardNo;
         if (lastUsed==null || lastUsed.length()!=cardNoLen) {
-            return randomDigits(cardNoLen);
+            nextCardNo=randomDigits(cardNoLen);
         } else {
-            return incrementNumberString(lastUsed);
+            nextCardNo=incrementNumberString(lastUsed);
         }
+        System.out.println("\tnewCardNo: "+nextCardNo);
+        return nextCardNo;
     }
     public static String nextCurrentAccountNo(String lastUsed) {
         return nextAccountNo(AccountType.CURRENT,lastUsed);

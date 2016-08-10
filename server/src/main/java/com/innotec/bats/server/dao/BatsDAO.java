@@ -29,6 +29,8 @@ public interface BatsDAO {
     AdminCard           getAdminCardByEmployeeNo(String idNo) throws SQLException;
     ATMAdmin            getATMAdminByEmployeeNo(String employeeNo);
     ATMAdmin            getATMAdminByCardNo(String cardNo);
+    Employee            getEmployeeByEmployeeNo(String employeeNo);
+    Employee            getEmployeeByIdNo(String idNo);
     Account             getAccountByAccountNo(String accountNo) throws SQLException, BadAccountTypeException;
     List<Account>       getAccountsByIdNo(String cardNo) throws SQLException, BadAccountTypeException;
     List<Account>       getAccountsByCardNo(String idNo) throws SQLException, BadAccountTypeException;
@@ -46,13 +48,10 @@ public interface BatsDAO {
 
     String getLastAccountHolderCardNo() throws SQLException;
 
-//    boolean closeAccount(String accNo);
-//    boolean deactivateCard(String cardNo);
-//    boolean reactivateCard(String cardNo);
+    boolean closeAccount(String accNo,String tellerId) throws SQLException;
 //    boolean createBalanceSheet(String atmId, Date date);
 //   boolean updateCardActivity(boolean cardActivity, String cardNo);
 //	 boolean updateAccountActivity(boolean activity, String accountNo);
-//	 Employee getEmployee(String employeeID);
 //	 Transaction getTransactionForAccount(String accountID);
     boolean exist(Account account) throws SQLException, BadAccountTypeException;
     boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException;
@@ -62,4 +61,9 @@ public interface BatsDAO {
     double calculateTransactionCharges(Transaction transaction) throws SQLException;
 
     double getAccountTotalWithdrawnAmountToday(String accountNo) throws SQLException, BadTransactionTypeException;
+    boolean removeLastTransaction() throws SQLException;
+    boolean blockAccountHolderCard(String cardNo) throws SQLException;
+    boolean blockAdminCard(String cardNo) throws SQLException;
+    boolean unblockAccountHolderCard(String cardNo, String employeeNo) throws SQLException;
+    boolean unblockAdminCard(String cardNo, String employeeNo) throws SQLException;
 }

@@ -1,11 +1,14 @@
 package com.innotec.bats.server.dao;
 
 import com.innotec.bats.general.*;
-import com.innotec.bats.server.model.*;
-import com.sun.corba.se.impl.orb.PrefixParserAction;
+import com.innotec.bats.server.model.BadAccountTypeException;
+import com.innotec.bats.server.model.BadTransactionTypeException;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     private static final String CREDIT_ACCOUNT = "CreditCard";
     public static final String TRANSACTION_DEPOSIT="Deposit",
                                 TRANSACTION_TRANSFER="Transfer",
-                                TRANSACTION_WITHDRAWAL="Withdrawal";
+                                TRANSACTION_WITHDRAWAL="Withdrawal",
+                                TRANSACTION_WITHDRAWAL_NOTICE="WithdrawalNotice";
     /*Prepared Statements*/
                                                     // Table: ID, Name, Surname, Address, ContactNumber, AccountHolderCardNo
     private static final String ADD_ACCOUNT_HOLDER = "INSERT INTO accountHolders VALUES (?,?,?,?,?,?);";
@@ -52,6 +56,20 @@ public class BatsDAO_dbImpl implements BatsDAO {
     	if (!resultSet.next())
     		return null;
         return resultSet.getString("LastCardNo");
+    }
+
+    @Override
+    public boolean closeAccount(String accNo, String tellerId) throws SQLException {
+        String sqlStr="UPDATE accounts SET Active=false WHERE AccountNo=?;";
+        try {
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            ps.setString(1,accNo);
+            return executeUpdateStatement(ps)>0;
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::closeAccount() >>" +
+                    "\n\tError: "+e);
+            throw e;
+        }
     }
 
     @Override
@@ -467,6 +485,15 @@ public class BatsDAO_dbImpl implements BatsDAO {
     public ATMAdmin getATMAdminByEmployeeNo(String employeeNo) {
         return null;/*todo : implement!*/
     }
+    @Override
+    public Employee getEmployeeByEmployeeNo(String employeeNo) {
+        return null;/*todo : implement!*/
+    }
+
+    @Override
+    public Employee getEmployeeByIdNo(String idNo) {
+        return null;/*todo : implement!*/
+    }
 
     @Override
     public ATMAdmin getATMAdminByCardNo(String cardNo) {
@@ -619,6 +646,75 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         }
     }
+
+    @Override
+    public boolean removeLastTransaction() throws SQLException {
+        String sqlStr="REMOVE FROM transactions WHERE ID = (SELECT MAX(ID) FROM transactions);";
+        try {
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            return executeUpdateStatement(ps)>0;
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::removeLastTransaction() >>" +
+                    "\n\tError: "+e);
+            throw e;
+        }
+
+    }
+
+    @Override
+    public boolean blockAccountHolderCard(String cardNo) throws SQLException {
+        String sqlStr="UPDATE accountHolderCards SET Active=false WHERE CardNo=?;";
+        try {
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            ps.setString(1,cardNo);
+            return executeUpdateStatement(ps)>0;
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::blockAccountHolderCard" +
+                    "\n\tError: "+e);
+            throw e;
+        }
+    }
+    @Override
+    public boolean blockAdminCard(String cardNo) throws SQLException {
+        String sqlStr="UPDATE adminCards SET Active=false WHERE CardNo=?;";
+        try {
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            ps.setString(1,cardNo);
+            return executeUpdateStatement(ps)>0;
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::blockAdminCard" +
+                    "\n\tError: "+e);
+            throw e;
+        }
+    }
+
+    @Override
+    public boolean unblockAccountHolderCard(String cardNo, String employeeNo) throws SQLException {
+        String sqlStr="UPDATE accountHolderCards SET Active=true WHERE CardNo=?;";
+        try {
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            ps.setString(1,cardNo);
+            return executeUpdateStatement(ps)>0;
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::unblockAccountHolderCard" +
+                    "\n\tError: "+e);
+            throw e;
+        }
+    }
+    @Override
+    public boolean unblockAdminCard(String cardNo, String employeeNo) throws SQLException {
+        String sqlStr="UPDATE adminCards SET Active=true WHERE CardNo=?;";
+        try {
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            ps.setString(1,cardNo);
+            return executeUpdateStatement(ps)>0;
+        } catch (SQLException e) {
+            System.out.println("BatsDAO_dbImpl::unblockAdminCard" +
+                    "\n\tError: "+e);
+            throw e;
+        }
+    }
+
     private int getAccountTypeId(String accountType) throws SQLException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_TYPE_ID);
@@ -741,6 +837,30 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         } catch (NumberFormatException e) {
             System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
+                    "\n\tError...............................: " + e);
+            throw e;
+        }
+    }
+    private boolean logWithdrawalNotice(Withdrawal withdrawalNotice) throws SQLException, BadTransactionTypeException {
+        //Table (transactions) : TransactionID,TimeStamp,Amount,Type,ATM_ID,SecondaryAccountNo,PrimaryAccountNo
+        try {
+            String sqlStr = "INSERT INTO transactions VALUES (?,?,?,?,?,?,?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
+            preparedStatement.setInt(1,0);
+
+            preparedStatement.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
+            preparedStatement.setDouble(3,withdrawalNotice.getAmount());
+            preparedStatement.setInt(4,getTransactionTypeId(TRANSACTION_WITHDRAWAL_NOTICE));
+            preparedStatement.setInt(5,Integer.parseInt(withdrawalNotice.getATM_ID()));// this is problematic
+            preparedStatement.setString(6,null);
+            preparedStatement.setString(7,withdrawalNotice.getPrimAccountNo());
+            return (executeUpdateStatement(preparedStatement)>0);
+        } catch (SQLException|BadTransactionTypeException e) {
+            System.out.println("BatsDAO_dbImpl::logWithdrawalNotice() >>" +
+                    "\n\tError..." + e);
+            throw e;
+        } catch (NumberFormatException e) {
+            System.out.println("BatsDAO_dbImpl::logWithdrawalNotice() >>" +
                     "\n\tError...............................: " + e);
             throw e;
         }
