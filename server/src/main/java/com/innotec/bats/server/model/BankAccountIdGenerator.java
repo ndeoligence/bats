@@ -7,6 +7,8 @@ import com.innotec.bats.general.*;
 public class BankAccountIdGenerator {
 
     public enum AccountType {CURRENT,SAVINGS,CREDIT}
+    private static String BANK_CARD_NO = "160";
+    private static String BANK_ACCT_NO = "27";
     private static String CUR_ACC ="10", SAV_ACC ="20", CRED_ACC ="30";
 
     public static String nextAccountHolderCardNo(String lastUsed) {
@@ -15,9 +17,10 @@ public class BankAccountIdGenerator {
         int cardNoLen = AccountHolderCard.CARD_NO_LEN;
         String nextCardNo;
         if (lastUsed==null || lastUsed.length()!=cardNoLen) {
-            nextCardNo=randomDigits(cardNoLen);
+            nextCardNo= BANK_CARD_NO +randomDigits(cardNoLen- BANK_CARD_NO.length());
         } else {
-            nextCardNo=incrementNumberString(lastUsed);
+            String incr=lastUsed.substring(BANK_CARD_NO.length()-1);
+            nextCardNo= BANK_CARD_NO +incrementNumberString(lastUsed);
         }
         System.out.println("\tnewCardNo: "+nextCardNo);
         return nextCardNo;
@@ -35,17 +38,18 @@ public class BankAccountIdGenerator {
         int accNoLen = Account.ACCOUNT_NO_LEN;
         String accNo;
         if (lastUsed==null || lastUsed.length()!=accNoLen) {
-            accNo = randomDigits(accNoLen);
+            accNo = BANK_ACCT_NO+randomDigits(accNoLen-BANK_ACCT_NO.length());
         } else {
+            String incr=lastUsed.substring(BANK_ACCT_NO.length()-1);
             accNo = incrementNumberString(lastUsed);
         }
         switch (accountType) {
             case CREDIT:
-                return accNo.substring(0,3) + CRED_ACC + accNo.substring(6,accNo.length()-1);
+                return BANK_ACCT_NO+accNo.substring(0,3) + CRED_ACC + accNo.substring(6,accNo.length()-1);
             case CURRENT:
-                return accNo.substring(0,3) + CUR_ACC + accNo.substring(6,accNo.length()-1);
+                return BANK_ACCT_NO+accNo.substring(0,3) + CUR_ACC + accNo.substring(6,accNo.length()-1);
             case SAVINGS:
-                return accNo.substring(0,3) + SAV_ACC + accNo.substring(6,accNo.length()-1);
+                return BANK_ACCT_NO+accNo.substring(0,3) + SAV_ACC + accNo.substring(6,accNo.length()-1);
             default:
                 throw new Error("Code that should never run just disobeyed!!");
         }
