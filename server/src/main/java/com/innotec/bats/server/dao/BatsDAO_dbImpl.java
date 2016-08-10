@@ -242,7 +242,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setString(3,newAccountHolder.getSurname());
             preparedStatement.setString(4,newAccountHolder.getAddress());
             preparedStatement.setString(5,newAccountHolder.getContactNo());
-            preparedStatement.setString(6,newAccountHolder.getCard().getCardNo());
+            preparedStatement.setString(6,null);
             return (executeUpdateStatement(preparedStatement) > 0);
         } catch (SQLException e) {
             System.out.println("BatsDAO_dbImpl::addAccountHolder() >>" +
@@ -579,7 +579,13 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setString(2, newCard.getPinNo());
             preparedStatement.setBoolean(3, newCard.isActive());
             preparedStatement.setString(4, newCard.getAccountHolderIdNo());
-            return (executeUpdateStatement(preparedStatement) > 0);
+            if (executeUpdateStatement(preparedStatement) < 1) return false;
+            // add to account holders also!
+            String sqlStr = "UPDATE accountHolders SET AccountHolderCardNo=? WHERE ID=?;";
+            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            ps.setString(1,newCard.getCardNo());
+            ps.setString(2,newCard.getAccountHolderIdNo());
+            return (executeUpdateStatement(ps)>0);
         } catch (SQLException e) {
             System.out.println("BatsDAO_dbImpl::addAccountHolderCard() >>" +
                     "Error: "+e);
@@ -593,7 +599,13 @@ public class BatsDAO_dbImpl implements BatsDAO {
         preparedStatement.setBoolean(2,newCard.isActive());
         preparedStatement.setString(3,newCard.getPinNo());
         preparedStatement.setString(4,newCard.getEmployeeNo());
-        return (executeUpdateStatement(preparedStatement)>0);
+        if (executeUpdateStatement(preparedStatement) < 1) return false;
+        // add to account holders also!
+        String sqlStr = "UPDATE admins SET AdminCardNo=? WHERE EmployeeNo=?;";
+        PreparedStatement ps=connection.prepareStatement(sqlStr);
+        ps.setString(1,newCard.getCardNo());
+        ps.setString(2,newCard.getEmployeeNo());
+        return (executeUpdateStatement(ps)>0);
     }
     @Override
     public boolean addAccount(String accountHolderId, Account account) throws SQLException {
