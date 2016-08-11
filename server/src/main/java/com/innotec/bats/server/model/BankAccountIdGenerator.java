@@ -7,22 +7,45 @@ import java.math.BigInteger;
  * Created by phoenix on 8/3/16.
  */
 public class BankAccountIdGenerator {
-
+    /**
+     * The different types of possible accounts
+     */
     public enum AccountType {CURRENT,SAVINGS,CREDIT}
+    /**
+     * An identifier for a card number
+     */
     private static String BANK_CARD_NO = "160";
+    /**
+     * An identifier for bank account number
+     */
     private static String BANK_ACCT_NO = "27";
+    /**
+     * Identifiers for the different types of accounts
+     */
     private static String CUR_ACC ="10", SAV_ACC ="20", CRED_ACC ="30";
 
     public static String nextAccountHolderCardNo(String lastUsed) {
-        int cardNoLen = AccountHolderCard.CARD_NO_LEN;
-        String nextCardNo;
-        if (lastUsed==null || lastUsed.length()!=cardNoLen) {
-            nextCardNo= BANK_CARD_NO +randomDigits(cardNoLen- BANK_CARD_NO.length());
+        if (lastUsed==null || lastUsed.length()!=AccountHolderCard.CARD_NO_LEN) {
+            return generateNewAccountHolderCardNo();
         } else {
-            String incr=lastUsed.substring(BANK_CARD_NO.length()-1);
-            nextCardNo= BANK_CARD_NO +incrementNumberString(lastUsed);
+            if (lastUsed.indexOf(BANK_CARD_NO) != 0)
+                return generateNewAccountHolderCardNo();
+            else
+                return generateNextAccountHolderCardNo(lastUsed);
         }
-        return nextCardNo;
+    }
+    static String generateNextAccountHolderCardNo(String lastUsed) {
+        int cardNoLen=AccountHolderCard.CARD_NO_LEN;
+        if (cardNoLen <= (BANK_CARD_NO.length()))
+            return BANK_CARD_NO +randomDigits(cardNoLen- BANK_CARD_NO.length());
+        String incr = lastUsed.substring(BANK_CARD_NO.length());
+        return BANK_CARD_NO + incrementNumberString(incr);
+    }
+    static String generateNewAccountHolderCardNo() {
+        int cardNoLen=AccountHolderCard.CARD_NO_LEN;
+        if (cardNoLen > (BANK_CARD_NO.length()))
+            return BANK_CARD_NO +randomDigits(cardNoLen- BANK_CARD_NO.length());
+        else return null;
     }
     public static String nextCurrentAccountNo(String lastUsed) {
         return nextAccountNo(AccountType.CURRENT,lastUsed);
@@ -39,7 +62,7 @@ public class BankAccountIdGenerator {
         if (lastUsed==null || lastUsed.length()!=accNoLen) {
             accNo = BANK_ACCT_NO+randomDigits(accNoLen-BANK_ACCT_NO.length());
         } else {
-            String incr=lastUsed.substring(BANK_ACCT_NO.length()-1);
+            String incr=lastUsed.substring(BANK_ACCT_NO.length());
             accNo = incrementNumberString(lastUsed);
         }
         switch (accountType) {
@@ -126,10 +149,11 @@ public class BankAccountIdGenerator {
         printOutcome(incrementNumberString("12345678"));
         printOutcome(incrementNumberString("003923429"));
         printOutcome(incrementNumberString("9999"));
-        declareTesting("nextAccountHolderCardNo(null | '1234567' | '9999')");
+        declareTesting("nextAccountHolderCardNo(null | '1234567' | '9999' | '1605850177078193')");
         printOutcome(nextAccountHolderCardNo(null));
         printOutcome(nextAccountHolderCardNo("1234567"));
         printOutcome(nextAccountHolderCardNo("9999"));
+        printOutcome(nextAccountHolderCardNo("1605850177078193"));
         declareTesting("nextAccountNo(CURRENT, null | CURRENT, '1234567' | SAVINGS, '9999')");
         printOutcome(nextAccountNo(AccountType.CURRENT,null));
         printOutcome(nextAccountNo(AccountType.CURRENT,"1234567"));
@@ -156,6 +180,6 @@ public class BankAccountIdGenerator {
         System.out.println("TESTING METHOD: "+methodName);
     }
     private static void printOutcome(Object obj) {
-        System.out.println("\tOUTCOME: "+obj.toString());
+        System.out.println("\tOUTCOME: "+obj);
     }
 }

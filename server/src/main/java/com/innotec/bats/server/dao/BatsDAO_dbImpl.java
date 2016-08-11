@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class BatsDAO_dbImpl implements BatsDAO {
@@ -74,6 +75,21 @@ public class BatsDAO_dbImpl implements BatsDAO {
                     "\n\tError: "+e);
             throw e;
         }
+    }
+
+    @Override
+    public boolean createBalanceSheet(String atmId, Date date) {
+        return false; /*todo : implement*/
+    }
+
+    @Override
+    public List<Transaction> get24hrStatement(String accountNo) {
+        return null; /*todo : implement!*/
+    }
+
+    @Override
+    public List<Transaction> get30dayStatement(String accountNo) {
+        return null; /*todo : implement!*/
     }
 
     /**

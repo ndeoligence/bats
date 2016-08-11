@@ -54,10 +54,12 @@ public interface BatsDAO {
     String getLastAccountHolderCardNo() throws SQLException;
 
     boolean closeAccount(String accNo,String tellerId) throws SQLException;
-//    boolean createBalanceSheet(String atmId, Date date);
+    boolean createBalanceSheet(String atmId, Date date);
 //   boolean updateCardActivity(boolean cardActivity, String cardNo);
 //	 boolean updateAccountActivity(boolean activity, String accountNo);
 //	 Transaction getTransactionForAccount(String accountID);
+    List<Transaction> get24hrStatement(String accountNo);
+    List<Transaction> get30dayStatement(String accountNo);
     boolean exist(Account account) throws SQLException, BadAccountTypeException;
     boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException;
     boolean exist(AccountHolderCard card) throws SQLException;

@@ -22,7 +22,7 @@ public class Server {
     private BatsDAO dao;
 
     /* ctor */
-    public Server() {
+    public Server(int portNo) {
         clientHandlers = new ArrayList<>();
         /* connect to dbms */
         try {
@@ -33,7 +33,7 @@ public class Server {
             else
                 throw new SQLException("dao returned null to server");
             /* server socket */
-            serverSocket = new ServerSocket(SERVER_PORT_NR);
+            serverSocket = new ServerSocket(portNo);
         } catch (SQLException e) {
             System.err
                     .println("Server::ctor >>\n\tFailed connecting to the Database.\n\t: "
@@ -407,7 +407,8 @@ public class Server {
             }
             if (action.getAccountHolder().getCard()==null) {
                 System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
-                        "\n\tError: Missing card object : "+action.getAccountHolder().getCard());
+                        "\n\tError: " +
+                        "\n\tCard object: "+action.getAccountHolder().getCard());
                 sendToClient(false);
                 return;
             }
@@ -420,7 +421,12 @@ public class Server {
             }*/
             String newPin=newAccountHolder.getCard().getPinNo();
             try {
-                newAccountHolder.addCard(new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()), newPin, true, newAccountHolder.getIdNo()));
+                String lastUsedCardNo=dao.getLastAccountHolderCardNo();
+                String newCardNo=BankAccountIdGenerator.nextAccountHolderCardNo(lastUsedCardNo);
+                System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
+                        "\n\tLast used card # : "+lastUsedCardNo+
+                        "\n\tnewGenerated card # : "+newCardNo);
+                newAccountHolder.addCard(new AccountHolderCard(newCardNo, newPin, true, newAccountHolder.getIdNo()));
                 if (!dao.addAccountHolder(newAccountHolder, action.getEmployeeNo())) {
                     sendToClient(false);
                     return;
@@ -439,7 +445,7 @@ public class Server {
                 sendToClient(true);
             } catch (SQLException|BadAccountTypeException e) {
                 System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
-                        "\n\tError: Missing card object : null");
+                        "\n\tError: Missing card object : "+ newAccountHolder.getCard());
                 sendToClient(false);
                 return;
             }
@@ -451,21 +457,22 @@ public class Server {
             } catch (SQLException|BadAccountTypeException e) {
                 System.out.println(getHandlerAlias()+"::processAccountCreation >>" +
                         "\n\tError: " + e);
+                sendToClient(false);
             }
         }
 
         private boolean helper_createNewAccount(Account proposedAccount,String employeeNo) throws SQLException, BadAccountTypeException {
             if (proposedAccount == null) {
                 System.out.println(getHandlerAlias()+"::helper_createNewAccount() >>" +
-                        "\n\tError: AccountCreation newAccount attribute is null!");
+                        "\n\tError: missing details for new account - proposedAccount = "+proposedAccount);
                 return (false);
             }
             if (proposedAccount.getAccountHolderId() == null) {
                 System.out.println(getHandlerAlias()+"::helper_createNewAccount() >>" +
-                        "\n\tError: One of the required fields for account creation is null");
+                        "\n\tError: ID # missing. Can't create account");
                 return (false);
             }
-            if (dao.getAccountHolderCardByIdNo(proposedAccount.getAccountHolderId())==null) {
+            if (dao.getAccountHolderCardByIdNo(proposedAccount.getAccountHolderId())==null) {// make sure person has card
                 dao.addAccountHolderCard(new AccountHolderCard(BankAccountIdGenerator.nextAccountHolderCardNo(dao.getLastAccountHolderCardNo()),"1234",true,proposedAccount.getAccountHolderId()));
             }
             Account newAccount = proposedAccount;
@@ -520,12 +527,21 @@ public class Server {
             try {
                 double charges = dao.calculateTransactionCharges(deposit);
                 if (isTransactionPossible(deposit, charges)) {
-                    dao.incrementAccountFunds(deposit.getPrimAccountNo(),deposit.getAmount());
-                    dao.decrementAccountFunds(deposit.getPrimAccountNo(),charges);
-                    dao.logTransaction(deposit);
-                    dao.logTransactionCharges(deposit,charges);
-                    return true;
+                    if (dao.incrementAccountFunds(deposit.getPrimAccountNo(),deposit.getAmount()) &&
+                    dao.decrementAccountFunds(deposit.getPrimAccountNo(),charges) &&
+                    dao.logTransaction(deposit) &&
+                    dao.logTransactionCharges(deposit,charges)) {
+                        System.err.println(getHandlerAlias()+"::processDeposit >>" +
+                                "\n\tTansaction : "+deposit+" processed successfully.");
+                        return true;
+                    } else {
+                        System.err.println(getHandlerAlias()+"::processDeposit >>" +
+                                "\n\tTansaction : "+deposit+" FAILED due to internal error.");
+                        return false;
+                    }
                 } else {
+                    System.err.println(getHandlerAlias()+"::processDeposit >>" +
+                            "\n\tAccount holder can't make ransaction : "+deposit+" ");
                     return false;
                 }
             } catch (BadTransactionTypeException|SQLException|BadAccountTypeException e) {
@@ -540,18 +556,22 @@ public class Server {
                 double charges = dao.calculateTransactionCharges(transfer);
                 if (isTransactionPossible(transfer,charges)) {
                     if (dao.logTransaction(transfer)) {
-                        if (dao.decrementAccountFunds(transfer.getPrimAccountNo(), (transfer.getAmount() + charges))) {
+                        if (dao.decrementAccountFunds(transfer.getPrimAccountNo(), (transfer.getAmount() + charges))&&dao.incrementAccountFunds(transfer.getSecondaryAccountNo(),transfer.getAmount())) {
                             dao.decrementAccountFunds(transfer.getPrimAccountNo(),charges);
                             dao.logTransaction(transfer);
                             dao.logTransactionCharges(transfer,charges);
+                            System.out.println(getHandlerAlias()+"::processTransfer()>>" +
+                                    "\n\tTransaction "+transfer+" completed successfully");
                             return true;
                         } else {
+                            System.out.println(getHandlerAlias()+"::processTransfer()>>" +
+                                    "\n\tTransaction "+transfer+" failed. will remove log");
                             dao.removeLastTransaction();
                             return false;
                         }
                     } else {
                         System.out.println(getHandlerAlias()+"::processTransfer()>>" +
-                                "\n\tTransaction couldn't be logged. Therefore transaction won't be done.");
+                                "\n\tTransaction couldn't be logged. Transaction will be cancelled.");
                         return false;
                     }
                 } else {
@@ -560,7 +580,7 @@ public class Server {
                     return false;
                 }
             } catch (Exception e) {
-                System.out.println(getHandlerAlias()+"::processWithdrawal()>>" +
+                System.out.println(getHandlerAlias()+"::processTransfer()>>" +
                         "\n\tError: "+e);
                 return false;
             }
@@ -568,18 +588,21 @@ public class Server {
 
         boolean processWithdrawal(Withdrawal withdrawal) {
             try {
+                if (dao.getAccountByAccountNo(withdrawal.getPrimAccountNo()) instanceof SavingsAccount) {
+                    return processSavingsAccountWithdrawal(withdrawal);
+                }
                 double charges = dao.calculateTransactionCharges(withdrawal);
                 if (isTransactionPossible(withdrawal,charges)) {
-                    if (dao.logTransaction(withdrawal))
-                        if (dao.decrementAccountFunds(withdrawal.getPrimAccountNo(),(withdrawal.getAmount()+charges))) {
-                            dao.decrementAccountFunds(withdrawal.getPrimAccountNo(),charges);
+                    if (dao.logTransaction(withdrawal)) {
+                        if (dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), (withdrawal.getAmount() + charges))) {
+                            dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), charges);
                             dao.logTransaction(withdrawal);
-                            dao.logTransactionCharges(withdrawal,charges);
+                            dao.logTransactionCharges(withdrawal, charges);
                             return true;
                         } else {
                             return false;
                         }
-                    else {
+                    } else {
                         System.out.println(getHandlerAlias() + "::processWithdrawal()>>" +
                                 "\n\tTransaction couldn't be logged. Therefore transaction won't be done.");
                         return false;
@@ -594,6 +617,10 @@ public class Server {
                         "\n\tError: "+e);
                 return false;
             }
+        }
+
+        private boolean processSavingsAccountWithdrawal(Withdrawal withdrawal) {
+            return false;/*todo: implement!*/
         }
 
         /**
@@ -639,14 +666,12 @@ public class Server {
             } else if (account instanceof SavingsAccount) {
                 SavingsAccount savingsAccount = (SavingsAccount) account;
                 if (newBalance < savingsAccount.MIN_BALANCE) return false;
-                if (withdrawal instanceof Withdrawal) {
-                    if (savingsAccount.getWithdrawalPending()) {
+                if (savingsAccount.getWithdrawalPending()) {
 
-                        if (savingsAccount.getFundsAvailableDate().after(new java.util.Date()))
-                            return false;
-                    } else { // if no pending withdrawal, then the
-
-                    }
+                    if (savingsAccount.getFundsAvailableDate().after(new java.util.Date()))
+                        return false;
+                } else { // if no pending withdrawal, then we can set a new date.
+                    return true;
                 }
             } else if (account instanceof CreditCardAccount) {
                 return false;
@@ -717,7 +742,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            Server server = new Server();
+            Server server = new Server(getPortNo(args));
             System.out.println("Server::main >>\n\tServer started." +
                     "\n\tWaiting for connections...");
             while (true) {
@@ -733,5 +758,32 @@ public class Server {
                     "\n\tServer is stopping.");
             System.exit(1);
         }
+    }
+    private static int getPortNo(String[] args) {
+        if (args.length>0) {
+            try {
+                if (args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("--help") || args[0].equalsIgnoreCase("-h")) {
+                    displayUsage();
+                    System.exit(0);
+                } else if (args[0].equalsIgnoreCase("-p")) {
+                    return Integer.parseInt(args[1]);
+                } else {
+                    displayUsage();
+                    System.exit(1);
+                }
+            } catch (Exception e) {
+                System.out.println("Server::getPortNo() >>" +
+                        "\n\tError: "+e);
+                displayUsage();
+                System.exit(1);
+            }
+        }
+        return SERVER_PORT_NR;
+    }
+    private static void displayUsage() {
+        System.out.println("USAGE:\n");
+        System.out.println("\t./bats-server [-p NEW_PORT_NR]");
+        System.out.println("\t-p: Specify an alternative port number for the server to listen on");
+        System.out.println("\t\tNEW_PORT_NR: The port number to use.");
     }
 }
