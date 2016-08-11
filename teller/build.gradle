@@ -1,0 +1,7 @@
+/*Teller build script*/
+apply plugin: 'application'
+mainClassName = 'com.innotec.bats.teller.control.BankTellerApplication'
+
+dependencies {
+    compile project(':shared')
+}

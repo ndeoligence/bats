@@ -1,0 +1,17 @@
+/*Server build script*/
+apply plugin: 'application'
+
+//used in Application
+mainClassName = 'com.innotec.bats.server.control.Server'
+
+jar {
+	manifest {
+        //used in Java
+		attributes 'Main-Class' : 'com.innotec.bats.server.control.Server'
+	}
+}
+
+dependencies {
+    compile project(':shared')
+    compile 'mysql:mysql-connector-java:5.1.39'
+}

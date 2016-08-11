@@ -1,0 +1,7 @@
+/*ATM build script*/
+apply plugin: 'application'
+mainClassName = 'com.innotec.bats.atm.control.ATM_ServerComm'
+
+dependencies {
+    compile project(':shared')
+}
