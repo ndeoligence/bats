@@ -63,7 +63,7 @@ public class BankAccountIdGenerator {
             accNo = BANK_ACCT_NO+randomDigits(accNoLen-BANK_ACCT_NO.length());
         } else {
             String incr=lastUsed.substring(BANK_ACCT_NO.length());
-            accNo = incrementNumberString(lastUsed);
+            accNo = incrementNumberString(incr);
         }
         switch (accountType) {
             case CREDIT:

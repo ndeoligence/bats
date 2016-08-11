@@ -404,7 +404,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
                 }
             }
             return accounts;
-        } catch (SQLException | BadAccountTypeException e) {
+        } catch (Exception e) {
             System.out.println("BatsDAO_dbImpl::getAccountsByCardNo() >>" +
                     "\n\tError..." + e);
             throw e;

@@ -95,7 +95,6 @@ public class Server {
                 // This is after the session termination.
                 System.out.println(getHandlerAlias()+"::run >>" +
                         "\n\tStopping. : "+e);
-                return;
             } finally {
                 try {
                     if (socket.isConnected())
@@ -447,7 +446,6 @@ public class Server {
                 System.out.println(getHandlerAlias()+"::processAccountHolderCreation() >>" +
                         "\n\tError: Missing card object : "+ newAccountHolder.getCard());
                 sendToClient(false);
-                return;
             }
         }
 
@@ -677,7 +675,6 @@ public class Server {
                 return false;
             }
             return true;
-
         }
         boolean isDepositPossible(Deposit deposit, double charges) {
             return (deposit.getAmount() >= Deposit.MIN_AMOUNT);
