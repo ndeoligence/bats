@@ -9,7 +9,12 @@ import java.util.Date;
 import java.util.List;
 
 public interface BatsDAO {
-
+    /**
+     * Adds a new account holder onto the database.
+     * @param newHolder - the account holder to be added
+     * @param sourceId - the Identifier for the teller adding the account.
+     * @return true if the account holder was added successfully. Returns false otherwise.
+     */
     boolean     addAccountHolder(AccountHolder newHolder, String sourceId);
     boolean     addCurrentAccount(String accountHolderId, CurrentAccount newAccount) throws SQLException;
     boolean     addSavingsAccount(String accountHolderId, SavingsAccount newAccount) throws SQLException;
@@ -67,5 +72,13 @@ public interface BatsDAO {
     boolean unblockAccountHolderCard(String cardNo, String employeeNo) throws SQLException;
     boolean unblockAdminCard(String cardNo, String employeeNo) throws SQLException;
 
+    /**
+     * Logs the calculated charges for a transaction that's just occured.
+     * @param transaction - the transaction whose charges are to be logged
+     * @param charges - the charges to be logged
+     * @return true iff the logging occurred successfully, false otherwise.
+     * @throws SQLException - from DB calling methods
+     * @throws BadTransactionTypeException
+     */
     boolean logTransactionCharges(Transaction transaction, double charges) throws SQLException, BadTransactionTypeException;
 }
