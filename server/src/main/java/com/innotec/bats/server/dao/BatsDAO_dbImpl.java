@@ -718,7 +718,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1,accountNo);
             preparedStatement.setInt(2,getTransactionTypeId(TRANSACTION_WITHDRAWAL));
-            preparedStatement.setInt(2,getTransactionTypeId(TRANSACTION_TRANSFER));
+            preparedStatement.setInt(3,getTransactionTypeId(TRANSACTION_TRANSFER));
             ResultSet resultSet=preparedStatement.executeQuery();
             double sum = 0;
             while (resultSet.next())
@@ -820,7 +820,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
         } catch (NumberFormatException e) {
             System.out.println("BatsDAO_dbImpl::logTransactionCharges() >>" +
                     "\n\tError: " + e +
-                    "\n\tCaused by trying to cast the atm id into a number from string.");
+                    "\n\tCaused by trying to cast the atm id ["+transaction.getATM_ID()+"] into a number from string.");
             throw e;
         }
     }
@@ -949,7 +949,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
         } catch (NumberFormatException e) {
             System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
                     "\n\tError: " + e +
-                    "\n\tCaused by trying to cast the atm id into a number from string.");
+                    "\n\tCaused by trying to cast the atm id ["+withdrawal.getATM_ID()+"] into a number from string.");
             throw e;
         }
     }
