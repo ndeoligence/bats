@@ -1,8 +1,7 @@
 package com.innotec.bats.server.dao;
 
 import com.innotec.bats.general.*;
-import com.innotec.bats.server.model.BadAccountTypeException;
-import com.innotec.bats.server.model.BadTransactionTypeException;
+import com.innotec.bats.server.model.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -14,32 +13,24 @@ import java.util.List;
 
 public class BatsDAO_dbImpl implements BatsDAO {
     /*constants*/
-    private static final String SAVINGS_ACCOUNT = "Savings";
-    private static final String CURRENT_ACCOUNT = "Current";
-    private static final String CREDIT_ACCOUNT = "CreditCard";
+    private static final String SAVINGS_ACCOUNT = "Savings",
+                                CURRENT_ACCOUNT = "Current",
+                                CREDIT_ACCOUNT = "CreditCard";
     public static final String TRANSACTION_DEPOSIT="Deposit",
                                 TRANSACTION_TRANSFER="Transfer",
                                 TRANSACTION_WITHDRAWAL="Withdrawal",
                                 TRANSACTION_WITHDRAWAL_NOTICE="WithdrawalNotice",
-                                TRANSACTION_BANK_CHAGES="BankCharges";
-    /*Prepared Statements*/
-                                                    // Table: ID, Name, Surname, Address, ContactNumber, AccountHolderCardNo
-    private static final String ADD_ACCOUNT_HOLDER = "INSERT INTO accountHolders VALUES (?,?,?,?,?,?);";
-                                                // Table: EmployeeNo,ID,Name,Surname
-    private static final String ADD_EMPLOYEE = "INSERT INTO employees VALUES(?,?,?,?);";
-    // Tables: CardNo,PIN,Active,AccountHolderID
-    private static final String ADD_ACCOUNT_HOLDER_CARD = "INSERT INTO accountHolderCards VALUES (?,?,?,?);";
-    //Table: CardNo,Active,PIN,EmployeeNo
-    private static final String ADD_ADMIN_CARD = "INSERT INTO adminCards VALUES (?,?,?,?);";
-    private static final String GET_ACCOUNT_HOLDER_BY_ID_NO = "SELECT * FROM accountHolders WHERE ID=?;";
-    private static final String GET_CARD_BY_CARD_NO = "SELECT * FROM accountHolderCards WHERE CardNo=?;";
-    private static final String GET_ACCOUNT_TYPE_ID = "SELECT * FROM accountTypes WHERE AccountType=?;";
-    // Table: AccountNo,Type,Balance,MinBalance,MaxTransferPerDay,MaxWithdrawalPerDay,Active,CardNo,WithdrawalPending
-    private static final String CREATE_NEW_ACCOUNT = "INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?,?);";
-    private static final String ADD_ATM = "INSERT INTO atms VALUES (?,?);"; // Table : ID,Description
-
+                                TRANSACTION_BANK_CHARGES ="BankCharges";
+    /*private attributes*/
     private Connection connection;
     /* **********************************************************************************/
+
+    /**
+     * Ctor
+     * @throws SQLException - from DBConnection
+     * @throws IOException - from DBConnection
+     * @throws ClassNotFoundException - from DBConnection ctor
+     */
     public BatsDAO_dbImpl() throws SQLException, IOException, ClassNotFoundException {
         try {
             connection = new DBConnection().getConnection();
@@ -48,7 +39,12 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         }
     }
-
+    /**
+     * Returns the last account holder card # used.<br/>
+     * This <i>really</i> gets the highest valued card # used in the DB account holder cards table.
+     * @return - the highest added account holder card number.
+     * @throws SQLException - from SQL method calls
+     */
     @Override
     public String getLastAccountHolderCardNo() throws SQLException {
     	String sqlStr = "SELECT MAX(CardNo) AS LastCardNo FROM accountHolderCards;";
@@ -59,6 +55,13 @@ public class BatsDAO_dbImpl implements BatsDAO {
         return resultSet.getString("LastCardNo");
     }
 
+    /**
+     * Attempts to set the {@code active} attribute of the {@code Account} object to false.
+     * @param accNo - the account number to be closed.
+     * @param tellerId - the identifier of the teller requesting the account closure.
+     * @return - true iff the operation was successful, false otherwise.
+     * @throws SQLException - from SQL method calls.
+     */
     @Override
     public boolean closeAccount(String accNo, String tellerId) throws SQLException {
         String sqlStr="UPDATE accounts SET Active=false WHERE AccountNo=?;";
@@ -73,6 +76,13 @@ public class BatsDAO_dbImpl implements BatsDAO {
         }
     }
 
+    /**
+     * Checks if a specified account exists within the database.
+     * @param account - the account being checked.
+     * @return - true iff the account exists, false otherwise.
+     * @throws SQLException - from SQL method calls
+     * @throws BadAccountTypeException
+     */
     @Override
     public boolean exist(Account account) throws SQLException, BadAccountTypeException {
         try {
@@ -83,7 +93,13 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         }
     }
-
+    /**
+     * Checks if a specified account holder exists within the database.
+     * @param accountHolder - the account holder being checked.
+     * @return - true iff the account holder exists, false otherwise.
+     * @throws SQLException - from SQL method calls
+     * @throws BadAccountTypeException
+     */
     @Override
     public boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException {
         try {
@@ -94,7 +110,12 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         }
     }
-
+    /**
+     * Checks if a specified account holder card exists within the database.
+     * @param card - the account holder card being checked.
+     * @return - true iff the card exists, false otherwise.
+     * @throws SQLException - from SQL method calls
+     */
     @Override
     public boolean exist(AccountHolderCard card) throws SQLException {
         try {
@@ -105,7 +126,12 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         }
     }
-
+    /**
+     * Checks if a specified admin card exists within the database.
+     * @param card - the admin card being checked.
+     * @return - true iff the card exists, false otherwise.
+     * @throws SQLException - from SQL method calls
+     */
     @Override
     public boolean exist(AdminCard card) throws SQLException {
         try {
@@ -217,7 +243,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     @Override
     public boolean addEmployee(Employee newEmployee) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_EMPLOYEE);
+            String sqlStr = "INSERT INTO employees VALUES(?,?,?,?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1,newEmployee.getEmployeeNo());
             preparedStatement.setString(2,newEmployee.getIdNo());
             preparedStatement.setString(3,newEmployee.getName());
@@ -240,7 +267,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     @Override
     public boolean addAccountHolder(AccountHolder newAccountHolder, String sourceId) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_ACCOUNT_HOLDER);
+            String sqlStr = "INSERT INTO accountHolders VALUES (?,?,?,?,?,?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1,newAccountHolder.getIdNo());
             preparedStatement.setString(2,newAccountHolder.getName());
             preparedStatement.setString(3,newAccountHolder.getSurname());
@@ -258,7 +286,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     @Override
     public AccountHolder getAccountHolderByIdNo(String idNo) throws SQLException, BadAccountTypeException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_HOLDER_BY_ID_NO);
+            String sqlStr = "SELECT * FROM accountHolders WHERE ID=?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1, idNo);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) {
@@ -453,7 +482,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     @Override
     public AccountHolderCard getAccountHolderCardByCardNo(String cardNo) throws SQLException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_CARD_BY_CARD_NO);
+            String sqlStr = "SELECT * FROM accountHolderCards WHERE CardNo=?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1,cardNo);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next())
@@ -595,15 +625,16 @@ public class BatsDAO_dbImpl implements BatsDAO {
     @Override
     public boolean addAccountHolderCard(AccountHolderCard newCard) throws SQLException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(ADD_ACCOUNT_HOLDER_CARD);
+            String sqlStr_cardInsert = "INSERT INTO accountHolderCards VALUES (?,?,?,?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr_cardInsert);
             preparedStatement.setString(1, newCard.getCardNo());
             preparedStatement.setString(2, newCard.getPinNo());
             preparedStatement.setBoolean(3, newCard.isActive());
             preparedStatement.setString(4, newCard.getAccountHolderIdNo());
             if (executeUpdateStatement(preparedStatement) < 1) return false;
             // add to account holders also!
-            String sqlStr = "UPDATE accountHolders SET AccountHolderCardNo=? WHERE ID=?;";
-            PreparedStatement ps=connection.prepareStatement(sqlStr);
+            String sqlStr_accHolderUpdate = "UPDATE accountHolders SET AccountHolderCardNo=? WHERE ID=?;";
+            PreparedStatement ps=connection.prepareStatement(sqlStr_accHolderUpdate);
             ps.setString(1,newCard.getCardNo());
             ps.setString(2,newCard.getAccountHolderIdNo());
             return (executeUpdateStatement(ps)>0);
@@ -615,15 +646,16 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
     @Override
     public boolean addAdminCard(AdminCard newCard) throws SQLException {
-        PreparedStatement preparedStatement=connection.prepareStatement(ADD_ADMIN_CARD);
+        String sqlStr_cardInsert = "INSERT INTO adminCards VALUES (?,?,?,?);";
+        PreparedStatement preparedStatement=connection.prepareStatement(sqlStr_cardInsert);
         preparedStatement.setString(1,newCard.getCardNo());
         preparedStatement.setBoolean(2,newCard.isActive());
         preparedStatement.setString(3,newCard.getPinNo());
         preparedStatement.setString(4,newCard.getEmployeeNo());
         if (executeUpdateStatement(preparedStatement) < 1) return false;
         // add to account holders also!
-        String sqlStr = "UPDATE admins SET AdminCardNo=? WHERE EmployeeNo=?;";
-        PreparedStatement ps=connection.prepareStatement(sqlStr);
+        String sqlStr_adminUpdate = "UPDATE admins SET AdminCardNo=? WHERE EmployeeNo=?;";
+        PreparedStatement ps=connection.prepareStatement(sqlStr_adminUpdate);
         ps.setString(1,newCard.getCardNo());
         ps.setString(2,newCard.getEmployeeNo());
         return (executeUpdateStatement(ps)>0);
@@ -631,7 +663,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     @Override
     public boolean addAccount(String accountHolderId, Account account) throws SQLException {
         // Table: 1-AccountNo,2-Type,3-Balance,4-MinBalance,5-MaxTransferPerDay,6-MaxWithdrawalPerDay,7-Active,8-CardNo,9-WithdrawalPending
-        PreparedStatement preparedStatement=connection.prepareStatement(CREATE_NEW_ACCOUNT);
+        String sqlStr = "INSERT INTO accounts VALUES (?,?,?,?,?,?,?,?,?);";
+        PreparedStatement preparedStatement=connection.prepareStatement(sqlStr);
         preparedStatement.setString(1,account.getAccountNo());
         preparedStatement.setDouble(3,account.getBalance());
         preparedStatement.setDouble(4,account.getBalance());
@@ -653,7 +686,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
     @Override
     public int addAtm(String description) throws SQLException {
-        PreparedStatement preparedStatement=connection.prepareStatement(ADD_ATM);
+        String sqlStr = "INSERT INTO atms VALUES (?,?);"; // Table : ID,Description
+        PreparedStatement preparedStatement=connection.prepareStatement(sqlStr);
         preparedStatement.setInt(1,0);
         preparedStatement.setString(2,description);
         if (executeUpdateStatement(preparedStatement)>0)
@@ -755,28 +789,29 @@ public class BatsDAO_dbImpl implements BatsDAO {
             String sqlStr = "INSERT INTO transactions VALUES (?,?,?,?,?,?,?);";
             PreparedStatement ps = connection.prepareStatement(sqlStr);
             ps.setInt(1,0);
-
             ps.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
             ps.setDouble(3,transaction.getAmount());
-            ps.setInt(4,getTransactionTypeId(TRANSACTION_BANK_CHAGES));
+            ps.setInt(4,getTransactionTypeId(TRANSACTION_BANK_CHARGES));
             ps.setInt(5,Integer.parseInt(transaction.getATM_ID()));// this is problematic
             ps.setString(6,null);
             ps.setString(7,transaction.getPrimAccountNo());
             return (executeUpdateStatement(ps)>0);
         } catch (SQLException|BadTransactionTypeException e) {
-            System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
+            System.out.println("BatsDAO_dbImpl::logTransactionCharges() >>" +
                     "\n\tError..." + e);
             throw e;
         } catch (NumberFormatException e) {
-            System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
-                    "\n\tError...............................: " + e);
+            System.out.println("BatsDAO_dbImpl::logTransactionCharges() >>" +
+                    "\n\tError: " + e +
+                    "\n\tCaused by trying to cast the atm id into a number from string.");
             throw e;
         }
     }
 
     private int getAccountTypeId(String accountType) throws SQLException {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(GET_ACCOUNT_TYPE_ID);
+            String sqlStr = "SELECT * FROM accountTypes WHERE AccountType=?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1, accountType);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (!resultSet.next()) return -1;
@@ -896,7 +931,8 @@ public class BatsDAO_dbImpl implements BatsDAO {
             throw e;
         } catch (NumberFormatException e) {
             System.out.println("BatsDAO_dbImpl::logWithdrawal() >>" +
-                    "\n\tError...............................: " + e);
+                    "\n\tError: " + e +
+                    "\n\tCaused by trying to cast the atm id into a number from string.");
             throw e;
         }
     }
