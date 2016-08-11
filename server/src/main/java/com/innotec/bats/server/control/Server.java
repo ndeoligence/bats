@@ -22,7 +22,7 @@ public class Server {
     private BatsDAO dao;
 
     /* ctor */
-    public Server(int portNo) {
+    public Server(int portNo) throws IOException, ClassNotFoundException {
         clientHandlers = new ArrayList<>();
         /* connect to dbms */
         try {
@@ -39,8 +39,11 @@ public class Server {
                     .println("Server::ctor >>\n\tFailed connecting to the Database.\n\t: "
                             + e + "\n\tServer will stop!");
             System.exit(-1);
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Server::ctor >>\n\tFailed connecting to the Database." +
+                    "\n\t: "+e +
+                    "\n\tServer will stop!");
+            throw e;
         }
 
         /* Start: Temporal Test Code */
@@ -344,13 +347,15 @@ public class Server {
             }
         }
         void processAccountClosure(AccountClosure action) {
-            if (action.getAccountNo()==null || action.getEmployeeNo()==null)
+            if (action.getAccountNo()==null || action.getEmployeeNo()==null) {
+                sysPrintNormal("processAccountClosure",
+                        "AccountClosure failed due to null value(s): account # OR employee #");
                 sendToClient(false);
-            else try {
-                dao.closeAccount(action.getAccountNo(),action.getEmployeeNo());
+            } else try {
+                sendToClient(dao.closeAccount(action.getAccountNo(),action.getEmployeeNo()));
             } catch (SQLException e) {
-                System.out.println(getHandlerAlias()+"::processAccountClosure() >>" +
-                        "\n\tError: "+e);
+                sysPrintError("processAccountClosure",e);
+                sendToClient(false);
             }
         }
         private void processPinChange(PINChange action) {
@@ -373,10 +378,13 @@ public class Server {
                     sendToClient(dao.blockAdminCard(action.getCardNo()));
                 else if (action.getCardNo().length()==AccountHolderCard.CARD_NO_LEN)
                     sendToClient(dao.blockAccountHolderCard(action.getCardNo()));
-                else sendToClient(false);
+                else {
+                    sysPrintNormal("processCardDeactivation",
+                            "Process failed. Card number has unrecognized length: "+action);
+                    sendToClient(false);
+                }
             } catch (SQLException e) {
-                System.out.println(getHandlerAlias()+"::processCardDeactivation() >>" +
-                        "Error: "+e);
+                sysPrintError("processCardDeactivation",e);
                 sendToClient(false);
             }
         }
@@ -386,10 +394,14 @@ public class Server {
                     sendToClient(dao.unblockAccountHolderCard(action.getCardNo(),action.getEmployeeNo()));
                 else if (action.getCardNo().length()==AdminCard.CARD_NO_LEN)
                     sendToClient(dao.unblockAdminCard(action.getCardNo(),action.getEmployeeNo()));
-                else sendToClient(false);
+                else {
+                    sysPrintNormal("processCardDeactivation",
+                            "Failed to unblock card with unrecognized length.",
+                            "Contact admin");
+                    sendToClient(false);
+                }
             } catch (SQLException e) {
-                System.out.println(getHandlerAlias()+"::processCardDeactivation() >>" +
-                        "Error: "+e);
+                sysPrintError("processCardDeactivation",e);
                 sendToClient(false);
             }
         }
@@ -512,7 +524,7 @@ public class Server {
          * This is how the client is referred to by the program, whenever a term
          * more descriptive than 'client' is preferred.
          *
-         * @return A descriptive name for the client specific to this handler
+         * @return A descriptive name for the client specific to this handler/thread
          */
         private String getClientAlias() {
             return socket.getRemoteSocketAddress().toString() + "[#" + sourceId + "]";
@@ -529,22 +541,18 @@ public class Server {
                     dao.decrementAccountFunds(deposit.getPrimAccountNo(),charges) &&
                     dao.logTransaction(deposit) &&
                     dao.logTransactionCharges(deposit,charges)) {
-                        System.err.println(getHandlerAlias()+"::processDeposit >>" +
-                                "\n\tTansaction : "+deposit+" processed successfully.");
+                        sysPrintNormal("processDeposit","Transaction : "+deposit+" processed successfully.");
                         return true;
                     } else {
-                        System.err.println(getHandlerAlias()+"::processDeposit >>" +
-                                "\n\tTansaction : "+deposit+" FAILED due to internal error.");
+                    	sysPrintNormal("processDeposit","Transaction : "+deposit+" FAILED due to internal error.");
                         return false;
                     }
                 } else {
-                    System.err.println(getHandlerAlias()+"::processDeposit >>" +
-                            "\n\tAccount holder can't make ransaction : "+deposit+" ");
+                	sysPrintNormal("processDeposit","Account holder can't make ransaction : "+deposit);
                     return false;
                 }
             } catch (BadTransactionTypeException|SQLException|BadAccountTypeException e) {
-                System.err.println(getHandlerAlias()+"::processDeposit >>" +
-                        "\n\tError: " + e);
+            	sysPrintError("processDeposit",e);
                 return false;
             }
         }
@@ -558,67 +566,98 @@ public class Server {
                             dao.decrementAccountFunds(transfer.getPrimAccountNo(),charges);
                             dao.logTransaction(transfer);
                             dao.logTransactionCharges(transfer,charges);
-                            System.out.println(getHandlerAlias()+"::processTransfer()>>" +
-                                    "\n\tTransaction "+transfer+" completed successfully");
+                            sysPrintNormal("processTransfer","Transaction "+transfer+" completed successfully");
                             return true;
                         } else {
-                            System.out.println(getHandlerAlias()+"::processTransfer()>>" +
-                                    "\n\tTransaction "+transfer+" failed. will remove log");
+                        	sysPrintNormal("processTransfer","Transaction "+transfer+" failed. will remove log");
                             dao.removeLastTransaction();
                             return false;
                         }
                     } else {
-                        System.out.println(getHandlerAlias()+"::processTransfer()>>" +
-                                "\n\tTransaction couldn't be logged. Transaction will be cancelled.");
+                    	sysPrintNormal("processTransfer","Transaction couldn't be logged. Transaction will be cancelled.");
                         return false;
                     }
                 } else {
-                    System.out.println(getHandlerAlias()+"::processTransfer()>>" +
-                            "\n\tUnmet condition: isTransactionPossible");
+                	sysPrintNormal("processTransfer","Unmet condition: isTransactionPossible");
                     return false;
                 }
             } catch (Exception e) {
-                System.out.println(getHandlerAlias()+"::processTransfer()>>" +
-                        "\n\tError: "+e);
+            	sysPrintError("processTransfer",e);
                 return false;
             }
         }
 
         boolean processWithdrawal(Withdrawal withdrawal) {
+        	sysPrintNormal("processWithdrawal","Details: "+withdrawal);
             try {
                 if (dao.getAccountByAccountNo(withdrawal.getPrimAccountNo()) instanceof SavingsAccount) {
+                	sysPrintNormal("processWithdrawal","Special case: account is Savings");
                     return processSavingsAccountWithdrawal(withdrawal);
                 }
                 double charges = dao.calculateTransactionCharges(withdrawal);
                 if (isTransactionPossible(withdrawal,charges)) {
                     if (dao.logTransaction(withdrawal)) {
                         if (dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), (withdrawal.getAmount() + charges))) {
-                            dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), charges);
-                            dao.logTransaction(withdrawal);
-                            dao.logTransactionCharges(withdrawal, charges);
+                            if(!dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), charges))
+                            	sysPrintNormal("processWithdrawal","Failed operation: decrementAccountFunds");
+                            if(!dao.logTransaction(withdrawal))
+                            	sysPrintNormal("processWithdrawal","Failed operation: logTransaction");
+                            if(!dao.logTransactionCharges(withdrawal, charges))
+                            	sysPrintNormal("processWithdrawal","Failed operation: logTransactionCharges");
                             return true;
                         } else {
+                        	sysPrintNormal("processWithdrawal",
+                        			"Withdrawal fails due to operation failure: decrementAccountFunds");
                             return false;
                         }
                     } else {
-                        System.out.println(getHandlerAlias() + "::processWithdrawal()>>" +
-                                "\n\tTransaction couldn't be logged. Therefore transaction won't be done.");
+                    	sysPrintNormal("processWithdrawal","Transaction couldn't be logged. Therefore transaction won't be done.");
                         return false;
                     }
                 } else {
-                    System.out.println(getHandlerAlias()+"::processWithdrawal()>>" +
-                            "\n\tUnmet condition: isTransactionPossible");
+                	sysPrintNormal("processWithdrawal","Unmet condition: isTransactionPossible");
                     return false;
                 }
             } catch (Exception e) {
-                System.out.println(getHandlerAlias()+"::processWithdrawal()>>" +
-                        "\n\tError: "+e);
+                sysPrintError("processWithdrawal",e);
                 return false;
             }
         }
 
-        private boolean processSavingsAccountWithdrawal(Withdrawal withdrawal) {
-            return false;/*todo: implement!*/
+        private boolean processSavingsAccountWithdrawal(Withdrawal withdrawal) throws SQLException,BadAccountTypeException,BadTransactionTypeException {
+        	try {
+        		sysPrintNormal("processSavingsAccountWithdrawal","Details: "+withdrawal);
+        		Account account=dao.getAccountByAccountNo(withdrawal.getPrimAccountNo());
+        		double charges=dao.calculateTransactionCharges(withdrawal);
+        		if (account instanceof SavingsAccount) {
+        			if (!isTransactionPossible(withdrawal,charges)) {
+        				sysPrintNormal("processSavingsAccountWithdrawal",
+        						"Transaction "+withdrawal+" not possible on account "+account);
+        				return false;
+        			}
+        			if (dao.logTransaction(withdrawal)) {
+                        if (!dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), (withdrawal.getAmount() + charges)))
+                        	sysPrintNormal("processSavingsAccountWithdrawal","Failed to decrement funds.");
+                        if (!dao.decrementAccountFunds(withdrawal.getPrimAccountNo(), charges))
+                        	sysPrintNormal("processSavingsAccountWithdrawal","Failed to charge for transaction.");
+                        if (!dao.logTransactionCharges(withdrawal, charges))
+                        	sysPrintNormal("processSavingsAccountWithdrawal","Failed to log charges");
+                        return true;
+        			} else {
+        				sysPrintNormal("processSavingsAccountWithdrawal",
+        						"Fail: Couldn't log the transaction, thus transaction can't be done");
+        				return false;
+        			}
+        			
+        		} else {
+        			sysPrintNormal("processSavingsAccountWithdrawal",
+        					"Fail: Tried to make a SavingAccount withdrawal on a different Account type: "+account);
+        			return false;
+        		}
+        	} catch (Exception e) {
+        		sysPrintError("processSavingsAccountWithdrawal",e);
+        		throw e;
+        	}
         }
 
         /**
@@ -627,77 +666,100 @@ public class Server {
          */
         private boolean isTransactionPossible(Transaction transaction, double charges) throws SQLException, BadAccountTypeException, BadTransactionTypeException {
             try {
-                Account account = dao.getAccountByAccountNo(transaction.getPrimAccountNo());
-                if(!account.isActive()) return false;
-                /*transaction dependant limits*/
+                /*transaction dependent limits*/
                 if (transaction instanceof Withdrawal) {
-                    return isWithdrawalPossible((Withdrawal) transaction,account,charges);
+                    return isWithdrawalPossible((Withdrawal) transaction,charges);
                 } else if (transaction instanceof Deposit) {
-                    return isDepositPossible((Deposit) transaction, charges);
+                    return isDepositPossible((Deposit) transaction);
                 } else if (transaction instanceof Transfer) {
-                    Transfer transfer=(Transfer)transaction;
-                    Account account2nd=dao.getAccountByAccountNo(transfer.getSecondaryAccountNo());
-                    if (!account2nd.isActive()) return false;
-                    return isTransferPossible(transfer,account,account2nd, charges);
+                    return isTransferPossible((Transfer)transaction, charges);
                 } else return false;
-                /*account dependant limits*/
+                /*account dependent limits*/
             } catch (SQLException|BadAccountTypeException|BadTransactionTypeException e) {
-                System.out.println(getHandlerAlias()+"::isTransactionPossible >>" +
-                        "\n\tError: "+e);
+                sysPrintError("isTransactionPossible",e);
                 throw e;
             }
         }
-        boolean isWithdrawalPossible(Withdrawal withdrawal,Account account, double charges) throws SQLException, BadTransactionTypeException {
-            double amount = withdrawal.getAmount();
-            double newBalance=account.getBalance()-amount-charges;
+        boolean isWithdrawalPossible(Withdrawal withdrawal, double charges) throws SQLException, BadAccountTypeException, BadTransactionTypeException {
+        	try {
+	        	Account account = dao.getAccountByAccountNo(withdrawal.getPrimAccountNo());
+	            if(!account.isActive()) return false;
+	            double amount = withdrawal.getAmount();
+	            double newBalance=account.getBalance()-amount-charges;
+            
+                if ((amount + dao.getAccountTotalWithdrawnAmountToday(account.getAccountNo())) > account.getMaxWithdrawalPerDay()) {
+                	sysPrintNormal("isWithdrawalPossible",
+                            "Withdrawal not possible.",
+                            "Will exceed daily withdrawal limit");
+                    return false;
+                }
+	            if (account instanceof CurrentAccount) {
+	                if (newBalance < CurrentAccount.MIN_BALANCE) return false;
+	            } else if (account instanceof SavingsAccount) {
+	                SavingsAccount savingsAccount = (SavingsAccount) account;
+	                if (newBalance < SavingsAccount.MIN_BALANCE) return false;
+	                if (savingsAccount.getWithdrawalPending()) {
+	
+	                    if (savingsAccount.getFundsAvailableDate().after(new java.util.Date()))
+	                        return false;
+	                } else { // if no pending withdrawal, then we can set a new date.
+	                    return true;
+	                }
+	            } else if (account instanceof CreditCardAccount) {
+	                return false;
+	            }
+	            return true;
+        	} catch (Exception e) {
+        		sysPrintError("isWithdrawalPossible",e);
+                throw e;
+            }
+        }
+        boolean isDepositPossible(Deposit deposit) throws BadAccountTypeException, SQLException {
             try {
-                if ((amount + dao.getAccountTotalWithdrawnAmountToday(account.getAccountNo())) > account.getMaxWithdrawalPerDay())
-                    return false;
-            } catch (SQLException|BadTransactionTypeException e) {
-                System.out.println(getHandlerAlias()+"::isWithdrawalPossible >>" +
-                        "\n\tError: "+e);
-                throw e;
-            }
-
-            if (account instanceof CurrentAccount) {
-                if (newBalance < CurrentAccount.MIN_BALANCE) return false;
-            } else if (account instanceof SavingsAccount) {
-                SavingsAccount savingsAccount = (SavingsAccount) account;
-                if (newBalance < savingsAccount.MIN_BALANCE) return false;
-                if (savingsAccount.getWithdrawalPending()) {
-
-                    if (savingsAccount.getFundsAvailableDate().after(new java.util.Date()))
-                        return false;
-                } else { // if no pending withdrawal, then we can set a new date.
-                    return true;
-                }
-            } else if (account instanceof CreditCardAccount) {
-                return false;
-            }
-            return true;
+				if(!dao.getAccountByAccountNo(deposit.getPrimAccountNo()).isActive()) return false;
+				return (deposit.getAmount() >= Deposit.MIN_AMOUNT);
+			} catch (Exception e) {
+				sysPrintError("isDepositPossible",e);
+				throw e;
+			}
+            
         }
-        boolean isDepositPossible(Deposit deposit, double charges) {
-            return (deposit.getAmount() >= Deposit.MIN_AMOUNT);
-        }
-        boolean isTransferPossible(Transfer transfer,Account primaryAccount, Account secondaryAccount, double charges) {
+        boolean isTransferPossible(Transfer transfer, double charges) throws SQLException,BadAccountTypeException {
+        	try {
             /*todo : implement!*/
-            double transferAmount=transfer.getAmount();
-            double newBalance=primaryAccount.getBalance()-transferAmount-charges;
-            if (transferAmount > primaryAccount.getMaxTransferPerDay())
-                return false;
-            if (primaryAccount instanceof CurrentAccount) {
-                if (newBalance<CurrentAccount.MIN_BALANCE) return false;
-            } else if (primaryAccount instanceof SavingsAccount) {
-                SavingsAccount savingsAccount=(SavingsAccount)primaryAccount;
-                if (newBalance<SavingsAccount.MIN_BALANCE) return false;
-                if (savingsAccount.getWithdrawalPending()) {
-                    if (savingsAccount.getPendingWithdrawalAmount()<transferAmount)
-                        return false;
-                } else { // At the moment, we can't really withdraw from Savings to a different account.
-                    return false;
-                }
-            }
-            return true;
+	            Account primaryAccount=dao.getAccountByAccountNo(transfer.getPrimAccountNo()),
+	                    secondaryAccount=dao.getAccountByAccountNo(transfer.getSecondaryAccountNo());
+	            if (!primaryAccount.isActive() || !secondaryAccount.isActive()) return false;
+	            double transferAmount=transfer.getAmount();
+	            double newBalance=primaryAccount.getBalance()-transferAmount-charges;
+	            if (transferAmount > primaryAccount.getMaxTransferPerDay())
+	                return false;
+	            if (primaryAccount instanceof CurrentAccount) {
+	                if (newBalance<CurrentAccount.MIN_BALANCE) return false;
+	            } else if (primaryAccount instanceof SavingsAccount) {
+	                SavingsAccount savingsAccount=(SavingsAccount)primaryAccount;
+	                if (newBalance<SavingsAccount.MIN_BALANCE) return false;
+	                if (savingsAccount.getWithdrawalPending()) {
+	                    if (savingsAccount.getPendingWithdrawalAmount()<transferAmount)
+	                        return false;
+	                } else { // At the moment, we can't really withdraw from Savings to a different account.
+	                    return false;
+	                }
+	            }
+	            return true;
+        	} catch (Exception e) {
+        		sysPrintError("isTransferPossible",e);
+                throw e;
+        	}
+        }
+        private void sysPrintError(String sourceMethod, Exception e) {
+        	System.out.println(getHandlerAlias()+"::"+sourceMethod+"() >>" +
+                    "\n\tError: "+e);
+        }
+        private void sysPrintNormal(String sourceMethod,String ... msgs) {
+        	System.out.println(getHandlerAlias()+"::"+sourceMethod+"() >>");
+            for (String msg : msgs)
+                System.out.println("\n\t"+msg);
         }
     }
 
@@ -745,14 +807,11 @@ public class Server {
             while (true) {
                 (server.newClientHandler()).start();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Server::main >>" +
-                    "\n\tError: Server encountered an error." +
-                    "\n\tTry restarting the program");
+                    "\n\tError: Server encountered an error.");
             System.out.println("\tError: "+e);
-            System.out.flush();
-            System.out.println("Server::main >>" +
-                    "\n\tServer is stopping.");
+            System.out.println("\tServer stopped.");
             System.exit(1);
         }
     }

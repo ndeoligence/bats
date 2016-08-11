@@ -192,7 +192,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
                     perUnitCharge = getTransactionChargePerUnit(transType),
                     unitAmount = getTransactionChargeUnitAmount(transType);
             double amount = transaction.getAmount();
-            return (amount + standardCharge + perUnitCharge * (Math.ceil((amount * 1.0) / unitAmount)));//because we charge a full amount for a fraction of a R100 as well
+            return (standardCharge + perUnitCharge * (Math.ceil((amount * 1.0) / unitAmount)));//because we charge a full amount for a fraction of a R100 as well
         } catch (SQLException|BadTransactionTypeException e) {
             System.out.println("BatsDAO_dbImpl::calculateTransactionCharges() >>" +
                     "\n\tError..." + e);
@@ -713,11 +713,12 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
     @Override
     public double getAccountTotalWithdrawnAmountToday(String accountNo) throws SQLException, BadTransactionTypeException {
-        String sqlStr = "SELECT Amount FROM transactions WHERE PrimaryAccountNo=? AND Type!=? AND TimeStamp>=CURDATE();";
+        String sqlStr = "SELECT Amount FROM transactions WHERE PrimaryAccountNo=? AND (Type=? OR Type=?) AND TimeStamp>=CURDATE();";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
             preparedStatement.setString(1,accountNo);
-            preparedStatement.setInt(2,getTransactionTypeId(TRANSACTION_DEPOSIT));
+            preparedStatement.setInt(2,getTransactionTypeId(TRANSACTION_WITHDRAWAL));
+            preparedStatement.setInt(2,getTransactionTypeId(TRANSACTION_TRANSFER));
             ResultSet resultSet=preparedStatement.executeQuery();
             double sum = 0;
             while (resultSet.next())
@@ -806,7 +807,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             PreparedStatement ps = connection.prepareStatement(sqlStr);
             ps.setInt(1,0);
             ps.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
-            ps.setDouble(3,transaction.getAmount());
+            ps.setDouble(3,calculateTransactionCharges(transaction));
             ps.setInt(4,getTransactionTypeId(TRANSACTION_BANK_CHARGES));
             ps.setInt(5,Integer.parseInt(transaction.getATM_ID()));// this is problematic
             ps.setString(6,null);
