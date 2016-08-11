@@ -174,6 +174,14 @@ public class BankAccountIdGenerator {
         printOutcome(nextEmployeeNo(null));
         printOutcome(nextEmployeeNo("1234567"));
         printOutcome(nextEmployeeNo("9999"));
+        declareTesting("nextAdminCardNo(null | '1234567' | '9999' | null-># | null->#->#)");
+        String nxt = nextAdminCardNo(null);
+        printOutcome(nxt);
+        printOutcome(nextAdminCardNo("1234567"));
+        printOutcome(nextAdminCardNo("9999"));
+        nxt = nextAdminCardNo(nxt);
+        printOutcome(nxt);
+        printOutcome(nextAdminCardNo(nxt));
         System.out.println("****************End Testa***************************************");
     }
     private static void declareTesting(String methodName) {
