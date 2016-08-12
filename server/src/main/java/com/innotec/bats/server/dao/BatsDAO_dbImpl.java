@@ -83,8 +83,30 @@ public class BatsDAO_dbImpl implements BatsDAO {
     }
 
     @Override
-    public List<Transaction> get24hrStatement(String accountNo) {
-        return null; /*todo : implement!*/
+    public List<Transaction> get24hrStatement(String accountNo) throws SQLException, BadTransactionTypeException {
+        String sqlStr = "SELECT * FROM transactions WHERE PrimaryAccountNo=? AND TimeStamp>=CURDATE();";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlStr);
+            preparedStatement.setString(1,accountNo);
+            ResultSet resultSet=preparedStatement.executeQuery();
+            List<Transaction> transactions=new ArrayList<>();
+            Transaction transaction;
+            while (resultSet.next()) {
+                if (resultSet.getInt("Type")==getTransactionTypeId(TRANSACTION_WITHDRAWAL)) {
+                    transaction=new Withdrawal(resultSet.getString("PrimaryAccountNo"),resultSet.getDouble("Amount"),false);
+                } else if (resultSet.getInt("Type")==getTransactionTypeId(TRANSACTION_DEPOSIT)) {
+                    transaction=new Deposit(resultSet.getString("PrimaryAccountNo"),resultSet.getDouble("Amount"));
+                } else {
+                    continue;
+                }
+                transactions.add(transaction);
+            }
+            return transactions;
+        } catch (SQLException|BadTransactionTypeException e) {
+            System.out.println("BatsDAO_dbImpl::getAccountTotalWithdrawnAmountToday() >>" +
+                    "\n\tError: "+e);
+            throw e;
+        }
     }
 
     @Override

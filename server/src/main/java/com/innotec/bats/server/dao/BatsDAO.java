@@ -58,7 +58,7 @@ public interface BatsDAO {
 //   boolean updateCardActivity(boolean cardActivity, String cardNo);
 //	 boolean updateAccountActivity(boolean activity, String accountNo);
 //	 Transaction getTransactionForAccount(String accountID);
-    List<Transaction> get24hrStatement(String accountNo);
+    List<Transaction> get24hrStatement(String accountNo) throws SQLException, BadTransactionTypeException;
     List<Transaction> get30dayStatement(String accountNo);
     boolean exist(Account account) throws SQLException, BadAccountTypeException;
     boolean exist(AccountHolder accountHolder) throws SQLException, BadAccountTypeException;
