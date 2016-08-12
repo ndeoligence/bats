@@ -156,13 +156,18 @@ public class Server {
                 processTellerAction((TellerAction) action);
             } else if (action instanceof Transaction) {
                 processTransaction((Transaction) action);
+            } else if (action instance of BalanceSheetRequest){
+            	processBalanceSheetRequest((BalanceSheetRequest)action);
+            } else if (action instanceof StatementRetrieval) {
+            	processStatementRetrieval((StatementRetrieval) action);
             } else {
                 System.out.println(getHandlerAlias()+"::processAction >>" +
                         "\n\tUnsupported action type: "
                         + action);
+                sendToClient(false);
             }
         }
-
+        
         private boolean processAccountHolderRetrieval(AccountHolderRetrieval action) {
             if (action instanceof AccountHolderRetrievalByIdNo) {
                 return processAccountHolderRetrievalByIdNo((AccountHolderRetrievalByIdNo) action);
@@ -387,6 +392,12 @@ public class Server {
                 sysPrintError("processCardDeactivation",e);
                 sendToClient(false);
             }
+        }
+        private void processBalanceSheetRequest(BalanceSheetRequest action) {
+        	sendToClient(true); /*todo : implement!*/
+        }
+        private void processStatementRetrieval(StatementRetrieval action) {
+        	sendToClient(null); /*todo : implement!*/
         }
         private void processCardReactivation(CardReactivation action) {
             try {
