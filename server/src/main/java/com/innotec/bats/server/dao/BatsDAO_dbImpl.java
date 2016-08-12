@@ -809,7 +809,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             ps.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
             ps.setDouble(3,calculateTransactionCharges(transaction));
             ps.setInt(4,getTransactionTypeId(TRANSACTION_BANK_CHARGES));
-            ps.setInt(5,Integer.parseInt(transaction.getATM_ID()));// this is problematic
+            ps.setString(5,(transaction.getATM_ID()));// this is problematic
             ps.setString(6,null);
             ps.setString(7,transaction.getPrimAccountNo());
             return (executeUpdateStatement(ps)>0);
@@ -892,7 +892,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
             preparedStatement.setDouble(3,deposit.getAmount());
             preparedStatement.setInt(4,getTransactionTypeId(deposit));
-            preparedStatement.setInt(5,Integer.parseInt(deposit.getATM_ID()));// this is problematic
+            preparedStatement.setString(5,(deposit.getATM_ID()));// this is problematic
             preparedStatement.setString(6,null);
             preparedStatement.setString(7,deposit.getPrimAccountNo());
             return (executeUpdateStatement(preparedStatement)>0);
@@ -914,7 +914,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
             preparedStatement.setDouble(3,transfer.getAmount());
             preparedStatement.setInt(4,getTransactionTypeId(transfer));
-            preparedStatement.setInt(5,Integer.parseInt(transfer.getATM_ID()));// this is problematic
+            preparedStatement.setString(5,(transfer.getATM_ID()));// this is problematic
             preparedStatement.setString(6,transfer.getSecondaryAccountNo());
             preparedStatement.setString(7,transfer.getPrimAccountNo());
             return (executeUpdateStatement(preparedStatement)>0);
@@ -938,7 +938,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
             preparedStatement.setDouble(3,withdrawal.getAmount());
             preparedStatement.setInt(4,getTransactionTypeId(withdrawal));
-            preparedStatement.setInt(5,Integer.parseInt(withdrawal.getATM_ID()));// this is problematic
+            preparedStatement.setString(5,(withdrawal.getATM_ID()));// this is problematic
             preparedStatement.setString(6,null);
             preparedStatement.setString(7,withdrawal.getPrimAccountNo());
             return (executeUpdateStatement(preparedStatement)>0);
@@ -963,7 +963,7 @@ public class BatsDAO_dbImpl implements BatsDAO {
             preparedStatement.setDate(2, new java.sql.Date(new java.util.Date().getTime()));
             preparedStatement.setDouble(3,withdrawalNotice.getAmount());
             preparedStatement.setInt(4,getTransactionTypeId(TRANSACTION_WITHDRAWAL_NOTICE));
-            preparedStatement.setInt(5,Integer.parseInt(withdrawalNotice.getATM_ID()));// this is problematic
+            preparedStatement.setString(5,(withdrawalNotice.getATM_ID()));// this is problematic
             preparedStatement.setString(6,null);
             preparedStatement.setString(7,withdrawalNotice.getPrimAccountNo());
             return (executeUpdateStatement(preparedStatement)>0);
