@@ -397,7 +397,8 @@ public class Server {
         	sendToClient(true); /*todo : implement!*/
         }
         private void processStatementRetrieval(StatementRetrieval action) {
-        	sendToClient(dao.get24hrStatement(action.getAccountNo())); /*todo : implement!*/
+        	try {
+        	sendToClient(dao.get24hrStatement(action.getAccountNo())); /*todo : implement!*/} catch (Exception e) {}
         }
         private void processCardReactivation(CardReactivation action) {
             try {
