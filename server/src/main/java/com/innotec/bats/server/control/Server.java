@@ -156,7 +156,7 @@ public class Server {
                 processTellerAction((TellerAction) action);
             } else if (action instanceof Transaction) {
                 processTransaction((Transaction) action);
-            } else if (action instance of BalanceSheetRequest){
+            } else if (action instanceof BalanceSheetRequest){
             	processBalanceSheetRequest((BalanceSheetRequest)action);
             } else if (action instanceof StatementRetrieval) {
             	processStatementRetrieval((StatementRetrieval) action);
