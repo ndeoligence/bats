@@ -6,43 +6,36 @@ import java.util.List;
 /**
  * Created by phoenix on 7/20/16.
  */
-public class DNRecord
-{
+public class DNRecord {
 	private String atmID;
 	private ArrayList<DNREntry> dnrEntries;
 	private DNRecord dnRecord;
 	private DNR_DAO dnr_DAO;
 
-	public DNRecord(String atmID)
-	{
+	public DNRecord(String atmID) {
 		this.atmID = atmID;
 		dnrEntries = new ArrayList<DNREntry>();
 	}
 
-	public void readFromDAOfile()
-	{
-		dnRecord =  dnr_DAO.readFromDNR();
-		//dnrEntries.add(dnRecord);
+	public void readFromDAOfile() {
+		dnRecord = dnr_DAO.readFromDNR();
+		// dnrEntries.add(dnRecord);
 	}
-	
-	public void add(DNREntry dnrEntry)
-	{
+
+	public void add(DNREntry dnrEntry) {
 		this.readFromDAOfile();
 		dnrEntries.add(dnrEntry);
 	}
-	
-	public String getAtmID()
-	{
+
+	public String getAtmID() {
 		return atmID;
 	}
 
-	public List<DNREntry> getDnrEntries()
-	{
+	public List<DNREntry> getDnrEntries() {
 		return dnrEntries;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return "DN Record for atm: " + atmID;
 	}
 }

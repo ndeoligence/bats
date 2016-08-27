@@ -1,4 +1,5 @@
 package com.innotec.bats.client.atm.admin.view;
+
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
@@ -30,47 +31,45 @@ import com.innotec.bats.general.BalanceSheetRequest;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-
-public class ATM_AdminHome extends JPanel implements ActionListener 
-{
+public class ATM_AdminHome extends JPanel implements ActionListener {
 	private JPanel framePanel;
 	private JButton btnOpenDispenser, btnServerBalanceSheet, btnPrintDnr, btnLeave, btnViewDnr;
 	private DNR_Manager dnr_Manager;
 	private ATM_DNR_View atm_DNR_View;
 	private BalanceSheetRequest balanceSheetRequest;
-	
+
 	/**
 	 * Create the panel.
 	 */
-	public ATM_AdminHome(JPanel framePanel)
-	{
+	public ATM_AdminHome(JPanel framePanel) {
 		this.framePanel = framePanel;
 		framePanel.removeAll();
 		setBackground(SystemColor.inactiveCaption);
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, SystemColor.inactiveCaptionBorder, SystemColor.activeCaption));
 		setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel = new JPanel();
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		panel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 2, true), "ATM Administrator", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(70, 130, 180)));
+		panel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 2, true), "ATM Administrator",
+				TitledBorder.CENTER, TitledBorder.TOP, null, new Color(70, 130, 180)));
 		panel.setBackground(SystemColor.inactiveCaption);
 		add(panel, BorderLayout.CENTER);
-		
+
 		btnOpenDispenser = new JButton("Open\r\n\r\n Dispenser");
 		btnOpenDispenser.setFont(new Font("Cambria", Font.BOLD, 45));
-		
+
 		btnServerBalanceSheet = new JButton("Balance Sheet");
 		btnServerBalanceSheet.setFont(new Font("Cambria", Font.BOLD, 45));
 		btnServerBalanceSheet.addActionListener(this);
-		
+
 		btnPrintDnr = new JButton("Print DNR");
 		btnPrintDnr.setFont(new Font("Cambria", Font.BOLD, 45));
 		btnPrintDnr.addActionListener(this);
-		
+
 		btnViewDnr = new JButton("View DNR");
 		btnViewDnr.setFont(new Font("Cambria", Font.BOLD, 45));
 		btnViewDnr.addActionListener(this);
-		
+
 		btnLeave = new JButton("Leave");
 		btnLeave.setFont(new Font("Cambria", Font.BOLD, 45));
 		btnLeave.addActionListener(this);
@@ -94,7 +93,7 @@ public class ATM_AdminHome extends JPanel implements ActionListener
 		sl_panel.putConstraint(SpringLayout.WEST, btnPrintDnr, 208, SpringLayout.EAST, btnOpenDispenser);
 		sl_panel.putConstraint(SpringLayout.WEST, btnOpenDispenser, 208, SpringLayout.WEST, panel);
 		panel.setLayout(sl_panel);
-		
+
 		JLabel lblNewCityBank = new JLabel("New City Bank");
 		sl_panel.putConstraint(SpringLayout.NORTH, btnPrintDnr, 93, SpringLayout.SOUTH, lblNewCityBank);
 		sl_panel.putConstraint(SpringLayout.NORTH, btnOpenDispenser, 93, SpringLayout.SOUTH, lblNewCityBank);
@@ -107,40 +106,36 @@ public class ATM_AdminHome extends JPanel implements ActionListener
 		panel.add(btnServerBalanceSheet);
 		panel.add(btnViewDnr);
 		panel.add(btnLeave);
-		
+
 		framePanel.add(this);
 
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent acEvent)
-	{
+	public void actionPerformed(ActionEvent acEvent) {
 		Object source = acEvent.getSource();
-		if(source == btnOpenDispenser)
-		{
+		if (source == btnOpenDispenser) {
 			dnr_Manager = new DNR_Manager();
-			JOptionPane.showMessageDialog(null, "The Dispenser Has Been Opened",
-					"DISPENSER OPEN!", JOptionPane.INFORMATION_MESSAGE);	
+			JOptionPane.showMessageDialog(null, "The Dispenser Has Been Opened", "DISPENSER OPEN!",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
-		if(source == btnServerBalanceSheet)
-		{
-			//balanceSheetRequest = new BalanceSheetRequest(ATMApplication.serverComm.atmID, startDate, endDate);
+		if (source == btnServerBalanceSheet) {
+			// balanceSheetRequest = new
+			// BalanceSheetRequest(ATMApplication.serverComm.atmID, startDate,
+			// endDate);
 			ATMApplication.serverComm.sendBalanceSheetRequest(balanceSheetRequest);
 		}
-		if(source == btnViewDnr)
-		{
+		if (source == btnViewDnr) {
 			atm_DNR_View = new ATM_DNR_View(framePanel);
 			this.revalidate();
 			this.repaint();
 		}
-		if(source == btnPrintDnr)
-		{
+		if (source == btnPrintDnr) {
 			dnr_Manager.printDNR();
-			JOptionPane.showMessageDialog(null, "Dispensed Notes Record is being printed",
-					"PRINTING DNR!", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Dispensed Notes Record is being printed", "PRINTING DNR!",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
-		if(source == btnLeave)
-		{
+		if (source == btnLeave) {
 			ATMApplication.serverComm.closeConnection();
 			System.exit(0);
 		}

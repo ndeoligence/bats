@@ -1,4 +1,5 @@
 package com.innotec.bats.client.atm.admin.view;
+
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
@@ -23,45 +24,43 @@ import javax.swing.JButton;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
-
-public class ATM_DNR_View extends JPanel
-{
+public class ATM_DNR_View extends JPanel {
 	private JTable table;
 	private JPanel framePanel;
 
 	/**
 	 * Create the panel.
 	 */
-	public ATM_DNR_View(JPanel framePanel)
-	{
+	public ATM_DNR_View(JPanel framePanel) {
 		this.framePanel = framePanel;
 		framePanel.removeAll();
-		
+
 		setBackground(SystemColor.inactiveCaption);
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, SystemColor.inactiveCaptionBorder, SystemColor.activeCaption));
 		setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel = new JPanel();
 		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		panel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 2, true), "ATM Administrator", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(70, 130, 180)));
+		panel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 2, true), "ATM Administrator",
+				TitledBorder.CENTER, TitledBorder.TOP, null, new Color(70, 130, 180)));
 		panel.setBackground(SystemColor.inactiveCaption);
 		add(panel, BorderLayout.CENTER);
-		
+
 		JLabel label = new JLabel("New City Bank");
 		label.setFont(new Font("Cambria", Font.BOLD, 60));
-		
+
 		JLabel lblDispensedNotesRecord = new JLabel("Dispensed Notes Record");
 		lblDispensedNotesRecord.setFont(new Font("Cambria", Font.BOLD, 44));
-		
+
 		JTextPane textPane = new JTextPane();
 		textPane.setFont(new Font("Cambria", Font.PLAIN, 16));
-		
+
 		JButton btnPrint = new JButton("Print");
 		btnPrint.setFont(new Font("Cambria", Font.BOLD, 40));
-		
+
 		JButton btnReturn = new JButton("Return");
 		btnReturn.setFont(new Font("Cambria", Font.BOLD, 40));
-		
+
 		SpringLayout sl_panel = new SpringLayout();
 		sl_panel.putConstraint(SpringLayout.NORTH, textPane, 22, SpringLayout.SOUTH, lblDispensedNotesRecord);
 		sl_panel.putConstraint(SpringLayout.WEST, textPane, 397, SpringLayout.WEST, panel);
@@ -83,10 +82,10 @@ public class ATM_DNR_View extends JPanel
 		panel.add(textPane);
 		panel.add(btnPrint);
 		panel.add(btnReturn);
-		
+
 		table = new JTable();
 		panel.add(table);
-		
+
 		framePanel.add(this);
 
 	}

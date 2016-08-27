@@ -4,50 +4,42 @@ import java.util.Date;
 
 import com.innotec.bats.general.Account;
 
-public class DNREntry
-{
+public class DNREntry {
 	private Date date;
 	private String dateStamp;
-	//private Account accNo;
+	// private Account accNo;
 	private String accNo;
-	//private double amount;
+	// private double amount;
 	private int[] record;
 
-	public DNREntry(int[] record, String accNo)
-	{
+	public DNREntry(int[] record, String accNo) {
 		date = new Date();
 		this.dateStamp = date.toString();
 		this.accNo = accNo;
 		this.record = record;
 	}
 
-	public String getDateStamp()
-	{
+	public String getDateStamp() {
 		return dateStamp;
 	}
 
-	public void setDateStamp(String dateStamp)
-	{
+	public void setDateStamp(String dateStamp) {
 		this.dateStamp = date.toString();
 	}
 
-	public String getAccNo()
-	{
+	public String getAccNo() {
 		return accNo;
 	}
 
-	public void setAccNo(String accNo)
-	{
+	public void setAccNo(String accNo) {
 		this.accNo = accNo;
 	}
 
-	public int[] getRecord()
-	{
+	public int[] getRecord() {
 		return record;
 	}
 
-	public void setRecord(int[] record)
-	{
+	public void setRecord(int[] record) {
 		this.record = record;
 	}
 
