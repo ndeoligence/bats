@@ -3,3 +3,11 @@
 bin/
 out/
 build/
+atm/.classpath/
+atm/.settings/
+server/.classpath/
+server/.settings/
+shared/.classpath/
+shared/.settings/
+teller/.classpath/
+teller/.settings/
