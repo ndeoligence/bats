@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by phoenix on 7/20/16.
  */
 public abstract class Action implements Serializable {
-    String sourceId;
+    private String sourceId;
     public Action() {
         sourceId=null;
     }
@@ -20,5 +20,12 @@ public abstract class Action implements Serializable {
 
     public void setSourceId(String sourceId) {
         this.sourceId = sourceId;
+    }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "sourceId='" + sourceId + '\'' +
+                '}';
     }
 }

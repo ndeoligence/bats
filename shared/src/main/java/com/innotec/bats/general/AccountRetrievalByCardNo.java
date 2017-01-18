@@ -1,31 +1,47 @@
 package com.innotec.bats.general;
 
+import java.util.Objects;
+
 /**
  * Created by phoenix on 7/27/16.
  */
-public class AccountRetrievalByCardNo extends AccountRetrieval
-{
-	private String cardNo;
+public class AccountRetrievalByCardNo extends AccountRetrieval {
+    private String cardNo;
 
-	public AccountRetrievalByCardNo (String cardNo, String tellerId)
-	{
-		super(tellerId);
-		this.cardNo = cardNo;
-	}
+    public AccountRetrievalByCardNo() {
+    }
 
-	public String getCardNo ()
-	{
-		return cardNo;
-	}
+    public AccountRetrievalByCardNo(String cardNo, String tellerId) {
+        super(tellerId);
+        this.cardNo = cardNo;
+    }
 
-	public void setCardNo (String cardNo)
-	{
-		this.cardNo = cardNo;
-	}
+    public String getCardNo() {
+        return cardNo;
+    }
 
-	@Override
-	public String toString ()
-	{
-		return "AccountRetrievalByCardNo{" + "cardNo='" + cardNo + '\'' + '}';
-	}
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccountRetrievalByCardNo)) return false;
+        if (!super.equals(o)) return false;
+        AccountRetrievalByCardNo that = (AccountRetrievalByCardNo) o;
+        return Objects.equals(cardNo, that.cardNo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), cardNo);
+    }
+
+    @Override
+    public String toString() {
+        return "AccountRetrievalByCardNo{" +
+                "cardNo='" + cardNo + '\'' +
+                '}';
+    }
 }

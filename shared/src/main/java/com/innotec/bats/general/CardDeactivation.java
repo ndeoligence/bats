@@ -1,40 +1,53 @@
 package com.innotec.bats.general;
 
-public class CardDeactivation extends Action
-{
-	private String cardNo, atmID;
-	
-	public CardDeactivation (String cardNo, String atmID)
-	{
-		this.cardNo = cardNo;
-		this.atmID = atmID;
-	}
+import java.util.Objects;
 
-	public String getAtmID ()
-	{
-		return atmID;
-	}
+public class CardDeactivation extends Action {
+    private String cardNo, atmID;
 
-	public void setAtmID (String atmID)
-	{
-		this.atmID = atmID;
-	}
+    public CardDeactivation() {
+    }
 
-	public String getCardNo ()
-	{
-		return cardNo;
-	}
+    public CardDeactivation(String cardNo, String atmID) {
+        this.cardNo = cardNo;
+        this.atmID = atmID;
+    }
 
-	public void setCardNo (String cardNo)
-	{
-		this.cardNo = cardNo;
-	}
+    public String getCardNo() {
+        return cardNo;
+    }
 
-	@Override
-	public String toString ()
-	{
-		return "CardDeactivation [cardNo=" + cardNo + "]";
-	}
-	
-	
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getAtmID() {
+        return atmID;
+    }
+
+    public void setAtmID(String atmID) {
+        this.atmID = atmID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CardDeactivation)) return false;
+        CardDeactivation that = (CardDeactivation) o;
+        return Objects.equals(cardNo, that.cardNo) &&
+                Objects.equals(atmID, that.atmID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cardNo, atmID);
+    }
+
+    @Override
+    public String toString() {
+        return "CardDeactivation{" +
+                "cardNo='" + cardNo + '\'' +
+                ", atmID='" + atmID + '\'' +
+                '}';
+    }
 }

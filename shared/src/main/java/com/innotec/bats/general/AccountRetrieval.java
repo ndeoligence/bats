@@ -5,14 +5,15 @@ package com.innotec.bats.general;
  */
 public abstract class AccountRetrieval extends TellerAction
 {
-	public AccountRetrieval (String tellerID)
-	{
-		super(tellerID);
+	public AccountRetrieval() {
+	}
+
+	public AccountRetrieval(String employeeNo) {
+		super(employeeNo);
 	}
 
 	@Override
-	public String toString ()
-	{
-		return "AccountRetrieval";
+	public String toString() {
+		return "AccountRetrieval{}";
 	}
 }

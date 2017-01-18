@@ -5,6 +5,10 @@ package com.innotec.bats.general;
  */
 public class AccountClosure extends TellerAction {
     private String accountNo;
+
+    public AccountClosure() {
+    }
+
     public AccountClosure(String employeeNo, String accountNo) {
         super(employeeNo);
         this.accountNo = accountNo;

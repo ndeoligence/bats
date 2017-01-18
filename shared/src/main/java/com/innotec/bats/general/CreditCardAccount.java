@@ -1,11 +1,11 @@
 package com.innotec.bats.general;
 
 
-public class CreditCardAccount extends Account 
-{
+public class CreditCardAccount extends Account {
+    public CreditCardAccount() {
+    }
 
-    public CreditCardAccount (String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay,String accountHolderIdNo)
-    {
-    	super(accountNo, balance, active, maxWithdrawalPerDay, maxTransferPerDay, accountHolderIdNo);
+    public CreditCardAccount(String accountNo, double balance, boolean active, double maxWithdrawalPerDay, double maxTransferPerDay, String accountHolderIdNo) {
+        super(accountNo, balance, active, maxWithdrawalPerDay, maxTransferPerDay, accountHolderIdNo);
     }
 }
